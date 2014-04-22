@@ -21,7 +21,8 @@ public class CityLifeApp extends Application {
 	//网络
 	private RequestQueue mRequestQueue;	
 	private ImageLoader mImageLoader;
-	private final VolleyImageCache mImageCache = new VolleyImageCache(4*1024*1024);	
+	private final VolleyImageCache mImageCache = new VolleyImageCache(4*1024*1024);
+	private long requestTag = 0;
 	
 	//数据库
 	private FinalDb mFinalDb;
@@ -72,4 +73,13 @@ public class CityLifeApp extends Application {
 	public FinalDb getDb() {
 		return mFinalDb;
 	}	
+	
+	/**
+	 * 获取请求标签(保证每次返回的都不重复)
+	 * @return
+	 */
+	public synchronized String getRequestTag() {
+		requestTag++;
+		return requestTag+"";
+	}
 }

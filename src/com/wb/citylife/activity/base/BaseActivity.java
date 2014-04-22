@@ -1,14 +1,12 @@
 package com.wb.citylife.activity.base;
 
-import android.os.Bundle;
-
-public abstract class BaseActivity extends BaseActionBarActivity{
+/**
+ * Activity基类
+ * @author liangbx
+ *
+ */
+public abstract class BaseActivity extends BaseNetActivity{
 		
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);	
-	}
-	
 	/**
 	 * 获取Intent数据
 	 */

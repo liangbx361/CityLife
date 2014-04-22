@@ -2,7 +2,6 @@ package com.wb.citylife.activity.base;
 
 import com.wb.citylife.R;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import android.widget.TextView;
  * @author liangbx
  *
  */
-public class BaseEmptyActivity extends Activity{
+public class BaseEmptyActivity extends BaseActionBarActivity{
 	
 	private FrameLayout rootLayout;
 	private ViewGroup emptyContentLayout;
