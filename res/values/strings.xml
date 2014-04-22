@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CityLife</string>
+		
+    <string name="empty_toast">暂无内容哦</string>
+    
+</resources>
