@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CityLife</string>
-		
+    <string name="app_name">CityLife</string>		
     <string name="empty_toast">暂无内容哦</string>
     
+    <!-- 主页面相关  -->
+    <string name="tab_name_home">主页</string>
+    <string name="tab_name_search">搜索</string>
+    <string name="tab_name_account">我的</string>
+    <string name="tab_name_settings">设置</string>
 </resources>
