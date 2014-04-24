@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
+import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 
@@ -24,6 +25,9 @@ public class MainActivity extends BaseActivity {
 	private int tabIconIds[] = {R.drawable.tab_home, R.drawable.tab_search, R.drawable.tab_account, R.drawable.tab_settings};
 	
 	private FragmentTabHost fTabHost;
+	
+	//退出计数器
+	private int exitCount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,5 +72,34 @@ public class MainActivity extends BaseActivity {
 		iconName.setText(getResources().getString(nameId));
 		
 		return v;
+	}
+	
+	/**
+	 * 2秒内按两次退出程序
+	 */
+	@Override
+	public void onBackPressed() {
+		
+		if(exitCount==0) {
+			ToastHelper.showToastInBottom(this, R.string.exit_toast);
+			
+			new Thread() {
+
+				@Override
+				public void run() {
+					try {
+						sleep(2000);
+						exitCount = 0;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}.start();
+			
+			exitCount++;
+		} else {
+			finish();
+		}
 	}
 }

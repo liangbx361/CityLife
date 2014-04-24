@@ -23,9 +23,11 @@ public class BaseNetActivity extends BaseEmptyActivity{
 		requestTag = CityLifeApp.getInstance().getRequestTag();
 	}
 	
-	protected void onStop() {
+	@Override
+	protected void onDestroy() {			
 		if(mQueue != null)
 			mQueue.cancelAll(requestTag);
+		super.onDestroy();
 	}
 	
 	/**

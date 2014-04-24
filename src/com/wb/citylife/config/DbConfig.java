@@ -11,7 +11,7 @@ public interface DbConfig {
 	/**
 	 * 数据库名称
 	 */
-	public static final String DB_NAME = "findme.db";
+	public static final String DB_NAME = "citylife.db";
 	
 	/**
 	 * 数据库当前版本 （从1开始）

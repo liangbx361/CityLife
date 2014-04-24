@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <!-- 透明色  -->
+    <color name="transparent">#00000000</color>
+    
+    <!-- actionbar 菜单文字颜色  -->
+    <color name="actionbar_menu_text_color">#FF9FA0A0</color>
+    
+    <!-- actionbar 标题颜色  -->
+    <color name="actionbar_tittle_color">#ff080808</color>
+    
+    <!-- 提示类型字体颜色  -->
+    <color name="hint_text_color">#ff999999</color>
+    
 </resources>

@@ -1,20 +1,123 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+	<!-- 城市生活全局样式  -->
+    <style name="CLTheme.Light" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/CLActionBar</item>
+        <item name="actionBarDivider">@drawable/actionbar_divider</item>
+        <item name="actionDropDownStyle">@style/CLActionBarSpinner</item>
+        <item name="homeAsUpIndicator">@drawable/actionbar_up_indicator</item>
+        <item name="actionBarItemBackground">@drawable/actionbar_menu_selector</item>
+        <item name="actionMenuTextColor">@color/actionbar_menu_text_color</item>
+        <item name="android:windowAnimationStyle">@style/CLAnimation.Activity</item>
+        <item name="android:buttonStyle">@style/CLButton</item>
+        <item name="android:checkboxStyle">@style/CLCheckbox</item>
+        <item name="android:listViewStyle">@style/CLListView</item>
+        <item name="android:progressBarStyleHorizontal">@style/CLrogressBarStyleHorizontal</item>
+        <item name="android:radioButtonStyle">@style/CLRadioButton</item>                         
+    </style>    
+    
+    <!-- 城市生活ActionBar样式  -->
+    <style name="CLActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:icon">@drawable/actionbar_icon_layer_big_padding</item>
+        <item name="icon">@drawable/actionbar_icon_layer_big_padding</item>      
+        <item name="background">@drawable/actionbar_bg</item>                        
+        <item name="backgroundStacked">@drawable/actionbar_bg</item>
+        <item name="backgroundSplit">@drawable/actionbar_bg</item>
+        <item name="titleTextStyle">@style/CLActionBar.TitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/CLActionBar.SubTitleTextStyle</item>
+        <item name="indeterminateProgressStyle">@style/ActionBarCustomProgressBar</item>       
     </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    
+    <!-- 城市生活ActionBar Spinner 样式 -->
+    <style name="CLActionBarSpinner" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
+        <item name="spinnerMode">dropdown</item>
+        <item name="android:popupBackground">@drawable/abc_menu_dropdown_panel_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/actionbar_bg_selecter</item>
+        <item name="android:dropDownVerticalOffset">0dip</item>
+        <item name="android:dropDownHorizontalOffset">100dip</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:gravity">right</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/abc_spinner_ab_holo_dark</item>
     </style>
-
+	
+    <!-- 城市生活ActionBar样式  -->
+    <style name="CLActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:icon">@drawable/actionbar_icon_layer_big_padding</item>
+        <item name="icon">@drawable/actionbar_icon_layer_big_padding</item>      
+        <item name="background">@drawable/actionbar_bg</item>                        
+        <item name="backgroundStacked">@drawable/actionbar_bg</item>
+        <item name="backgroundSplit">@drawable/actionbar_bg</item>
+        <item name="titleTextStyle">@style/CLActionBar.TitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/CLActionBar.SubTitleTextStyle</item>
+        <item name="indeterminateProgressStyle">@style/ActionBarCustomProgressBar</item>       
+    </style>
+        
+    <!-- 城市生活ActionBar标题样式 -->
+    <style name="CLActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/actionbar_title_size</item>
+        <item name="android:textColor">@color/actionbar_tittle_color</item>
+    </style>
+        
+    <!-- 城市生活ActionBar子标题样式 -->
+    <style name="CLActionBar.SubTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/HintTextSize</item>
+        <item name="android:textColor">@color/hint_text_color</item>
+    </style>
+    
+    <!-- 城市生活ActionBar进度条样式 -->
+    <style name="ActionBarCustomProgressBar" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/actionbar_progress_holo</item>
+    </style>
+    
+    <!-- 城市生活ActionBar菜单文本样式  -->
+    <style name="CLActionBarMenuText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">@dimen/actionbar_menu_text_size</item>
+    </style>
+    
+	<!-- 城市生活ActionBar Spinner 样式 -->
+    <style name="CLActionBarSpinner" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
+        <item name="spinnerMode">dropdown</item>
+        <item name="android:popupBackground">@drawable/abc_menu_dropdown_panel_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/actionbar_bg_selecter</item>
+        <item name="android:dropDownVerticalOffset">0dip</item>
+        <item name="android:dropDownHorizontalOffset">100dip</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:gravity">right</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/abc_spinner_ab_holo_dark</item>
+    </style>
+    
+    <!-- 城市生活Activity动画切换效果  -->
+    <style name="CLAnimation.Activity" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_left_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
+    </style>
+    
+    <!-- 城市生活按钮样式  -->
+    <style name="CLButton" parent="@android:style/Widget.Button">
+        
+    </style>
+    
+    <!-- 城市生活复选框样式  -->
+    <style name="CLCheckbox" parent="@android:style/Widget.CompoundButton.CheckBox">
+        
+    </style>
+    
+    <!-- 城市生活列表样式  -->
+    <style name="CLListView" parent="@android:style/Widget.ListView">
+        <item name="android:divider">@drawable/common_listview_divider</item>
+    </style>
+    
+    <!-- 城市生活水平进度条样式  -->
+    <style name="CLrogressBarStyleHorizontal" parent="@android:style/Widget.ProgressBar.Horizontal">
+        
+    </style>
+    
+    <!-- 城市生活单选按钮样式  -->
+    <style name="CLRadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
+        
+    </style>
 </resources>

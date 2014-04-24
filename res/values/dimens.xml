@@ -1,7 +1,16 @@
 <resources>
-
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+	
+    <!-- actionbar 图标 padding值  -->
+    <dimen name="actionbar_icon_left_padding">4.0dip</dimen>
+    <dimen name="actionbar_icon_right_padding">0.0dip</dimen>
+    
+    <!-- actionbar 标题字体大小  -->
+    <dimen name="actionbar_title_size">20sp</dimen>
+    
+    <!-- actionbar 菜单文字大小  -->
+    <dimen name="actionbar_menu_text_size">16sp</dimen>
+    
+    <!-- 提示类型字体大小  -->
+    <dimen name="HintTextSize">14.0dip</dimen>       
 
 </resources>
