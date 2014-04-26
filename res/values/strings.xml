@@ -15,4 +15,10 @@
     
     <!-- 无内容时的提示  -->
     <string name="empty_toast">暂无内容哦</string>
+    
+    <!-- Strings for possible PreferenceActivity Back/Next buttons -->
+    <string name="back_button_label">返回</string>
+    <string name="next_button_label">前进</string>
+    <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
+    <string name="skip_button_label">跳过</string>
 </resources>

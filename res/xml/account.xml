@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory 
+	    android:layout="@layout/preference_category" />
+    <Preference
+        android:key="friends"
+        android:layout="@layout/preference_first_layout"
+        android:title="我的账号" />
+    <Preference
+        android:key="friends"
+        android:layout="@layout/preference_last_layout"
+        android:title="我的积分" />
+		        
+    <PreferenceCategory 
+	    android:layout="@layout/preference_category"/>
+    <Preference
+        android:key="scan"
+        android:layout="@layout/preference_first_layout"
+        android:title="我的银行卡" />
+    <Preference
+        android:key="shake"
+        android:layout="@layout/preference_last_layout"
+        android:title="我的卡券" />
+    
+    <PreferenceCategory 
+	    android:layout="@layout/preference_category"/>
+    <Preference
+        android:key="near"
+        android:layout="@layout/preference_first_layout"
+        android:title="我的购物车" />
+    <Preference
+        android:key="bottle"
+        android:layout="@layout/preference_last_layout"
+        android:title="我的订单" />
+    
+    <PreferenceCategory 
+	    android:layout="@layout/preference_category"/>
+    <Preference
+        android:key="games"
+        android:layout="@layout/preference_single_layout"
+        android:title="设置" />
+    
+    <PreferenceCategory 
+	    android:layout="@layout/preference_category"/>
+    <Preference
+        android:key="about"
+        android:layout="@layout/preference_single_layout"
+        android:title="关于" />
+
+</PreferenceScreen>

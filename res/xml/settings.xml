@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory 
+	    android:layout="@layout/preference_category" />
+    <Preference
+        android:key="account_manager"
+        android:layout="@layout/preference_first_layout"
+        android:title="账号管理" />
+    <Preference
+        android:key="friends"
+        android:layout="@layout/preference_middle_layout"
+        android:title="自定义背景" />		        
+    <Preference
+        android:key="scan"
+        android:layout="@layout/preference_middle_layout"
+        android:title="推送设置" />
+    <Preference
+        android:key="@string/pf_feedbak"
+        android:layout="@layout/preference_middle_layout"
+        android:title="用户反馈" />
+    <Preference
+        android:key="near"
+        android:layout="@layout/preference_middle_layout"
+        android:title="推荐好友" />
+    <Preference
+        android:key="bottle"
+        android:layout="@layout/preference_middle_layout"
+        android:title="检测更新" />
+    <Preference
+        android:key="games"
+        android:layout="@layout/preference_last_layout"
+        android:title="关于我们" />
+    
+    <PreferenceCategory 
+	    android:layout="@layout/preference_category"/>
+    
+    <Preference
+        android:key="about"
+        android:layout="@layout/preference_single_layout"
+        android:title="退出应用" />
+
+</PreferenceScreen>

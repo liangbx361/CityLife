@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+    <!-- 确认类型对话框相关  -->
+    <string name="dialog_confirm">确认</string>
+    <string name="dialog_cancle">取消</string>
+    
+    <!-- 删除栏目  -->
+    
+</resources>

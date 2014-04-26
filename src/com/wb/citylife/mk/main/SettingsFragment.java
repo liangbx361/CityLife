@@ -1,17 +1,21 @@
 package com.wb.citylife.mk.main;
 
-import com.wb.citylife.R;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SettingsFragment extends Fragment{
+import com.umeng.fb.FeedbackAgent;
+import com.wb.citylife.R;
+
+public class SettingsFragment extends PreferenceFragment implements OnPreferenceClickListener {
 
 	private Activity mActivity;
+	private Preference feedbackPreference;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -22,21 +26,19 @@ public class SettingsFragment extends Fragment{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.settings);
+		feedbackPreference = (Preference) findPreference(getResources().getString(R.string.pf_feedbak));
+		feedbackPreference.setOnPreferenceClickListener(this);
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.main_item_home, container, false);		
-	}
-	
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);		
-		initView(view);
-	}
-	
-	private void initView(View view) {
+	public boolean onPreferenceClick(Preference preference) {
 		
+		if(preference.getKey().contains(getResources().getString(R.string.pf_feedbak))) {
+			FeedbackAgent agent = new FeedbackAgent(getActivity());
+		    agent.startFeedbackActivity();
+		}
+		
+		return false;
 	}	
 }

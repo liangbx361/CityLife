@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
+    android:layout_height="match_parent" >
 
-</LinearLayout>
+    <com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid
+        android:id="@+id/type_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:paddingTop="160dp">
+    </com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/adv_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/adv_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            android:paddingBottom="5dp"
+            app:fillColor="#FFFFF100"
+            app:pageColor="#FFFFFFFF"
+            app:radius="4dp"
+            app:strokeColor="#FF000000"
+            app:strokeWidth="0dp" />
+    </RelativeLayout>
+
+</RelativeLayout>
