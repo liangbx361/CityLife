@@ -20,6 +20,9 @@ public class NetConfig implements NetInterface {
 	/*************************************项目扩展地址************************************/
 	public static final String EXTEND_URL = "";
 	
+	/*************************************应用下载地址************************************/
+	public static final String APK_DOWNLOAD_URL = "";
+	
 	/**
 	 * 获取服务器前缀地址+项目扩展地址
 	 * @return

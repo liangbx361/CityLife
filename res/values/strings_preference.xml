@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pf_feedbak">feedback</string>
-    <string name="pf_update">update</string>
+    
+    <!-- 我的模块  -->
+    <string name="pf_login">立即登录</string>
+    <string name="pf_msg">我的消息</string>
+    <string name="pf_collect">我的收藏</string>
+    
+    <!-- 设置模块 -->
+    <string name="pf_account_manager">账号管理</string>
+    <string name="pf_home_background">自定义背景</string>
+    <string name="pf_push_settings">推送设置</string>       
+    <string name="pf_feedbak">用户反馈</string>
+    <string name="pf_apk_share">推荐好友</string>    
+    <string name="pf_update">检测更新</string>
+    <string name="pf_about">关于我们</string>
+    <string name="pf_exit">退出</string>
 </resources>

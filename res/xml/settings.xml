@@ -3,40 +3,40 @@
 	<PreferenceCategory 
 	    android:layout="@layout/preference_category" />
     <Preference
-        android:key="account_manager"
+        android:key="@string/pf_account_manager"
         android:layout="@layout/preference_first_layout"
-        android:title="账号管理" />
+        android:title="@string/pf_account_manager" />
     <Preference
-        android:key="friends"
+        android:key="@string/pf_home_background"
         android:layout="@layout/preference_middle_layout"
-        android:title="自定义背景" />		        
+        android:title="@string/pf_home_background" />		        
     <Preference
-        android:key="scan"
+        android:key="@string/pf_push_settings"
         android:layout="@layout/preference_middle_layout"
-        android:title="推送设置" />
+        android:title="@string/pf_push_settings" />
     <Preference
         android:key="@string/pf_feedbak"
         android:layout="@layout/preference_middle_layout"
-        android:title="用户反馈" />
+        android:title="@string/pf_feedbak" />
     <Preference
-        android:key="near"
+        android:key="@string/pf_apk_share"
         android:layout="@layout/preference_middle_layout"
-        android:title="推荐好友" />
+        android:title="@string/pf_apk_share" />
     <Preference
-        android:key="bottle"
+        android:key="@string/pf_update"
         android:layout="@layout/preference_middle_layout"
-        android:title="检测更新" />
+        android:title="@string/pf_update" />
     <Preference
-        android:key="games"
+        android:key="@string/pf_about"
         android:layout="@layout/preference_last_layout"
-        android:title="关于我们" />
+        android:title="@string/pf_about" />
     
     <PreferenceCategory 
 	    android:layout="@layout/preference_category"/>
     
     <Preference
-        android:key="about"
+        android:key="@string/pf_exit"
         android:layout="@layout/preference_single_layout"
-        android:title="退出应用" />
+        android:title="@string/pf_exit" />
 
 </PreferenceScreen>

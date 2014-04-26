@@ -20,7 +20,7 @@ public class MainActivity extends BaseActivity {
 	private static final String TAG_SETTINGS = "settings";
 	
 	private String tabTags[] = {TAG_HOME, TAG_SEARCH, TAG_ACCOUNT, TAG_SETTINGS};
-	private Class fragments[] = {HomeFragment.class, SearchFragment.class, AccountFragment.class, SettingsFragment.class};
+	private Class fragments[] = {HomeFragment.class, SearchFragment.class, MyCenterFragment.class, SettingsFragment.class};
 	private int tabNameIds[] = {R.string.tab_name_home, R.string.tab_name_search, R.string.tab_name_account, R.string.tab_name_settings};
 	private int tabIconIds[] = {R.drawable.tab_home, R.drawable.tab_search, R.drawable.tab_account, R.drawable.tab_settings};
 	
