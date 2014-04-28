@@ -24,13 +24,7 @@
     
     <item name="gridview" type="id"  />
     <item name="webview" type="id" />
-    <item name="scrollview" type="id"  />
-    
-    <item name="action_search" type="id"></item>
-    <item name="action_wallet" type="id"></item>
-    <item name="action_message" type="id"></item>
-    <item name="action_scan" type="id"></item>
-    
+        
     <item name="action_next" type="id"></item>
     <item name="action_switching_account" type="id"></item>
     <item name="action_edit" type="id"></item>

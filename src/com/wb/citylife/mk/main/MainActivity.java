@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
@@ -36,6 +36,7 @@ public class MainActivity extends BaseActivity {
 		
 		getIntentData();
 		initView();
+				
 	}
 	
 	@Override

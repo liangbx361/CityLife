@@ -40,19 +40,7 @@
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/abc_spinner_ab_holo_dark</item>
     </style>
-	
-    <!-- 城市生活ActionBar样式  -->
-    <style name="CLActionBar" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="android:icon">@drawable/actionbar_icon_layer_big_padding</item>
-        <item name="icon">@drawable/actionbar_icon_layer_big_padding</item>      
-        <item name="background">@drawable/actionbar_bg</item>                        
-        <item name="backgroundStacked">@drawable/actionbar_bg</item>
-        <item name="backgroundSplit">@drawable/actionbar_bg</item>
-        <item name="titleTextStyle">@style/CLActionBar.TitleTextStyle</item>
-        <item name="subtitleTextStyle">@style/CLActionBar.SubTitleTextStyle</item>
-        <item name="indeterminateProgressStyle">@style/ActionBarCustomProgressBar</item>       
-    </style>
-        
+	      
     <!-- 城市生活ActionBar标题样式 -->
     <style name="CLActionBar.TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">@dimen/actionbar_title_size</item>
@@ -74,20 +62,7 @@
     <style name="CLActionBarMenuText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
         <item name="android:textSize">@dimen/actionbar_menu_text_size</item>
     </style>
-    
-	<!-- 城市生活ActionBar Spinner 样式 -->
-    <style name="CLActionBarSpinner" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="spinnerMode">dropdown</item>
-        <item name="android:popupBackground">@drawable/abc_menu_dropdown_panel_holo_light</item>
-        <item name="android:dropDownSelector">@drawable/actionbar_bg_selecter</item>
-        <item name="android:dropDownVerticalOffset">0dip</item>
-        <item name="android:dropDownHorizontalOffset">100dip</item>
-        <item name="android:dropDownWidth">wrap_content</item>
-        <item name="android:gravity">right</item>
-        <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/abc_spinner_ab_holo_dark</item>
-    </style>
-    
+       
     <!-- 城市生活Activity动画切换效果  -->
     <style name="CLAnimation.Activity" parent="@android:style/Animation">
         <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
