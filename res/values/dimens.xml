@@ -19,5 +19,9 @@
     <!-- Preference fragment padding, sides -->
     <dimen name="preference_fragment_padding_side">16dp</dimen>
     
-    <integer name="preference_fragment_scrollbarStyle">0x02000000</integer> 
+    <integer name="preference_fragment_scrollbarStyle">0x02000000</integer>
+    
+    <dimen name="base_list_title_text_size">16.0sp</dimen>
+    <dimen name="base_list_desc_text_size">13.0sp</dimen>
+    <dimen name="base_list_tag_text_size">11.0sp</dimen>
 </resources>

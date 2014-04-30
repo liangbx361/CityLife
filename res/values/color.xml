@@ -13,4 +13,7 @@
     <!-- 提示类型字体颜色  -->
     <color name="hint_text_color">#ff999999</color>
     
+    <color name="base_list_title_color">#ff2f2f2f</color>
+    <color name="base_list_desc_color">#ff808080</color>
+    <color name="base_list_tag_color">#ffffffff</color>
 </resources>

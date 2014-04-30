@@ -14,6 +14,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.adapter.NewsAdapter;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespParams;
@@ -32,6 +33,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	
 	private PullToRefreshListView mPullListView;
 	private ListView mNewsListView;	
+	private NewsAdapter mNewsAdapter;
 	
 	private NewsListRequest mNewsListRequest;	
 	private NewsList mNewsList;
@@ -59,11 +61,19 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//处理下拉刷新
+				newsPageInfo.pageNo = 1;
+				requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
+						NewsListActivity.this, NewsListActivity.this);
 			}
 
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//处理上拉加载
+				if(mNewsList.hasNextPage) {
+					newsPageInfo.pageNo++;
+					requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
+							NewsListActivity.this, NewsListActivity.this);
+				}
 			}
 		});
 		
@@ -144,6 +154,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	@Override
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
+		mPullListView.onRefreshComplete();
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 	}
 	
@@ -152,7 +163,15 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 */
 	@Override
 	public void onResponse(NewsList response) {
-		mNewsList = response;
 		setIndeterminateBarVisibility(false);
+		mPullListView.onRefreshComplete();					
+		if(newsPageInfo.pageNo == 1) {
+			mNewsList = response;
+			mNewsAdapter = new NewsAdapter(NewsListActivity.this, mNewsList);
+			mNewsListView.setAdapter(mNewsAdapter);
+		} else {
+			mNewsList.datas.addAll(response.datas);
+			mNewsAdapter.notifyDataSetChanged();
+		}
 	}
 }
