@@ -10,6 +10,7 @@ import java.util.Map;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -19,7 +20,10 @@ import ${PackageName}.activity.base.BaseActivity;
 import ${PackageName}.config.NetConfig;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
-
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import ${PackageName}.bean.${DataName};
 import ${PackageName}.task.${TaskName};
 
@@ -28,6 +32,8 @@ public class ${ClassName} extends BaseActivity implements Listener<${DataName}>,
 <#else>
 public class ${ClassName} extends BaseActivity implements Listener<List<${DataName}>>, ErrorListener{
 </#if>	
+	
+	private PullToRefreshListView mPullListView;
 		
 	private ${TaskName} m${TaskName};
 	<#if isList == "false">
@@ -52,7 +58,33 @@ public class ${ClassName} extends BaseActivity implements Listener<List<${DataNa
 	
 	@Override
 	public void initView() {
+		mPullListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);		
+		mPullListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+			@Override
+			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+				//处理下拉刷新
+			}
+
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+				//处理上拉加载
+			}
+		});
 		
+		mPullListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+			@Override
+			public void onLastItemVisible() {
+				//滑动到底部的处理
+			}
+		});
+		
+		//设置刷新时的滑动开关		
+		mPullListView.setScrollingWhileRefreshingEnabled(true);
+		
+		//设置自动刷新
+		mPullListView.setRefreshing(false);
 	}
 	
 	@Override

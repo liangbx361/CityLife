@@ -14,7 +14,7 @@ import android.widget.TextView;
  * @author liangbx
  *
  */
-public class BaseEmptyActivity extends FragmentActivity{
+public class BaseEmptyActivity extends BaseActionBarActivity{
 	
 	private FrameLayout rootLayout;
 	private ViewGroup emptyContentLayout;

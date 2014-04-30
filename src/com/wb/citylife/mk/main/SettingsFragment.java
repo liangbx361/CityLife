@@ -1,6 +1,7 @@
 package com.wb.citylife.mk.main;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -18,6 +19,7 @@ import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
 import com.wb.citylife.R;
 import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.mk.settings.AccountManagerActivity;
 import com.wb.citylife.util.share.ShareHelper;
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceClickListener,
@@ -27,9 +29,10 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             RequestType.SOCIAL);
 	
 	private Activity mActivity;
-	private Preference feedbackPreference;
-	private Preference sharePreference;
-	private Preference updatePreference;
+	private Preference accountManagePf;
+	private Preference feedbackPf;
+	private Preference sharePf;
+	private Preference updatePf;	
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -41,25 +44,42 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
-		feedbackPreference = (Preference) findPreference(getResources().getString(R.string.pf_feedbak));
-		feedbackPreference.setOnPreferenceClickListener(this);
 		
-		sharePreference = (Preference) findPreference(getResources().getString(R.string.pf_apk_share));
-		sharePreference.setOnPreferenceClickListener(this);
+		initPf();
+	}
+	
+	private void initPf() {
+		accountManagePf = (Preference) findPreference(getResources().getString(R.string.pf_account_manager));
+		accountManagePf.setOnPreferenceClickListener(this);
 		
-		updatePreference = (Preference) findPreference(getResources().getString(R.string.pf_update));
-		updatePreference.setOnPreferenceClickListener(this);
+		feedbackPf = (Preference) findPreference(getResources().getString(R.string.pf_feedbak));
+		feedbackPf.setOnPreferenceClickListener(this);
+		
+		sharePf = (Preference) findPreference(getResources().getString(R.string.pf_apk_share));
+		sharePf.setOnPreferenceClickListener(this);
+		
+		updatePf = (Preference) findPreference(getResources().getString(R.string.pf_update));
+		updatePf.setOnPreferenceClickListener(this);
 	}
 	
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		
-		if(preference.getKey().equals(getResources().getString(R.string.pf_feedbak))) {
+		if(preference.getKey().equals(getResources().getString(R.string.pf_account_manager))) {
+			
+			startActivity(new Intent(getActivity(), AccountManagerActivity.class));
+			
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_feedbak))) {
+			
 			FeedbackAgent agent = new FeedbackAgent(getActivity());
 		    agent.startFeedbackActivity();
-		} else if(preference.getKey().equals(getResources().getString(R.string.pf_apk_share))) {			
+		    
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_apk_share))) {	
+			
 			share();
+			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_update))) {
+			
 			UmengUpdateAgent.setUpdateListener(this);
 			UmengUpdateAgent.update(mActivity);		
 			ToastHelper.showToastInBottom(mActivity, "版本检测中");

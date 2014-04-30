@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:layout="@layout/preference_category" />
+
+    <Preference
+        android:key="@string/pf_modify_avatar"
+        android:layout="@layout/preference_first_layout"
+        android:title="@string/pf_modify_avatar" />
+    <Preference
+        android:key="@string/pf_modify_nickname"
+        android:layout="@layout/preference_middle_layout"
+        android:title="@string/pf_modify_nickname" />
+    <Preference
+        android:key="@string/pf_modify_password"
+        android:layout="@layout/preference_last_layout"
+        android:title="@string/pf_modify_password" />
+
+</PreferenceScreen>

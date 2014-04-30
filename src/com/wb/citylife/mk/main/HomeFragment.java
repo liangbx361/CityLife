@@ -10,7 +10,9 @@ import com.wb.citylife.adapter.TypeAdapter;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.Item;
 import com.wb.citylife.bean.Page;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.dialog.ConfirmDialog;
+import com.wb.citylife.mk.news.NewsListActivity;
 import com.wb.citylife.widget.ScaleLinearLayout;
 import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
 
@@ -18,6 +20,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -127,7 +131,11 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			//跳转到栏目中
 			((ScaleLinearLayout) v).clickZoomOut();
 			if(item.getId() != -1) {
-				
+				switch((int)item.getId()) {
+				case ChannelType.CHANNEL_TYPE_NEWS:
+					startActivity(new Intent(getActivity(), NewsListActivity.class));
+					break;
+				}
 			} else {
 				mTypeGrideView.cleanDelState();
 			}

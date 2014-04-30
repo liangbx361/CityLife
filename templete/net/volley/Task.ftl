@@ -25,7 +25,7 @@ public class ${ClassName} extends ParamsRequest<${DataClassName}> {
 	@Override
 	protected Response<${DataClassName}> parseNetworkResponse(NetworkResponse response) {
 		String resultStr = new String(response.data);
-		DebugConfig.ShowLog("volleyresponse", resultStr);
+		DebugConfig.showLog("volleyresponse", resultStr);
 							
 		${ParserName} parser = new ${ParserName}();
 		return Response.success(parser.parse(resultStr), getCacheEntry());

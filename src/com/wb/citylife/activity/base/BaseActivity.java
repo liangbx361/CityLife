@@ -20,13 +20,14 @@ public abstract class BaseActivity extends BaseNetActivity {
 	 */
 	public abstract void initView();
 	
-	
-	public void onResume() {
+	@Override
+	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
-		
-	public void onPause() {
+	
+	@Override
+	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}

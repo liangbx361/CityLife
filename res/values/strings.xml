@@ -2,7 +2,8 @@
 <resources>
 	
     <!-- 应用名称  -->
-    <string name="app_name">CityDemo</string>		    
+    <string name="app_name">CityDemo</string>
+    <string name="news_name">最新资讯</string>		    
     
     <!-- 主页面相关  -->
     <string name="tab_name_home">主页</string>

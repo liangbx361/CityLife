@@ -6,14 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:scaleType="fitXY">
-</com.android.volley.toolbox.NetworkImageView>
-<!--  
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adv_img"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:src="@drawable/avd_test_img" 
-    android:scaleType="fitXY"/>
--->    
+</com.android.volley.toolbox.NetworkImageView>   
     
