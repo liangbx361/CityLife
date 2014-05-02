@@ -1,43 +1,66 @@
 ﻿package com.wb.citylife.mk.news;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ScrollView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.wb.citylife.R;
-import com.wb.citylife.activity.base.BaseActivity;
-import com.wb.citylife.adapter.NewsAdapter;
-import com.wb.citylife.config.NetConfig;
-import com.wb.citylife.config.NetInterface;
-import com.wb.citylife.config.RespParams;
 import com.common.net.volley.VolleyErrorHelper;
+import com.common.widget.ComputeViewHeight;
+import com.common.widget.ReHeightGridView;
 import com.common.widget.ToastHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.viewpagerindicator.CirclePageIndicator;
+import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.adapter.AdvPagerAdapter;
+import com.wb.citylife.adapter.NewsAdapter;
+import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.NewsList;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.bean.NewsList.NewsItem;
+import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.NewsListRequest;
+import com.wb.citylife.widget.ListViewForScrollView;
 
-public class NewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener{
+public class NewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener, OnItemClickListener{
 	
-	private PullToRefreshListView mPullListView;
-	private ListView mNewsListView;	
+	private PullToRefreshScrollView mPullScrollView;
+	private ListViewForScrollView mNewsListView;	
 	private NewsAdapter mNewsAdapter;
 	
 	private NewsListRequest mNewsListRequest;	
 	private NewsList mNewsList;
 	private PageInfo newsPageInfo;
+	
+	//广告
+	private ViewPager mAdvViewPager;
+	private AdvPagerAdapter mAdvAdapter;
+	private CirclePageIndicator mAdvIndicator;
+	private AdvTimeCount advAdvTimeCount;
+	private Advertisement mAdv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +68,8 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		setContentView(R.layout.activity_newslist);
 		
 		getIntentData();
-		initView();				
+		initView();		
+		advTest();
 	}
 	
 	@Override
@@ -55,11 +79,14 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	
 	@Override
 	public void initView() {
-		mPullListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);		
-		mPullListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+		mAdvViewPager = (ViewPager) findViewById(R.id.adv_pager);
+		mAdvIndicator = (CirclePageIndicator) findViewById(R.id.adv_indicator);
+		
+		mPullScrollView = (PullToRefreshScrollView) findViewById(R.id.pull_refresh_scrollview);		
+		mPullScrollView.setOnRefreshListener(new OnRefreshListener2<ScrollView>() {
 
 			@Override
-			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				//处理下拉刷新
 				newsPageInfo.pageNo = 1;
 				requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
@@ -67,7 +94,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			}
 
 			@Override
-			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				//处理上拉加载
 				if(mNewsList.hasNextPage) {
 					newsPageInfo.pageNo++;
@@ -91,9 +118,11 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 //		//设置自动刷新
 //		mPullListView.setRefreshing(false);
 		
-		mPullListView.setMode(Mode.BOTH);
+		mPullScrollView.setMode(Mode.BOTH);
 		
-		mNewsListView = mPullListView.getRefreshableView();
+		mNewsListView = (ListViewForScrollView) findViewById(R.id.news_list);
+		mNewsListView.setOnItemClickListener(this);
+	
 	}
 	
 	@Override
@@ -154,7 +183,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	@Override
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
-		mPullListView.onRefreshComplete();
+		mPullScrollView.onRefreshComplete();
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 	}
 	
@@ -164,7 +193,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	@Override
 	public void onResponse(NewsList response) {
 		setIndeterminateBarVisibility(false);
-		mPullListView.onRefreshComplete();					
+		mPullScrollView.onRefreshComplete();					
 		if(newsPageInfo.pageNo == 1) {
 			mNewsList = response;
 			mNewsAdapter = new NewsAdapter(NewsListActivity.this, mNewsList);
@@ -174,4 +203,74 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			mNewsAdapter.notifyDataSetChanged();
 		}
 	}
+	
+	/**
+	 * 广告播放时间计时器
+	 * @author liangbx
+	 *
+	 */
+	class AdvTimeCount extends CountDownTimer {
+
+		public AdvTimeCount(long millisInFuture, long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+		}
+
+		@Override
+		public void onFinish() {
+			int currentItem = mAdvViewPager.getCurrentItem();
+			if(currentItem < mAdvViewPager.getChildCount() - 1) {
+				currentItem++;
+			} else {
+				currentItem = 0;
+			}
+			mAdvIndicator.setCurrentItem(currentItem);
+			advAdvTimeCount.cancel();
+			advAdvTimeCount.start();
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			
+		}		
+	}
+	
+	/**
+	 * 列表点击后的处理
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		NewsItem newsItem = mNewsList.datas.get(position);
+		Intent intent = new Intent(this, NewsDetailActivity.class);
+		intent.putExtra(IntentExtraConfig.ND_ID, newsItem.id);
+		startActivity(intent);
+	}
+	
+	/************************************************ 测试数据 **********************************************/
+	private void advTest() {
+		mAdv = new Advertisement();
+		mAdv.respCode = 0;
+		mAdv.respMsg = "ok";
+		mAdv.totalCount = 2;
+		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
+		
+		Advertisement.AdvItem item  = mAdv.new AdvItem();
+		item.id = 1;
+		item.imageUrl = "http://img3.cache.netease.com/photo/0007/2014-04-29/9R0BQDPF1OQR0007.jpg";
+		item.title = "舞动青春";
+		item.linkUrl = "";
+		mAdv.resources.add(item);
+		
+		item  = mAdv.new AdvItem();
+		item.id = 1;
+		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
+		item.title = "创意无限";
+		item.linkUrl = "";
+		mAdv.resources.add(item);
+		
+		mAdvAdapter = new AdvPagerAdapter(this, mAdv);
+		mAdvViewPager.setAdapter(mAdvAdapter);
+		mAdvIndicator.setViewPager(mAdvViewPager);
+	}
+	
 }

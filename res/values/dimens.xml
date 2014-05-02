@@ -21,7 +21,10 @@
     
     <integer name="preference_fragment_scrollbarStyle">0x02000000</integer>
     
-    <dimen name="base_list_title_text_size">16.0sp</dimen>
-    <dimen name="base_list_desc_text_size">13.0sp</dimen>
-    <dimen name="base_list_tag_text_size">11.0sp</dimen>
+    <!-- 资讯类字体大小 -->
+    <dimen name="news_list_title_text_size">16.0sp</dimen>
+    <dimen name="news_list_desc_text_size">13.0sp</dimen>
+    <dimen name="news_list_tag_text_size">11.0sp</dimen>    
+    <dimen name="news_title_text_size">20.0sp</dimen>
+    <dimen name="news_content_text_size">18.0sp</dimen>
 </resources>

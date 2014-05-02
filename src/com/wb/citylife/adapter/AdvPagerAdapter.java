@@ -60,8 +60,10 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 		View view = mViewList.get(position);
 		container.addView(view);		
 		AdvItem item = mAvdData.resources.get(position);
+		NetworkImageView imageView = (NetworkImageView) view;
+		imageView.setDefaultImageResId(R.drawable.base_list_adv_default_icon);
 		if(item.imageUrl != null && !item.imageUrl.equals("")) {
-			((NetworkImageView) view).setImageUrl(item.imageUrl, 
+			imageView.setImageUrl(item.imageUrl, 
 					CityLifeApp.getInstance().getImageLoader());			
 		}						
 		

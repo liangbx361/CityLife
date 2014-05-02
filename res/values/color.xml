@@ -13,7 +13,12 @@
     <!-- 提示类型字体颜色  -->
     <color name="hint_text_color">#ff999999</color>
     
-    <color name="base_list_title_color">#ff2f2f2f</color>
-    <color name="base_list_desc_color">#ff808080</color>
-    <color name="base_list_tag_color">#ffffffff</color>
+    <!-- 资讯类字体颜色  -->
+    <color name="news_list_title_color">#ff2f2f2f</color>
+    <color name="news_list_desc_color">#ff808080</color>
+    <color name="news_list_tag_color">#ff808080</color>    
+    <color name="news_content_color">#ff585858</color>
+    
+    <!-- 背景色  -->
+    <color name="bg_color">#fff0f0f0</color>
 </resources>

@@ -6,7 +6,7 @@
     android:paddingBottom="5dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="5dp" >
+    android:paddingTop="5dp">
 
    <com.android.volley.toolbox.NetworkImageView 
         android:id="@+id/img"
@@ -27,7 +27,7 @@
         android:gravity="top|left|center"
         android:lineSpacingExtra="3.0dip"
         android:singleLine="true"
-        android:textAppearance="@style/base_list_title_style" />
+        android:textAppearance="@style/news_list_title_style" />
 
     <TextView
         android:id="@+id/desc"
@@ -38,7 +38,7 @@
         android:lineSpacingExtra="2.0dip"
         android:maxLines="2"
         android:minLines="2"
-        android:textAppearance="@style/base_list_desc_style" />
+        android:textAppearance="@style/news_list_desc_style" />
 
     <TextView
         android:id="@+id/tag"
@@ -49,7 +49,7 @@
         android:paddingLeft="2.0dip"
         android:paddingRight="2.0dip"
         android:singleLine="true"
-        android:textAppearance="@style/base_list_tag_style" />
+        android:textAppearance="@style/news_list_tag_style" />
 
     <TextView
         android:id="@+id/tag2"
@@ -60,7 +60,7 @@
         android:paddingLeft="4.0dip"
         android:paddingRight="2.0dip"
         android:singleLine="true"
-        android:textAppearance="@style/base_list_tag_style" />
+        android:textAppearance="@style/news_list_tag_style" />
 
 </RelativeLayout>
 

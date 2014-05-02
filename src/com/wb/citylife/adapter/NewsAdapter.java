@@ -57,11 +57,12 @@ public class NewsAdapter extends BaseAdapter {
 		}
 		
 		NewsItem newsItem = mNewsList.datas.get(position);
+		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
 		holder.thumbIv.setImageUrl(newsItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());
 		holder.titleTv.setText(newsItem.title);
 		holder.descTv.setText(newsItem.summary);
-		holder.tagTv.setText("评论数：" + newsItem.commentNum);
-		holder.tag2Tv.setText("点击数:" + newsItem.clickNum);
+		holder.tagTv.setText("点击" + newsItem.commentNum);
+		holder.tag2Tv.setText("评论" + newsItem.clickNum);
 		
 		return view;
 	}

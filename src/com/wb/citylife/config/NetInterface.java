@@ -9,5 +9,6 @@ public interface NetInterface {
 	
 	/***************************** 资讯  **********************************************/
 	public static final String METHOD_NEWS_LIST = "newsList";
+	public static final String METHOD_NEWS_DETAIL= "newsDetail";
 		
 }

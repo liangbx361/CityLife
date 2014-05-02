@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 城市生活全局样式 -->
     <style name="CLTheme.Light" parent="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -79,7 +79,8 @@
 
     <!-- 城市生活列表样式 -->
     <style name="CLListView" parent="@android:style/Widget.ListView">
-        <item name="android:divider">@drawable/common_listview_divider</item>
+        <item name="android:divider">@drawable/base_list_divider_drawable</item>
+        <item name="android:listSelector">@drawable/base_list_selector</item>
     </style>
 
     <!-- 城市生活水平进度条样式 -->
@@ -88,24 +89,44 @@
     <!-- 城市生活单选按钮样式 -->
     <style name="CLRadioButton" parent="@android:style/Widget.CompoundButton.RadioButton"></style>
 	
-    <style name="base_list_title_style">
-        <item name="android:textSize">@dimen/base_list_title_text_size</item>
+    <!-- 资讯列表标题字体样式  -->
+    <style name="news_list_title_style">
+        <item name="android:textSize">@dimen/news_list_title_text_size</item>
         <item name="android:typeface">sans</item>
-        <item name="android:textColor">@color/base_list_title_color</item>
+        <item name="android:textColor">@color/news_list_title_color</item>
     </style>
 	
-    <style name="base_list_desc_style">
-        <item name="android:textSize">@dimen/base_list_desc_text_size</item>
+    <!-- 资讯列表描述字体样式  -->
+    <style name="news_list_desc_style">
+        <item name="android:textSize">@dimen/news_list_desc_text_size</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/base_list_desc_color</item>
+        <item name="android:textColor">@color/news_list_desc_color</item>
     </style>
 	
-    <style name="base_list_tag_style">
-        <item name="android:textSize">@dimen/base_list_tag_text_size</item>
+    <!-- 资讯列表标签字体样式  -->
+    <style name="news_list_tag_style">
+        <item name="android:textSize">@dimen/news_list_tag_text_size</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/base_list_tag_color</item>
+        <item name="android:textColor">@color/news_list_tag_color</item>
     </style>
-
+    
+    <!-- 资讯标题样式  -->
+    <style name="news_title_style">
+        <item name="android:textSize">@dimen/news_title_text_size</item>
+        <item name="android:typeface">sans</item>
+         <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/news_list_title_color</item>
+    </style>
+	
+    <!-- 资讯内容样式  -->
+    <style name="news_content_style">
+        <item name="android:textSize">@dimen/news_content_text_size</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/news_content_color</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+    
 </resources>
