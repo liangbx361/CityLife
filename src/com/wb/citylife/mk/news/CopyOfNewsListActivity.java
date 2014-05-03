@@ -1,4 +1,4 @@
-﻿package com.wb.citylife.mk.news;
+package com.wb.citylife.mk.news;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,73 +7,63 @@ import java.util.Map;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.ScrollView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.common.net.volley.VolleyErrorHelper;
+import com.common.widget.ToastHelper;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnPullEventListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.State;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.adapter.AdvPagerAdapter;
 import com.wb.citylife.adapter.NewsAdapter;
+import com.wb.citylife.bean.Advertisement;
+import com.wb.citylife.bean.NewsList;
+import com.wb.citylife.bean.NewsList.NewsItem;
+import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespParams;
-import com.common.net.volley.VolleyErrorHelper;
-import com.common.widget.ToastHelper;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.wb.citylife.bean.Advertisement;
-import com.wb.citylife.bean.NewsList;
-import com.wb.citylife.bean.PageInfo;
-import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.task.NewsListRequest;
-import com.wb.citylife.widget.ViewPageForScrollView;
+import com.wb.citylife.widget.ListViewForScrollView;
+import com.wb.citylife.widget.ListViewForScrollView.OnLastItemVisibleListener;
 
-public class NewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener,
-	OnItemClickListener{
+public class CopyOfNewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener, OnItemClickListener{
 	
-	//正在加载
-	public static final int BOTTOM_STATE_LOADING = 0;
-	//加载失败
-	public static final int BOTTOM_STATE_LOAD_FAIL = 1;
-	//无更多数据
-	public static final int BOTTOM_STATE_NO_MORE_DATE = 2;	
-	//加载空闲
-	public static final int BOTTOM_STATE_LOAD_IDLE = 3;
-	
-	private PullToRefreshListView mPullListView;
-	private ListView mNewsListView;	
+	private PullToRefreshScrollView mPullScrollView;
+	private ListViewForScrollView mNewsListView;	
 	private NewsAdapter mNewsAdapter;
 	private View bottomView;
 	
 	private NewsListRequest mNewsListRequest;	
 	private NewsList mNewsList;
 	private PageInfo newsPageInfo;
-	private int loadState = BOTTOM_STATE_LOAD_IDLE;
 	
 	//广告
-	private ViewPageForScrollView mAdvViewPager;
+	private ViewPager mAdvViewPager;
 	private AdvPagerAdapter mAdvAdapter;
 	private CirclePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
 	private Advertisement mAdv;
-		
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,7 +71,6 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		
 		getIntentData();
 		initView();		
-		
 		advTest();
 	}
 	
@@ -91,70 +80,71 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	}
 	
 	@Override
-	public void initView() {				
-		mPullListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);		
-		mPullListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+	public void initView() {
+		mAdvViewPager = (ViewPager) findViewById(R.id.adv_pager);
+		mAdvIndicator = (CirclePageIndicator) findViewById(R.id.adv_indicator);
+		
+		mPullScrollView = (PullToRefreshScrollView) findViewById(R.id.pull_refresh_scrollview);		
+		mPullScrollView.setOnRefreshListener(new OnRefreshListener2<ScrollView>() {
 
 			@Override
-			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				//处理下拉刷新
 				newsPageInfo.pageNo = 1;
 				requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
-						NewsListActivity.this, NewsListActivity.this);
+						CopyOfNewsListActivity.this, CopyOfNewsListActivity.this);
 			}
 
 			@Override
-			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-				//处理上拉加载				
-			}
-		});
-		
-		mPullListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
-
-			@Override
-			public void onLastItemVisible() {
-				if(loadState == BOTTOM_STATE_LOAD_IDLE && mNewsList.hasNextPage) {
-					loadState = BOTTOM_STATE_LOADING;
+			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				//处理上拉加载
+				if(mNewsList.hasNextPage) {
 					newsPageInfo.pageNo++;
 					requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
-							NewsListActivity.this, NewsListActivity.this);					
+							CopyOfNewsListActivity.this, CopyOfNewsListActivity.this);
 				}
 			}
 		});
 		
-		//设置请允许下拉刷新
-		mPullListView.setMode(Mode.PULL_FROM_START);
+//		mPullScrollView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+//
+//			@Override
+//			public void onLastItemVisible() {
+//				//滑动到底部的处理
+//			}
+//		});
+//		
+//		//设置刷新时的滑动�?��		
+//		mPullListView.setScrollingWhileRefreshingEnabled(true);
+//		
+//		//设置自动刷新
+//		mPullListView.setRefreshing(false);
 		
-		mNewsListView = mPullListView.getRefreshableView();
-		mNewsListView.setOnItemClickListener(this);
+		mPullScrollView.setMode(Mode.PULL_FROM_START);
 		
-		//广告视图添加到List头部
-		View advView = LayoutInflater.from(this).inflate(R.layout.adv_layout, null);
-		mAdvViewPager = (ViewPageForScrollView) advView.findViewById(R.id.adv_pager);
-		mAdvIndicator = (CirclePageIndicator) advView.findViewById(R.id.adv_indicator);
-		mNewsListView.addHeaderView(advView, null, false);		
-		
-		//底部添加正在加载视图
-		bottomView = LayoutInflater.from(this).inflate(R.layout.bottom_loading_layout, null);
-		BottomHolder holder = new BottomHolder();
-		holder.progressBar = (ProgressBar) bottomView.findViewById(R.id.loading_processbar);
-		holder.stateTv = (TextView) bottomView.findViewById(R.id.state);
-		bottomView.setTag(holder);
-		mNewsListView.addFooterView(bottomView);
-		
-		bottomView.setOnClickListener(new OnClickListener() {
+		mNewsListView = (ListViewForScrollView) findViewById(R.id.news_list);
+		mNewsListView.setOnItemClickListener(this);	
+		mNewsListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 			
 			@Override
-			public void onClick(View v) {				
-				if(loadState == BOTTOM_STATE_LOAD_FAIL) {
-					//加载失败，点击重试
-					loadState = BOTTOM_STATE_LOADING;
-					setBottomState(loadState);
-					requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
-							NewsListActivity.this, NewsListActivity.this);					
-				}
+			public void onLastItemVisible() {
+				Log.d("scroll_bottom", "滑动到底部");
 			}
 		});
+				
+		bottomView = LayoutInflater.from(this).inflate(R.layout.bottom_loading_layout, null);
+		mNewsListView.addFooterView(bottomView);
+		
+		mPullScrollView.setOnPullEventListener(new OnPullEventListener<ScrollView>() {
+
+			@Override
+			public void onPullEvent(PullToRefreshBase<ScrollView> refreshView,
+					State state, Mode direction) {
+				Log.d("scroll_bottom", "滑动到底部" + direction);
+			}
+		});
+		
+		ScrollView scrollView = mPullScrollView.getRefreshableView();
 	}
 	
 	@Override
@@ -213,12 +203,10 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 *
 	 */
 	@Override
-	public void onErrorResponse(VolleyError error) {	
-		mPullListView.onRefreshComplete();
+	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
+		mPullScrollView.onRefreshComplete();
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
-		loadState = BOTTOM_STATE_LOAD_FAIL;
-		setBottomState(BOTTOM_STATE_LOAD_FAIL);
 	}
 	
 	/**
@@ -226,43 +214,15 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 */
 	@Override
 	public void onResponse(NewsList response) {
-		mPullListView.onRefreshComplete();
-		setIndeterminateBarVisibility(false);						
+		setIndeterminateBarVisibility(false);
+		mPullScrollView.onRefreshComplete();					
 		if(newsPageInfo.pageNo == 1) {
 			mNewsList = response;
-			mNewsAdapter = new NewsAdapter(NewsListActivity.this, mNewsList);
+			mNewsAdapter = new NewsAdapter(CopyOfNewsListActivity.this, mNewsList);
 			mNewsListView.setAdapter(mNewsAdapter);
 		} else {
-			mNewsList.hasNextPage = response.hasNextPage;
 			mNewsList.datas.addAll(response.datas);
-			mNewsAdapter.notifyDataSetChanged(mNewsList);		
-		}
-		
-		loadState = BOTTOM_STATE_LOAD_IDLE;
-		if(mNewsList.hasNextPage) {			
-			setBottomState(BOTTOM_STATE_LOADING);
-		} else {
-			setBottomState(BOTTOM_STATE_NO_MORE_DATE);
-		}
-	}
-	
-	/**
-	 * 列表点击后的处理
-	 */
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		
-		if(position <mNewsListView.getHeaderViewsCount()) {
-			//点击头部
-		} else if(position < mNewsListView.getHeaderViewsCount() + mNewsList.datas.size()) { 
-			position -= mNewsListView.getHeaderViewsCount();
-			NewsItem newsItem = mNewsList.datas.get(position);
-			Intent intent = new Intent(this, NewsDetailActivity.class);
-			intent.putExtra(IntentExtraConfig.ND_ID, newsItem.id);
-			startActivity(intent);
-		} else {
-			//底部点击
+			mNewsAdapter.notifyDataSetChanged();
 		}
 	}
 	
@@ -296,29 +256,19 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		}		
 	}
 	
-	public class BottomHolder {
-		private ProgressBar progressBar;
-		private TextView stateTv;
-	}
-	
-	private void setBottomState(int state) {
-		BottomHolder holder = (BottomHolder) bottomView.getTag();
-		switch (state) {		
-		case BOTTOM_STATE_LOADING:			
-			holder.progressBar.setVisibility(View.VISIBLE);
-			holder.stateTv.setText(newsPageInfo.pageSize + "条载入中...");
-			break;
-			
-		case BOTTOM_STATE_LOAD_FAIL:
-			holder.progressBar.setVisibility(View.GONE);
-			holder.stateTv.setText("加载失败，点击重试");
-			break;
-
-		case BOTTOM_STATE_NO_MORE_DATE:
-			holder.progressBar.setVisibility(View.GONE);
-			holder.stateTv.setText("无更多新闻");
-			break;
-		}
+	/**
+	 * 列表点击后的处理
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		
+		if(position < mNewsListView.getLastVisiblePosition()) {		
+			NewsItem newsItem = mNewsList.datas.get(position);
+			Intent intent = new Intent(this, NewsDetailActivity.class);
+			intent.putExtra(IntentExtraConfig.ND_ID, newsItem.id);
+			startActivity(intent);
+		} 
 	}
 	
 	/************************************************ 测试数据 **********************************************/
@@ -337,7 +287,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		mAdv.resources.add(item);
 		
 		item  = mAdv.new AdvItem();
-		item.id = "2";
+		item.id = "1";
 		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
 		item.title = "创意无限";
 		item.linkUrl = "";
@@ -346,5 +296,6 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		mAdvAdapter = new AdvPagerAdapter(this, mAdv);
 		mAdvViewPager.setAdapter(mAdvAdapter);
 		mAdvIndicator.setViewPager(mAdvViewPager);
-	}	
+	}
+	
 }

@@ -167,14 +167,14 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
 		
 		Advertisement.AdvItem item  = mAdv.new AdvItem();
-		item.id = 1;
+		item.id = "1";
 		item.imageUrl = "http://pic27.nipic.com/20130313/1628220_145734522153_2.jpg";
 		item.title = "舞动青春";
 		item.linkUrl = "";
 		mAdv.resources.add(item);
 		
 		item  = mAdv.new AdvItem();
-		item.id = 1;
+		item.id = "2";
 		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
 		item.title = "创意无限";
 		item.linkUrl = "";

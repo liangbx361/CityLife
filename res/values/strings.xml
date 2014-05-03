@@ -5,6 +5,7 @@
     <string name="app_name">CityDemo</string>
     <string name="news_name">最新资讯</string>		
     <string name="detail_name">详情</string>
+    <string name="comment_name">评论</string>
     
     <!-- 主页面相关  -->
     <string name="tab_name_home">主页</string>
@@ -17,6 +18,11 @@
     
     <!-- 无内容时的提示  -->
     <string name="empty_toast">暂无内容哦</string>
+    
+    <!-- 评论 -->
+    <string name="comment_empty_toast">评论内容不能为空</string>
+    <string name="comment_success">发表成功</string>
+    <string name="comment_fail">发表不成功，请重试</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

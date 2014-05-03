@@ -81,8 +81,13 @@
     <style name="CLListView" parent="@android:style/Widget.ListView">
         <item name="android:divider">@drawable/base_list_divider_drawable</item>
         <item name="android:listSelector">@drawable/base_list_selector</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:fastScrollEnabled">false</item>
+        <item name="android:footerDividersEnabled">true</item>
+        <item name="android:smoothScrollbar">true</item>
     </style>
-
+    
     <!-- 城市生活水平进度条样式 -->
     <style name="CLrogressBarStyleHorizontal" parent="@android:style/Widget.ProgressBar.Horizontal"></style>
 

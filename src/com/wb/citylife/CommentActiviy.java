@@ -13,21 +13,20 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.config.NetConfig;
-import com.wb.citylife.config.NetInterface;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
-import com.wb.citylife.bean.NewsDetail;
-import com.wb.citylife.task.NewsDetailRequest;
 
-public class NewsDetailActivity extends BaseActivity implements Listener<NewsDetail>, ErrorListener{
+import com.wb.citylife.bean.Comment;
+import com.wb.citylife.task.CommentRequest;
+
+public class CommentActiviy extends BaseActivity implements Listener<Comment>, ErrorListener{
 		
-	private NewsDetailRequest mNewsDetailRequest;
-	private NewsDetail mNewsDetail;
+	private CommentRequest mCommentRequest;
+	private Comment mComment;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_newsdetail);
 		
 		getIntentData();
 		initView();				
@@ -49,7 +48,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
+		//requestComment(Method.GET, "请求方法", getCommentRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -66,7 +65,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * 获取请求参数
 	 * @return
 	 */
-	private Map<String, String> getNewsDetailRequestParams() {
+	private Map<String, String> getCommentRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 				
 		return params;
@@ -80,14 +79,14 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * @param listenre
 	 * @param errorListener
 	 */	
-	private void requestNewsDetail(int method, String methodUrl, Map<String, String> params,	 
-			Listener<NewsDetail> listenre, ErrorListener errorListener) {			
-		if(mNewsDetailRequest != null) {
-			mNewsDetailRequest.cancel();
+	private void requestComment(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Comment> listenre, ErrorListener errorListener) {			
+		if(mCommentRequest != null) {
+			mCommentRequest.cancel();
 		}	
 		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
-		mNewsDetailRequest = new NewsDetailRequest(method, url, params, listenre, errorListener);
-		startRequest(mNewsDetailRequest);		
+		mCommentRequest = new CommentRequest(method, url, params, listenre, errorListener);
+		startRequest(mCommentRequest);		
 	}
 	
 	/**
@@ -104,8 +103,8 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(NewsDetail response) {
-		mNewsDetail = response;
+	public void onResponse(Comment response) {
+		mComment = response;
 		setIndeterminateBarVisibility(false);
 	}
 }

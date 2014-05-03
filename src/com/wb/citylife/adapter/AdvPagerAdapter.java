@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +15,8 @@ import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.Advertisement.AdvItem;
+import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.mk.news.NewsDetailActivity;
 
 public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 	private int mCount;
@@ -75,6 +78,9 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 		int index = Integer.parseInt(v.getTag().toString());
 		AdvItem advItem = mAvdData.resources.get(index);
 		//点击跳转新闻详情页
+		Intent intent = new Intent(mActivity, NewsDetailActivity.class);
+		intent.putExtra(IntentExtraConfig.ND_ID, advItem.id);
+		mActivity.startActivity(intent);
 	}
 		 
 }

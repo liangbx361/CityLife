@@ -67,11 +67,16 @@ public class NewsAdapter extends BaseAdapter {
 		return view;
 	}
 	
+	public void notifyDataSetChanged(NewsList newsList) {
+		mNewsList = newsList;
+		super.notifyDataSetChanged();
+	}
+	
 	public class ViewHolder {
 		NetworkImageView thumbIv;
 		TextView titleTv;
 		TextView descTv;
 		TextView tagTv;
 		TextView tag2Tv;
-	}
+	}	
 }

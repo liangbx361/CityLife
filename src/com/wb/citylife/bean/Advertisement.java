@@ -9,7 +9,7 @@ public class Advertisement extends BaseBean{
     public List<AdvItem> resources;
     		
     public class AdvItem { 
-    	public int id;
+    	public String id;
     	public String title;
     	public int weight;
     	public String linkUrl;

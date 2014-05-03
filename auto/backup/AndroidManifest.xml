@@ -43,9 +43,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        
-        <!-- 资讯  -->
+
+        <!-- 资讯 -->
         <activity android:configChanges="keyboardHidden|orientation" android:label="@string/news_name" android:name="com.wb.citylife.mk.news.NewsListActivity" android:screenOrientation="portrait"/>
+        
+        <activity android:configChanges="keyboardHidden|orientation" android:label="@string/detail_name" android:name="com.wb.citylife.mk.news.NewsDetailActivity" android:screenOrientation="portrait"/>
 
         <!-- 账号管理 -->
         <activity android:configChanges="keyboardHidden|orientation" android:name=".mk.settings.AccountManagerActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustUnspecified|stateHidden">
@@ -91,8 +93,7 @@
         <meta-data android:name="UMENG_APPKEY" android:value="5356596356240b2f9301fcbd">
         </meta-data>
         <meta-data android:name="UMENG_CHANNEL" android:value="yongan"/>
-
         
-    <activity android:configChanges="keyboardHidden|orientation" android:label="@string/app_name" android:name="com.wb.citylife.NewsDetailActivity" android:screenOrientation="portrait"/></application>
+    <activity android:configChanges="keyboardHidden|orientation" android:label="@string/app_name" android:name="com.wb.citylife.CommentListActivity" android:screenOrientation="portrait"/></application>
 
 </manifest>
