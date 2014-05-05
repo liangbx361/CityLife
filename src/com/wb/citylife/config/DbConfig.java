@@ -26,7 +26,12 @@ public interface DbConfig {
 	/********************************************* 定义表名并注释表的用途  **************************************************/
 	
 	/**
-	 * 用于存储搜索关键字的历史记录
+	 * 用户表
 	 */
-	public static final String TN_SEARCH_KEYWORD_HISTORY = "search_keyword_history";
+	public static final String TN_USER = "user";
+	
+	/**
+	 * 栏目
+	 */
+	public static final String TN_CHANNEL = "channel";	
 }

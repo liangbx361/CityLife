@@ -5,6 +5,6 @@
     <item android:state_enabled="true" android:state_checked="true" android:drawable="@drawable/tab_weixin_pressed" />
     <item android:drawable="@drawable/tab_weixin_normal" />
   -->
-    <item android:state_selected="true" android:drawable="@drawable/tab_msg_pressed" />
-    <item android:state_selected="false" android:drawable="@drawable/tab_msg_normal" />
+    <item android:state_selected="true" android:drawable="@drawable/tab_settings_pressed" />
+    <item android:state_selected="false" android:drawable="@drawable/tab_settings_normal" />
 </selector>

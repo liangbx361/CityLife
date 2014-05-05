@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.wb.citylife.R;
-import com.wb.citylife.bean.Item;
-import com.wb.citylife.bean.Page;
-import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
-import com.wb.citylife.widget.dragdropgrid.PagedDragDropGridAdapter;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.NetworkImageView;
+import com.wb.citylife.R;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.Item;
+import com.wb.citylife.bean.Page;
+import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
+import com.wb.citylife.widget.dragdropgrid.PagedDragDropGridAdapter;
 
 public class TypeAdapter implements PagedDragDropGridAdapter {
 	
@@ -54,13 +55,13 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View view = inflater.inflate(R.layout.type_item_layout, null);						
 		ViewHolder holder = new ViewHolder();
-		holder.icon = (ImageView) view.findViewById(R.id.type_icon);
+		holder.icon = (NetworkImageView) view.findViewById(R.id.type_icon);
 		holder.name = (TextView) view.findViewById(R.id.type_name);
 		holder.delBtn = (ImageButton) view.findViewById(R.id.type_del);
 		
 		Item item = getItem(page, index);
 		item.setHolder(holder);
-		holder.icon.setImageResource(item.getDrawable());
+		holder.icon.setImageUrl(item.getImageUrl(), CityLifeApp.getInstance().getImageLoader());
 		holder.name.setText(item.getName());
 		
 		return view;
@@ -72,7 +73,7 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 	}
 	
 	public class ViewHolder {
-		public ImageView icon;
+		public NetworkImageView icon;
 		public TextView name;
 		public ImageButton delBtn;
 	}

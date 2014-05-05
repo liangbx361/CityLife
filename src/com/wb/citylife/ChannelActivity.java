@@ -7,22 +7,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.wb.citylife.activity.base.BaseActivity;
-import com.wb.citylife.config.NetConfig;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
+import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.bean.Channel;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.task.ChannelRequest;
 
-import com.wb.citylife.bean.Comment;
-import com.wb.citylife.task.CommentRequest;
-
-public class CommentActiviy extends BaseActivity implements Listener<Comment>, ErrorListener{
+public class ChannelActivity extends BaseActivity implements Listener<Channel>, ErrorListener{
 		
-	private CommentRequest mCommentRequest;
-	private Comment mComment;
+	private ChannelRequest mChannelRequest;
+	private Channel mChannel;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class CommentActiviy extends BaseActivity implements Listener<Comment>, E
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		//requestComment(Method.GET, "请求方法", getCommentRequestParams(), this, this);
+		//requestChannel(Method.POST, "请求方法", getChannelRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -65,7 +63,7 @@ public class CommentActiviy extends BaseActivity implements Listener<Comment>, E
 	 * 获取请求参数
 	 * @return
 	 */
-	private Map<String, String> getCommentRequestParams() {
+	private Map<String, String> getChannelRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 				
 		return params;
@@ -79,14 +77,14 @@ public class CommentActiviy extends BaseActivity implements Listener<Comment>, E
 	 * @param listenre
 	 * @param errorListener
 	 */	
-	private void requestComment(int method, String methodUrl, Map<String, String> params,	 
-			Listener<Comment> listenre, ErrorListener errorListener) {			
-		if(mCommentRequest != null) {
-			mCommentRequest.cancel();
+	private void requestChannel(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Channel> listenre, ErrorListener errorListener) {			
+		if(mChannelRequest != null) {
+			mChannelRequest.cancel();
 		}	
 		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
-		mCommentRequest = new CommentRequest(method, url, params, listenre, errorListener);
-		startRequest(mCommentRequest);		
+		mChannelRequest = new ChannelRequest(method, url, params, listenre, errorListener);
+		startRequest(mChannelRequest);		
 	}
 	
 	/**
@@ -103,8 +101,8 @@ public class CommentActiviy extends BaseActivity implements Listener<Comment>, E
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(Comment response) {
-		mComment = response;
+	public void onResponse(Channel response) {
+		mChannel = response;
 		setIndeterminateBarVisibility(false);
 	}
 }

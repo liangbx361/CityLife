@@ -34,6 +34,8 @@ public class ScaleLinearLayout extends LinearLayout implements AnimationListener
 	
 	private int zoomState = ZoomState.ZOOM_OUT; //0:缩小 1：放大
 	
+	private int state = -1;	
+	
 	public ScaleLinearLayout(Context context) {
 		super(context);		
 	}
@@ -107,5 +109,36 @@ public class ScaleLinearLayout extends LinearLayout implements AnimationListener
 	public void onAnimationStart(Animation animation) {
 		
 	}
+	
+	@Override
+	protected void drawableStateChanged() {
+		super.drawableStateChanged();
+		
+		int states[] = getDrawableState();
+		String stateStr = "";
+		for(int i=0; i<states.length; i++) {
+			stateStr += states[i] + "\n" ;
+		}
+		
+//		ToastHelper.showToastInBottom(getContext(), stateStr);
+		
+		if(state < 0) {
+			state = getDrawableState().length;
+			return;
+		}
+		
+		if(state != getDrawableState().length && !(state <= 3 && getDrawableState().length < 3)) {
+			state = getDrawableState().length;
+			if(state > 3) {
+				//选 中
+				Log.d("ClickImageView", "选 中");	
+				zoomOut();
+			} else {
+				//未选中
+				Log.d("ClickImageView", "未 选 中");
+				zoomIn();
+			}
+		}
+	}	
 	
 }

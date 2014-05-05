@@ -1,5 +1,7 @@
 package com.wb.citylife.app;
 
+import java.util.List;
+
 import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.utils.Utils;
 
@@ -7,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.common.net.volley.cache.VolleyImageCache;
+import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.DbConfig;
 import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.db.DbUpdateHandler;
@@ -27,6 +30,9 @@ public class CityLifeApp extends Application {
 	//数据库
 	private FinalDb mFinalDb;
 	
+	//用户
+	private User mUser;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -40,6 +46,12 @@ public class CityLifeApp extends Application {
 		//创建数据库
 		mFinalDb = FinalDb.create(this, DbConfig.DB_NAME, DebugConfig.SHOW_DEBUG_MESSAGE, 
 						DbConfig.DB_VERSION, new DbUpdateHandler());
+		
+		//初始化用户信息
+		List<User> userList = mFinalDb.findAllByWhere(User.class, "isLogin=1");
+		if(userList != null && userList.size() > 0) {
+			mUser = userList.get(0);
+		}
 	}
 	
 	/**
@@ -82,4 +94,21 @@ public class CityLifeApp extends Application {
 		requestTag++;
 		return requestTag+"";
 	}
+	
+	/**
+	 * 获取用户信息
+	 * @return
+	 */
+	public User getUser() {
+		return mUser;
+	}
+	
+	/**
+	 * 设置用户信息
+	 * @param user
+	 */
+	public void setUser(User user) {
+		this.mUser = user;
+	}
+	
 }

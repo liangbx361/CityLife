@@ -14,4 +14,10 @@ public interface NetInterface {
 	/***************************** 评论  **********************************************/
 	public static final String METHOD_COMMENT_LIST = "commentList";
 	public static final String METHOD_COMMENT = "comment";
+	
+	/***************************** 登录注册  **********************************************/
+	public static final String METHOD_LOGIN = "login";
+	
+	/***************************** 栏目  **********************************************/
+	public static final String METHOD_CHANNEL = "channel";
 }

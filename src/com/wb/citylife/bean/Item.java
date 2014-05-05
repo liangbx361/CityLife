@@ -34,39 +34,46 @@ public class Item {
 
 	private long id;
 	private String name;
-	private int drawable;
+	private String imageUrl;
 	private ViewHolder holder;
-	
+
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getDrawable() {
-		return drawable;
-	}
-	public void setDrawable(int drawable) {
-		this.drawable = drawable;
-	}	
+
 	public ViewHolder getHolder() {
 		return holder;
 	}
+
 	public void setHolder(ViewHolder holder) {
 		this.holder = holder;
 	}
-	public Item(long id, String name, int drawable) {
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	
+	public Item(long id, String name, String imageUrl) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.drawable = drawable;
+		this.imageUrl = imageUrl;
 	}
-	
-	
+
 }

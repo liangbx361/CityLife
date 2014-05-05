@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wb.citylife.widget.ScaleLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wb.citylife.widget.ScaleLinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:layout_width="106.67dp"
-        android:layout_height="wrap_content" >
+        android:layout_width="wrap_content"
+        android:layout_height="64.44dp"
+        android:layout_marginTop="18.67dp" >
 
-        <ImageView
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/type_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/coupon_icon" />
+            android:scaleType="fitCenter" />
 
         <ImageButton
             android:id="@+id/type_del"
@@ -24,20 +25,19 @@
             android:layout_alignParentTop="true"
             android:layout_alignRight="@+id/type_icon"
             android:background="@android:color/transparent"
-            android:src="@drawable/appitem_del_btn" 
-            android:visibility="gone"/>
-
+            android:src="@drawable/appitem_del_btn"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/type_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10.67dp"
+        android:layout_marginTop="8dp"
         android:maxLines="2"
-        android:minLines="2"
+        android:minLines="1"
         android:text="添加"
         android:textColor="#FF000000"
-        android:textSize="14sp" />
+        android:textSize="13.33sp" />
 
 </com.wb.citylife.widget.ScaleLinearLayout>

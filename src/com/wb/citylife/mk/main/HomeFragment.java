@@ -3,25 +3,11 @@ package com.wb.citylife.mk.main;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.viewpagerindicator.CirclePageIndicator;
-import com.wb.citylife.R;
-import com.wb.citylife.adapter.AdvPagerAdapter;
-import com.wb.citylife.adapter.TypeAdapter;
-import com.wb.citylife.bean.Advertisement;
-import com.wb.citylife.bean.Item;
-import com.wb.citylife.bean.Page;
-import com.wb.citylife.config.ChannelType;
-import com.wb.citylife.dialog.ConfirmDialog;
-import com.wb.citylife.mk.news.NewsListActivity;
-import com.wb.citylife.widget.ScaleLinearLayout;
-import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -30,13 +16,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class HomeFragment extends Fragment implements OnClickListener{
+import com.viewpagerindicator.CirclePageIndicator;
+import com.wb.citylife.R;
+import com.wb.citylife.adapter.AdvPagerAdapter;
+import com.wb.citylife.adapter.ChannelAdapter;
+import com.wb.citylife.adapter.TypeAdapter;
+import com.wb.citylife.bean.Advertisement;
+import com.wb.citylife.bean.Item;
+import com.wb.citylife.bean.db.DbChannel;
+import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.dialog.ConfirmDialog;
+import com.wb.citylife.mk.news.NewsListActivity;
+import com.wb.citylife.widget.GrideViewForScrollView;
+import com.wb.citylife.widget.ScaleLinearLayout;
+import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
+
+public class HomeFragment extends Fragment implements HomeListener,
+	OnItemClickListener{
 	
 	//广告自动播放的时间间隔
 	public static final int ADV_AUTO_MOVE_TIME = 1 * 10 * 1000;
 	
 	private Activity mActivity;
+	private MainListener mainListener;
 	
 	//广告
 	private ViewPager mAdvViewPager;
@@ -46,13 +51,15 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	private Advertisement mAdv;
 	
 	//栏目
-	private PagedDragDropGrid mTypeGrideView;
-	private TypeAdapter mTypeAdapter;
+	private GrideViewForScrollView mTypeGrideView;
+	private ChannelAdapter mChannelAdapter;
+	private List<DbChannel> mChannelList;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity = activity;
+		mainListener = (MainListener)activity;		
 	}
 	
 	@Override
@@ -70,16 +77,15 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);		
 		initView(view);
-		
+		mainListener.setHomeListener(this);
 		advTest();
-		typeTest();
 	}
 	
 	private void initView(View view) {
 		mAdvViewPager = (ViewPager) view.findViewById(R.id.adv_pager);
 		mAdvIndicator = (CirclePageIndicator) view.findViewById(R.id.adv_indicator);
-		mTypeGrideView = (PagedDragDropGrid) view.findViewById(R.id.type_grid);
-		mTypeGrideView.setClickListener(this);		
+		mTypeGrideView = (GrideViewForScrollView) view.findViewById(R.id.type_grid);	
+		mTypeGrideView.setOnItemClickListener(this);
 	}
 	
 	/**
@@ -111,52 +117,74 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			
 		}		
 	}
-
+	
 	@Override
-	public void onClick(View v) {
-		Item item = (Item)v.getTag(); 
-		if((item.getHolder().delBtn.getVisibility() == View.VISIBLE)) {
-			//提示用户是否要删除栏目
-			Dialog dialog = new ConfirmDialog().getDialog(getActivity(), "", "确认要删除"+item.getName()+"吗？", 
-					new DelConfirmListener(item));
-			dialog.setOnDismissListener(new OnDismissListener() {
-				
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					mTypeGrideView.cleanDelState();
-				}
-			});
-			dialog.show();
-		} else {
-			//跳转到栏目中
-			((ScaleLinearLayout) v).clickZoomOut();
-			if(item.getId() != -1) {
-				switch((int)item.getId()) {
-				case ChannelType.CHANNEL_TYPE_NEWS:
-					startActivity(new Intent(getActivity(), NewsListActivity.class));
-					break;
-				}
-			} else {
-				mTypeGrideView.cleanDelState();
+	public void onChannelComplete(List<DbChannel> channelList) {
+		mChannelList = channelList;
+		mChannelAdapter = new ChannelAdapter(mActivity, channelList, true);
+		mTypeGrideView.setAdapter(mChannelAdapter);
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if(position < mChannelList.size()) {
+			DbChannel channel = mChannelList.get(position);
+			switch(channel.type) {
+			case ChannelType.CHANNEL_TYPE_NEWS:
+				startActivity(new Intent(getActivity(), NewsListActivity.class));
+				break;			
 			}
+		} else {
+			//添加栏目模块
 		}
 	}
 	
-	class DelConfirmListener implements DialogInterface.OnClickListener {
-		
-		private Item item;
-		
-		public DelConfirmListener(Item item) {
-			this.item = item;
-		}
-		
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			int index = mTypeAdapter.indexOfItem(0, item);						
-			mTypeAdapter.deleteItem(0, index);
-			mTypeGrideView.notifyDataSetChanged();	
-		}
-	}
+//	@Override
+//	public void onClick(View v) {
+//		Item item = (Item)v.getTag(); 
+//		if((item.getHolder().delBtn.getVisibility() == View.VISIBLE)) {
+//			//提示用户是否要删除栏目
+//			Dialog dialog = new ConfirmDialog().getDialog(getActivity(), "", "确认要删除"+item.getName()+"吗？", 
+//					new DelConfirmListener(item));
+//			dialog.setOnDismissListener(new OnDismissListener() {
+//				
+//				@Override
+//				public void onDismiss(DialogInterface dialog) {
+//					mTypeGrideView.cleanDelState();
+//				}
+//			});
+//			dialog.show();
+//		} else {
+//			//跳转到栏目中
+//			((ScaleLinearLayout) v).clickZoomOut();
+//			if(item.getId() != -1) {
+//				switch((int)item.getId()) {
+//				case ChannelType.CHANNEL_TYPE_NEWS:
+//					startActivity(new Intent(getActivity(), NewsListActivity.class));
+//					break;
+//				}
+//			} else {
+//				mTypeGrideView.cleanDelState();
+//			}
+//		}
+//	}
+//	
+//	class DelConfirmListener implements DialogInterface.OnClickListener {
+//		
+//		private Item item;
+//		
+//		public DelConfirmListener(Item item) {
+//			this.item = item;
+//		}
+//		
+//		@Override
+//		public void onClick(DialogInterface dialog, int which) {
+//			int index = mTypeAdapter.indexOfItem(0, item);						
+//			mTypeAdapter.deleteItem(0, index);
+//			mTypeGrideView.notifyDataSetChanged();	
+//		}
+//	}
 	
 	/************************************************ 测试数据 **********************************************/
 	private void advTest() {
@@ -183,22 +211,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		mAdvAdapter = new AdvPagerAdapter(mActivity, mAdv);
 		mAdvViewPager.setAdapter(mAdvAdapter);
 		mAdvIndicator.setViewPager(mAdvViewPager);
-	}
-	
-	private void typeTest() {
-		Page page1 = new Page();
-		List<Item> items = new ArrayList<Item>();
-		items.add(new Item(1, "资讯", R.drawable.coupon_icon));
-		items.add(new Item(2, "房地产", R.drawable.coupon_icon));
-		items.add(new Item(3, "二手市场", R.drawable.coupon_icon));
-		items.add(new Item(4, "随手拍", R.drawable.coupon_icon));
-		items.add(new Item(5, "投票", R.drawable.coupon_icon));
-		items.add(new Item(-1, "添加", R.drawable.type_add_icon));
-		page1.setItems(items);
-		
-		mTypeAdapter = new TypeAdapter(getActivity(), mTypeGrideView, page1);
-		mTypeGrideView.setAdapter(mTypeAdapter);		
-	}
-	
+	}	
+			
 }
 	

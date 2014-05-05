@@ -6,6 +6,11 @@
     <string name="news_name">最新资讯</string>		
     <string name="detail_name">详情</string>
     <string name="comment_name">评论</string>
+    <string name="login_name">登录</string>
+    <string name="order_channel_name">栏目排序</string>
+    
+    <!-- 栏目  -->
+    <string name="add">添加</string>
     
     <!-- 主页面相关  -->
     <string name="tab_name_home">主页</string>
@@ -23,6 +28,15 @@
     <string name="comment_empty_toast">评论内容不能为空</string>
     <string name="comment_success">发表成功</string>
     <string name="comment_fail">发表不成功，请重试</string>
+    
+    <!-- 用户登录注册  -->
+    <string name="hint_username">请输入手机号</string>
+    <string name="hint_password">请输入密码</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="forget_password">忘记密码?</string>
+    <string name="username_empty_toast">用户名不能为空</string>
+    <string name="password_empty_toast">密码不能为空</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

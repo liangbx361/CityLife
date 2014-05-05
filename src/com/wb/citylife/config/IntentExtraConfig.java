@@ -10,4 +10,6 @@ public interface IntentExtraConfig {
 	/***************************** 资讯详情  **********************************************/
 	public static final String ND_ID = "id";
 	
+	/***************************** 栏目排序  **********************************************/
+	public static final String OC_CHANNEL = "channel";
 }

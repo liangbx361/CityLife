@@ -1,33 +1,184 @@
-package com.wb.citylife.mk.mycenter;
+﻿package com.wb.citylife.mk.mycenter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
+import net.tsz.afinal.FinalDb;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.common.net.volley.VolleyErrorHelper;
+import com.common.widget.ToastHelper;
+import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.Login;
+import com.wb.citylife.bean.db.User;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
+import com.wb.citylife.db.DbHelper;
+import com.wb.citylife.task.LoginRequest;
 
-/**
- * 登录模块
- * @author liangbx
- *
- */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements Listener<Login>, ErrorListener,
+	OnClickListener{
+	
+	private EditText userphoneEt;
+	private EditText passwordEt;
+	private Button loginBtn;
+	private Button registerBtn;
+	private TextView forgetPasswordTv;
+	
+	private LoginRequest mLoginRequest;
+	private Login mLogin;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);	
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+		
+		getIntentData();
+		initView();				
 	}
-	
+			
 	@Override
 	public void getIntentData() {
 		
 	}
-
+	
 	@Override
 	public void initView() {
+		userphoneEt = (EditText) findViewById(R.id.userphone);
+		passwordEt = (EditText) findViewById(R.id.password);
+		loginBtn = (Button) findViewById(R.id.login);
+		registerBtn = (Button) findViewById(R.id.register);
+		forgetPasswordTv = (TextView) findViewById(R.id.forget_password);
 		
+		loginBtn.setOnClickListener(this);
+		registerBtn.setOnClickListener(this);
+		forgetPasswordTv.setOnClickListener(this);
 	}
-
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		//此处设置菜单		
+		setDisplayHomeAsUpEnabled(true);
+		setDisplayShowHomeEnabled(false);
+		
+		setIndeterminateBarVisibility(true);		
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	/**
+	 * 菜单点击处理
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {			
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.login:
+			login();
+			break;
+			
+		case R.id.register:
+			
+			break;
+			
+		case R.id.forget_password:
+			
+			break;
+		}
+	}
+	
+	private void login() {
+		String userPhone = userphoneEt.getText().toString();
+		String password = passwordEt.getText().toString();
+		
+		if(userPhone == null || userPhone.equals("")) {
+			ToastHelper.showToastInBottom(this, R.string.username_empty_toast);
+			return;
+		}
+		
+		if(password == null || password.equals("")) {
+			ToastHelper.showToastInBottom(this, R.string.password_empty_toast);
+			return;
+		}
+		
+		requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(userPhone, password), this, this);
+	}
+	
+	/**
+	 * 获取请求参数
+	 * @return
+	 */
+	private Map<String, String> getLoginRequestParams(String phone, String pwd) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userPhone", userphoneEt.getText().toString());
+		return params;
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestLogin(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Login> listenre, ErrorListener errorListener) {			
+		if(mLoginRequest != null) {
+			mLoginRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mLoginRequest = new LoginRequest(method, url, params, listenre, errorListener);
+		startRequest(mLoginRequest);		
+	}
+	
+	/**
+	 * 网络请求错误处理
+	 *
+	 */
+	@Override
+	public void onErrorResponse(VolleyError error) {		
+		setIndeterminateBarVisibility(false);
+		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+	}
+	
+	/**
+	 * 请求完成，处理UI更新
+	 */
+	@Override
+	public void onResponse(Login response) {		
+		setIndeterminateBarVisibility(false);
+		mLogin = response;
+		if(mLogin.respCode == RespCode.SUCCESS) {
+			//存储到数据库中，并确保此时数据库中的所有用户为登出状态
+			User user = new User();
+			user.userId = mLogin.userId;
+			user.avatarUrl = mLogin.avatarUrl;
+			user.nickname = mLogin.nickname;
+			user.accessToken = mLogin.accessToken;
+			user.isLogin = 1;
+			DbHelper.saveUser(user);
+			CityLifeApp.getInstance().setUser(user);
+			finish();
+		} else {
+			ToastHelper.showToastInBottom(this, mLogin.respMsg);
+		}
+	}	
 }

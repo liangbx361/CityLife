@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +44,6 @@ import com.wb.citylife.bean.NewsList;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.task.NewsListRequest;
-import com.wb.citylife.widget.ViewPageForScrollView;
 
 public class NewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener,
 	OnItemClickListener{
@@ -68,7 +68,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private int loadState = BOTTOM_STATE_LOAD_IDLE;
 	
 	//广告
-	private ViewPageForScrollView mAdvViewPager;
+	private ViewPager mAdvViewPager;
 	private AdvPagerAdapter mAdvAdapter;
 	private CirclePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
@@ -130,7 +130,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		
 		//广告视图添加到List头部
 		View advView = LayoutInflater.from(this).inflate(R.layout.adv_layout, null);
-		mAdvViewPager = (ViewPageForScrollView) advView.findViewById(R.id.adv_pager);
+		mAdvViewPager = (ViewPager) advView.findViewById(R.id.adv_pager);
 		mAdvIndicator = (CirclePageIndicator) advView.findViewById(R.id.adv_indicator);
 		mNewsListView.addHeaderView(advView, null, false);		
 		
