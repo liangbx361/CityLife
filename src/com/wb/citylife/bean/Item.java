@@ -33,9 +33,18 @@ import com.wb.citylife.adapter.TypeAdapter.ViewHolder;
 public class Item {
 
 	private long id;
+	private String channelId;
 	private String name;
 	private String imageUrl;
 	private ViewHolder holder;
+	
+	public Item(long id, String channelId, String name, String imageUrl) {
+		super();
+		this.id = id;
+		this.channelId = channelId;
+		this.name = name;
+		this.imageUrl = imageUrl;		
+	}
 
 	public long getId() {
 		return id;
@@ -69,11 +78,12 @@ public class Item {
 		this.imageUrl = imageUrl;
 	}
 	
-	public Item(long id, String name, String imageUrl) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.imageUrl = imageUrl;
+	public String getChannelId() {
+		return channelId;
 	}
 
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
+	
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/box_option_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#fc433f">
+
+        <LinearLayout
+            android:id="@+id/box_option_parent_linearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/box_option_batch_manager"
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="20.0dip"
+                android:paddingTop="20.0dip" >
+
+                <ImageView
+                    android:id="@+id/box_option_batch_manager_image"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/box_option_window_height"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/box_option_batch_manager" />
+
+                <TextView
+                    android:id="@+id/box_option_batch_manager_text"
+                    style="@style/box_option_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/box_option_window_margin"
+                    android:text="@string/box_option_batch_manager" />
+            </LinearLayout>            
+
+            <LinearLayout
+                android:id="@+id/box_option_setlauncher"
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="20.0dip"
+                android:paddingTop="20.0dip" >
+
+                <ImageView
+                    android:id="@+id/box_option_setlauncher_image"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/box_option_window_height"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/box_option_setlauncher" />
+
+                <TextView
+                    android:id="@+id/box_option_setlauncher_text"
+                    style="@style/box_option_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/box_option_window_margin"
+                    android:text="@string/box_option_setlauncher" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box_option_delete_item"
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="20.0dip"
+                android:paddingTop="20.0dip" >
+
+                <ImageView
+                    android:id="@+id/box_option_delete_image"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/box_option_window_height"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/box_option_delete_item" />
+
+                <TextView
+                    android:id="@+id/box_option_deleteitem_text"
+                    style="@style/box_option_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/box_option_window_margin"
+                    android:text="@string/box_option_delete_item" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

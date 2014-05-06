@@ -16,6 +16,7 @@ import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Item;
 import com.wb.citylife.bean.Page;
+import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
 import com.wb.citylife.widget.dragdropgrid.PagedDragDropGridAdapter;
 
@@ -43,7 +44,7 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 		return itemsInPage(page).size();
 	}
 	
-	private List<Item> itemsInPage(int page) {
+	public List<Item> itemsInPage(int page) {
 		if (pages.size() > page) {
 			return pages.get(page).getItems();
 		}	
@@ -61,7 +62,8 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 		
 		Item item = getItem(page, index);
 		item.setHolder(holder);
-		holder.icon.setImageUrl(item.getImageUrl(), CityLifeApp.getInstance().getImageLoader());
+		holder.icon.setImageUrl(NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + item.getImageUrl(), 
+				CityLifeApp.getInstance().getImageLoader());
 		holder.name.setText(item.getName());
 		
 		return view;

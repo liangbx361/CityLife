@@ -38,6 +38,11 @@
     <string name="username_empty_toast">用户名不能为空</string>
     <string name="password_empty_toast">密码不能为空</string>
     
+    <!-- 对话框  -->
+    <string name="box_option_batch_manager">栏目排序</string>
+    <string name="box_option_setlauncher">发送至桌面</string>
+    <string name="box_option_delete_item">删除栏目</string>
+    
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>
     <string name="next_button_label">前进</string>

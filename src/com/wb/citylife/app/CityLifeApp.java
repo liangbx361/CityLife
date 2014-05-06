@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.common.net.volley.cache.VolleyImageCache;
+import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.DbConfig;
 import com.wb.citylife.config.DebugConfig;
@@ -32,6 +33,9 @@ public class CityLifeApp extends Application {
 	
 	//用户
 	private User mUser;
+	
+	//栏目列表
+	private List<DbChannel> mChannels;
 	
 	@Override
 	public void onCreate() {
@@ -110,5 +114,14 @@ public class CityLifeApp extends Application {
 	public void setUser(User user) {
 		this.mUser = user;
 	}
+
+	public List<DbChannel> getChannels() {
+		return mChannels;
+	}
+
+	public void setChannels(List<DbChannel> channels) {
+		this.mChannels = channels;
+	}
+	
 	
 }

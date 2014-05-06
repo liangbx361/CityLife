@@ -1,6 +1,6 @@
 package com.wb.citylife.adapter;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -16,18 +16,22 @@ import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.db.DbHelper;
 
 public class ChannelAdapter extends BaseAdapter {
 
 	private Context mContext;
 	private List<DbChannel> mChannelList;
+	private LinkedList<DbChannel> mShowList;
 
 	public ChannelAdapter(Context context, List<DbChannel> channelList, boolean isAdd) {
 		mContext = context;
-		mChannelList = new ArrayList<DbChannel>();
-		for(DbChannel channel : channelList) {
+		mChannelList = channelList;
+		mShowList = new LinkedList<DbChannel>();
+		
+		for(DbChannel channel : mChannelList) {
 			if(channel.isAdd) {
-				mChannelList.add(channel);
+				mShowList.add(channel);
 			}
 		}
 		
@@ -35,18 +39,18 @@ public class ChannelAdapter extends BaseAdapter {
 			DbChannel addChannel = new DbChannel();
 			addChannel.type = ChannelType.CHANNEL_TYPE_ADD;
 			addChannel.name = mContext.getString(R.string.add);
-			mChannelList.add(addChannel);
+			mShowList.add(addChannel);
 		}
 	}
 
 	@Override
 	public int getCount() {
-		return mChannelList.size();
+		return mShowList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mChannelList.get(position);
+		return mShowList.get(position);
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class ChannelAdapter extends BaseAdapter {
 			holder = (ViewHolder) view.getTag();
 		}
 		
-		DbChannel channel = mChannelList.get(position);
+		DbChannel channel = mShowList.get(position);
 		if(channel.type != ChannelType.CHANNEL_TYPE_ADD) {
 			holder.icon.setImageUrl(NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + channel.getImageUrl(), 
 					CityLifeApp.getInstance().getImageLoader());
@@ -83,7 +87,43 @@ public class ChannelAdapter extends BaseAdapter {
 		
 		return view;
 	}
-
+	
+	/**
+	 * 增加栏目
+	 * @param channel
+	 */
+	public void addChannel(DbChannel channel) {
+		mShowList.add(mShowList.size()-2, channel);
+		notifyDataSetChanged();
+	}
+	
+	/**
+	 * 删除栏目
+	 * @param position
+	 */
+	public void delChannel(int position) {
+		mShowList.get(position).setAdd(false);
+		DbHelper.orderChannel(mChannelList);		
+		
+		mShowList.remove(position);
+		notifyDataSetChanged();				
+	}
+	
+	/**
+	 * 根据显示位置获取在真实列表中的栏目
+	 * @param position
+	 * @return
+	 */
+	public DbChannel getRealChannel(int position) {
+		DbChannel showChannel = mShowList.get(position);
+		for(DbChannel channel : mChannelList) {
+			if(showChannel.channelId.equals(channel.channelId)) {
+				return channel;				
+			}
+		}
+		return null;
+	}
+	
 	public class ViewHolder {
 		public NetworkImageView icon;
 		public TextView name;

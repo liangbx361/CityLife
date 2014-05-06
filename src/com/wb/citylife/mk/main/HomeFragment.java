@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -18,24 +18,24 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
-import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.adapter.AdvPagerAdapter;
 import com.wb.citylife.adapter.ChannelAdapter;
-import com.wb.citylife.adapter.TypeAdapter;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Advertisement;
-import com.wb.citylife.bean.Item;
 import com.wb.citylife.bean.db.DbChannel;
+import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
-import com.wb.citylife.dialog.ConfirmDialog;
+import com.wb.citylife.dialog.BoxDialog;
+import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
-import com.wb.citylife.widget.ScaleLinearLayout;
-import com.wb.citylife.widget.dragdropgrid.PagedDragDropGrid;
 
 public class HomeFragment extends Fragment implements HomeListener,
-	OnItemClickListener{
+	OnItemClickListener, OnItemLongClickListener, OnClickListener{
 	
 	//广告自动播放的时间间隔
 	public static final int ADV_AUTO_MOVE_TIME = 1 * 10 * 1000;
@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 	//广告
 	private ViewPager mAdvViewPager;
 	private AdvPagerAdapter mAdvAdapter;
-	private CirclePageIndicator mAdvIndicator;
+	private LinePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
 	private Advertisement mAdv;
 	
@@ -54,6 +54,11 @@ public class HomeFragment extends Fragment implements HomeListener,
 	private GrideViewForScrollView mTypeGrideView;
 	private ChannelAdapter mChannelAdapter;
 	private List<DbChannel> mChannelList;
+	
+	//编辑的栏目位置
+	private int channelPosition;
+	
+	private BoxDialog optionDialog;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -65,6 +70,10 @@ public class HomeFragment extends Fragment implements HomeListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		IntentFilter intentFilter = new IntentFilter();
+	    intentFilter.addAction(ActionConfig.ACTION_UPDATE_CHANNEL);
+	    mActivity.registerReceiver(mReceiver, intentFilter); 
 	}
 	
 	@Override
@@ -83,63 +92,82 @@ public class HomeFragment extends Fragment implements HomeListener,
 	
 	private void initView(View view) {
 		mAdvViewPager = (ViewPager) view.findViewById(R.id.adv_pager);
-		mAdvIndicator = (CirclePageIndicator) view.findViewById(R.id.adv_indicator);
+		mAdvIndicator = (LinePageIndicator) view.findViewById(R.id.adv_indicator);
 		mTypeGrideView = (GrideViewForScrollView) view.findViewById(R.id.type_grid);	
 		mTypeGrideView.setOnItemClickListener(this);
-	}
-	
-	/**
-	 * 广告播放时间计时器
-	 * @author liangbx
-	 *
-	 */
-	class AdvTimeCount extends CountDownTimer {
-
-		public AdvTimeCount(long millisInFuture, long countDownInterval) {
-			super(millisInFuture, countDownInterval);
-		}
-
-		@Override
-		public void onFinish() {
-			int currentItem = mAdvViewPager.getCurrentItem();
-			if(currentItem < mAdvViewPager.getChildCount() - 1) {
-				currentItem++;
-			} else {
-				currentItem = 0;
-			}
-			mAdvIndicator.setCurrentItem(currentItem);
-			advAdvTimeCount.cancel();
-			advAdvTimeCount.start();
-		}
-
-		@Override
-		public void onTick(long millisUntilFinished) {
-			
-		}		
+		mTypeGrideView.setOnItemLongClickListener(this);
+		
+		optionDialog = new BoxDialog(mActivity, R.style.popupStyle);
+		optionDialog.setListener(this);
 	}
 	
 	@Override
-	public void onChannelComplete(List<DbChannel> channelList) {
+	public void onLoadLocalChannel(List<DbChannel> channelList) {
 		mChannelList = channelList;
 		mChannelAdapter = new ChannelAdapter(mActivity, channelList, true);
 		mTypeGrideView.setAdapter(mChannelAdapter);
 	}
 	
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		if(position < mChannelList.size()) {
-			DbChannel channel = mChannelList.get(position);
-			switch(channel.type) {
-			case ChannelType.CHANNEL_TYPE_NEWS:
-				startActivity(new Intent(getActivity(), NewsListActivity.class));
-				break;			
-			}
+	public void onChannelComplete(List<DbChannel> channelList) {
+		if(mChannelList == null) {
+			mChannelList = channelList;
+			mChannelAdapter = new ChannelAdapter(mActivity, channelList, true);
+			mTypeGrideView.setAdapter(mChannelAdapter);
 		} else {
-			//添加栏目模块
+			mChannelAdapter.notifyDataSetChanged();
 		}
 	}
 	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		DbChannel channel = (DbChannel) mChannelAdapter.getItem(position);
+		switch(channel.type) {
+		case ChannelType.CHANNEL_TYPE_NEWS:
+			startActivity(new Intent(getActivity(), NewsListActivity.class));
+			break;			
+		}		
+
+	}
+	
+	/**
+	 * 长按栏目弹出菜选项
+	 */
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
+		DbChannel channel = (DbChannel) mChannelAdapter.getItem(position);
+		if(channel.getType() != ChannelType.CHANNEL_TYPE_ADD) {
+			channelPosition = position;			
+			optionDialog.show();
+		}
+		return true;
+	}	
+	
+	@Override
+	public void onClick(View v) {
+		optionDialog.dismiss();
+		
+		switch(v.getId()) {		
+		case R.id.box_option_batch_manager:
+			//栏目排序
+			CityLifeApp.getInstance().setChannels(mChannelList);
+			Intent intent = new Intent(mActivity, OrderChannelActivity.class);
+			mActivity.startActivity(intent);
+			break;
+			
+		case R.id.box_option_setlauncher:
+			//发送至桌面
+			break;
+			
+		case R.id.box_option_delete_item:
+			//删除栏目
+			mChannelAdapter.delChannel(channelPosition);			
+			break;
+		}
+	}
+		
 //	@Override
 //	public void onClick(View v) {
 //		Item item = (Item)v.getTag(); 
@@ -186,6 +214,55 @@ public class HomeFragment extends Fragment implements HomeListener,
 //		}
 //	}
 	
+	/**
+	 * 广告播放时间计时器
+	 * @author liangbx
+	 *
+	 */
+	class AdvTimeCount extends CountDownTimer {
+
+		public AdvTimeCount(long millisInFuture, long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+		}
+
+		@Override
+		public void onFinish() {
+			int currentItem = mAdvViewPager.getCurrentItem();
+			if(currentItem < mAdvViewPager.getChildCount() - 1) {
+				currentItem++;
+			} else {
+				currentItem = 0;
+			}
+			mAdvIndicator.setCurrentItem(currentItem);
+			advAdvTimeCount.cancel();
+			advAdvTimeCount.start();
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			
+		}		
+	}
+	
+	 BroadcastReceiver mReceiver = new BroadcastReceiver() {
+			
+		 @Override
+		 public void onReceive(Context context, Intent intent) {
+		    if(intent.getAction().equals(ActionConfig.ACTION_UPDATE_CHANNEL)) {
+		    	mChannelList = CityLifeApp.getInstance().getChannels();
+		    	mChannelAdapter = new ChannelAdapter(mActivity, mChannelList, true);
+				mTypeGrideView.setAdapter(mChannelAdapter);
+				CityLifeApp.getInstance().setChannels(null);
+		    } 
+		}
+	};
+	
+	@Override
+	public void onDestroy() {
+		mActivity.unregisterReceiver(mReceiver);
+		super.onDestroy();
+	}
+	
 	/************************************************ 测试数据 **********************************************/
 	private void advTest() {
 		mAdv = new Advertisement();
@@ -211,7 +288,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mAdvAdapter = new AdvPagerAdapter(mActivity, mAdv);
 		mAdvViewPager.setAdapter(mAdvAdapter);
 		mAdvIndicator.setViewPager(mAdvViewPager);
-	}	
+	}
 			
 }
 	

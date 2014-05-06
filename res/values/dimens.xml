@@ -27,4 +27,9 @@
     <dimen name="news_list_tag_text_size">11.0sp</dimen>    
     <dimen name="news_title_text_size">20.0sp</dimen>
     <dimen name="news_content_text_size">18.0sp</dimen>
+    
+    <!-- 对话框架大小  -->
+    <dimen name="box_option_window_height">40.0dip</dimen>
+    <dimen name="box_item_title_textsize">13.0sp</dimen>
+    <dimen name="box_option_window_margin">15.0dip</dimen>
 </resources>

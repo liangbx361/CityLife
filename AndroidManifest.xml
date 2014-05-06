@@ -62,7 +62,7 @@
         
         <!-- 栏目排序  -->
         <activity
-            android:name="com.wb.citylife.mk.main.OrderChannel"
+            android:name="com.wb.citylife.mk.channel.OrderChannelActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/order_channel_name"
             android:screenOrientation="portrait"

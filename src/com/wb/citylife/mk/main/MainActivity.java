@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//此处设置菜单		
-		setDisplayHomeAsUpEnabled(true);
+		setDisplayHomeAsUpEnabled(false);
 		setDisplayShowHomeEnabled(true);
 		
 		requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 	public void setHomeListener(HomeListener listener) {
 		mHomeListener = listener;
 		if(mChannelList != null && mChannelList.size() != 0) {
-			mHomeListener.onChannelComplete(mChannelList);
+			mHomeListener.onLoadLocalChannel(mChannelList);
 		}
 	}	
 

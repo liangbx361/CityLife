@@ -95,5 +95,4 @@ public class DbChannel {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-
 }

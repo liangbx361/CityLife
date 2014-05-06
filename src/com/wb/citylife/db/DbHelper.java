@@ -1,11 +1,14 @@
 package com.wb.citylife.db;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.tsz.afinal.FinalDb;
 
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.User;
+import com.wb.citylife.mk.channel.ChannelComparator;
 
 public class DbHelper {
 	
@@ -34,4 +37,18 @@ public class DbHelper {
 			finalDb.save(user);
 		}
 	}
+	
+	/**
+	 * 对栏目进行排序
+	 * @param list
+	 */
+	public static void orderChannel(List<DbChannel> list) {
+		FinalDb finalDb = CityLifeApp.getInstance().getDb();
+		Collections.sort(list, new ChannelComparator());
+		for(int i=0; i<list.size(); i++) {
+			DbChannel channel = list.get(i);
+			channel.weight = i;			
+			finalDb.update(channel, "channelId='" + channel.channelId + "'" );
+		}
+	}		
 }
