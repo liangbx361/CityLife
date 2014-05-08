@@ -6,22 +6,25 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.support.v4.preference.PreferenceFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.wb.citylife.R;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.db.User;
 import com.wb.citylife.mk.mycenter.LoginActivity;
 
-public class MyCenterFragment extends PreferenceFragment implements OnPreferenceClickListener {
+public class MyCenterFragment extends PreferenceFragment implements OnPreferenceClickListener,
+	MyCenterListener{
 	
 	private Activity mActivity;
 	private Preference loginPf;	
+	private MainListener mainListener;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity = activity;
+		mainListener = (MainListener) activity;
+		mainListener.setMyCenter(this);
 	}
 	
 	@Override
@@ -40,8 +43,19 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if(preference.getKey().equals(getResources().getString(R.string.pf_login))) {
-			startActivity(new Intent(mActivity, LoginActivity.class));
+			startActivityForResult(new Intent(mActivity, LoginActivity.class), 0);
 		}
 		return false;
+	}
+
+	@Override
+	public void onLogin() {
+//		View view = loginPf.getView(null, null);
+		User user = CityLifeApp.getInstance().getUser(); 
+		if(user.getNickname().equals("")) {
+			loginPf.setTitle(user.getUserphone());
+		} else {
+			loginPf.setTitle(CityLifeApp.getInstance().getUser().getNickname());
+		}		
 	}
 }

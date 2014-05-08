@@ -259,7 +259,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			position -= mNewsListView.getHeaderViewsCount();
 			NewsItem newsItem = mNewsList.datas.get(position);
 			Intent intent = new Intent(this, NewsDetailActivity.class);
-			intent.putExtra(IntentExtraConfig.ND_ID, newsItem.id);
+			intent.putExtra(IntentExtraConfig.DETAIL_ID, newsItem.id);
 			startActivity(intent);
 		} else {
 			//底部点击
@@ -343,8 +343,8 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		item.linkUrl = "";
 		mAdv.resources.add(item);
 		
-		mAdvAdapter = new AdvPagerAdapter(this, mAdv);
-		mAdvViewPager.setAdapter(mAdvAdapter);
-		mAdvIndicator.setViewPager(mAdvViewPager);
+//		mAdvAdapter = new AdvPagerAdapter(this, mAdv);
+//		mAdvViewPager.setAdapter(mAdvAdapter);
+//		mAdvIndicator.setViewPager(mAdvViewPager);
 	}	
 }

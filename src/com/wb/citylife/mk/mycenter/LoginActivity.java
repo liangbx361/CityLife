@@ -3,7 +3,6 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import net.tsz.afinal.FinalDb;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +26,7 @@ import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.db.DbHelper;
 import com.wb.citylife.task.LoginRequest;
 
@@ -41,6 +41,8 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 	
 	private LoginRequest mLoginRequest;
 	private Login mLogin;
+	
+	private String userphone;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,9 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		}
 	}
 	
+	/**
+	 * 用户登录处理
+	 */
 	private void login() {
 		String userPhone = userphoneEt.getText().toString();
 		String password = passwordEt.getText().toString();
@@ -118,6 +123,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			return;
 		}
 		
+		this.userphone = userPhone;
 		requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(userPhone, password), this, this);
 	}
 	
@@ -127,7 +133,8 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 	 */
 	private Map<String, String> getLoginRequestParams(String phone, String pwd) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("userPhone", userphoneEt.getText().toString());
+		params.put("userPhone", phone);
+		params.put("password", pwd);
 		return params;
 	}
 	
@@ -173,9 +180,11 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			user.avatarUrl = mLogin.avatarUrl;
 			user.nickname = mLogin.nickname;
 			user.accessToken = mLogin.accessToken;
+			user.userphone = userphone;
 			user.isLogin = 1;
 			DbHelper.saveUser(user);
 			CityLifeApp.getInstance().setUser(user);
+			setResult(ResultCode.RESULT_LOGIN);
 			finish();
 		} else {
 			ToastHelper.showToastInBottom(this, mLogin.respMsg);

@@ -48,7 +48,7 @@ public class DbHelper {
 		for(int i=0; i<list.size(); i++) {
 			DbChannel channel = list.get(i);
 			channel.weight = i;			
-			finalDb.update(channel, "channelId='" + channel.channelId + "'" );
+			finalDb.update(channel, "channelId='" + channel.channelId + "'");
 		}
 	}		
 }

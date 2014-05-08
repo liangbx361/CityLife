@@ -13,21 +13,20 @@ import android.view.ViewGroup;
 import com.android.volley.toolbox.NetworkImageView;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
-import com.wb.citylife.bean.Advertisement;
-import com.wb.citylife.bean.Advertisement.AdvItem;
+import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.mk.news.NewsDetailActivity;
 
 public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 	private int mCount;
-	private Advertisement mAvdData;
+	private List<DbScrollNews> scrollNewsList;
 	private List<View> mViewList = new ArrayList<View>();
 	private Activity mActivity;
 	
-	public AdvPagerAdapter(Activity activity, Advertisement advData) {		
+	public AdvPagerAdapter(Activity activity, List<DbScrollNews> scrollNewsList) {		
 		mActivity = activity;
-		mAvdData = advData;
-		mCount = mAvdData.resources.size();
+		this.scrollNewsList = scrollNewsList;
+		mCount = scrollNewsList.size();
 		for(int i=0; i<mCount; i++) {
 			View view = mActivity.getLayoutInflater().inflate(R.layout.adv_item, null);
 			view.setTag(i+"");
@@ -62,7 +61,7 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
     public Object instantiateItem(ViewGroup container, int position) { 
 		View view = mViewList.get(position);
 		container.addView(view);		
-		AdvItem item = mAvdData.resources.get(position);
+		DbScrollNews item = scrollNewsList.get(position);
 		NetworkImageView imageView = (NetworkImageView) view;
 		imageView.setDefaultImageResId(R.drawable.base_list_adv_default_icon);
 		if(item.imageUrl != null && !item.imageUrl.equals("")) {
@@ -76,10 +75,10 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		int index = Integer.parseInt(v.getTag().toString());
-		AdvItem advItem = mAvdData.resources.get(index);
+		DbScrollNews item = scrollNewsList.get(index);
 		//点击跳转新闻详情页
 		Intent intent = new Intent(mActivity, NewsDetailActivity.class);
-		intent.putExtra(IntentExtraConfig.ND_ID, advItem.id);
+		intent.putExtra(IntentExtraConfig.DETAIL_ID, item.newsId);
 		mActivity.startActivity(intent);
 	}
 		 

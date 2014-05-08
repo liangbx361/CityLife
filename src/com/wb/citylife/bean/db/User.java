@@ -19,6 +19,8 @@ public class User {
 	
 	public String accessToken;
 	
+	public String userphone;
+	
 	/**
 	 * 登录状态 0：为登出 1：为登录
 	 */
@@ -71,6 +73,16 @@ public class User {
 	public void setIsLogin(int isLogin) {
 		this.isLogin = isLogin;
 	}
+
+	public String getUserphone() {
+		return userphone;
+	}
+
+	public void setUserphone(String userphone) {
+		this.userphone = userphone;
+	}
+	
+	
 	
 	
 }

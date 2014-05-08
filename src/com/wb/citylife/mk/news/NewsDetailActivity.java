@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +20,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.NetworkImageView;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
-import com.tencent.mm.sdk.openapi.GetMessageFromWX.Resp;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.Collect;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.NewsDetail;
@@ -33,15 +34,17 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
 import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.task.NewsDetailRequest;
 import com.wb.citylife.widget.ListViewForScrollView;
 
 public class NewsDetailActivity extends BaseActivity implements Listener<NewsDetail>, ErrorListener,
-	OnClickListener{
+	OnClickListener, OnMenuItemClickListener{
 				
 	private String id;
+	private int type;
 	
 	//新闻详情
 	private TextView titleTv;
@@ -64,6 +67,10 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	private CommentRequest mCommentRequest;
 	private Comment mComment;
 	
+	//收藏
+	private CollectRequest mCollectRequest;
+	private Collect mCollect;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,7 +82,8 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			
 	@Override
 	public void getIntentData() {
-		id = getIntent().getStringExtra("id");
+		id = getIntent().getStringExtra(IntentExtraConfig.DETAIL_ID);
+		type = getIntent().getIntExtra(IntentExtraConfig.DETAIL_TYPE, -1);
 	}
 	
 	@Override
@@ -97,6 +105,10 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		setDisplayShowHomeEnabled(false);
 		setIndeterminateBarVisibility(true);
 		
+		// 此处设置ActionBar的菜单按钮
+		setOverflowMenu(R.menu.browse_content_menu, R.drawable.actionbar_overflow_icon, this);
+		
+		//网络请求
 		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo();
 		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
@@ -111,6 +123,23 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	public boolean onOptionsItemSelected(MenuItem item) {			
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	public boolean onMenuItemClick(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.share:
+			break;
+			
+		case R.id.collect:
+			if(CityLifeApp.getInstance().checkLogin()) {
+				requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(), new CollectListener(), this);
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+			}
+			break;
+		}
+		return false;
+	}
 		
 	/**
 	 * 获取请求参数
@@ -118,7 +147,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 */
 	private Map<String, String> getNewsDetailRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put(IntentExtraConfig.ND_ID, id);		
+		params.put(IntentExtraConfig.DETAIL_ID, id);		
 		return params;
 	}
 	
@@ -234,7 +263,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	}
 	
 	/**
-	 * 执行任务请求
+	 * 执行评论任务请求
 	 * @param method
 	 * @param url
 	 * @param params
@@ -269,4 +298,53 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		}
 		
 	}	
+	
+	/**
+	 * 获取收藏请求参数
+	 * @return
+	 */
+	private Map<String, String> getCollectRequestParams() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("option", "0");
+		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
+		params.put("id", id);
+		params.put("type", type+"");
+		return params;
+	}
+	
+	/**
+	 * 执行收藏任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestCollect(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Collect> listenre, ErrorListener errorListener) {			
+		if(mCollectRequest != null) {
+			mCollectRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mCollectRequest = new CollectRequest(method, url, params, listenre, errorListener);
+		startRequest(mCollectRequest);		
+	}
+	
+	/**
+	 * 收藏的请求处理
+	 * @author liangbx
+	 *
+	 */
+	class CollectListener implements Listener<Collect> {
+
+		@Override
+		public void onResponse(Collect collect) {
+			if(collect.respCode == RespCode.SUCCESS) {
+				ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.collect_success);
+			} else {
+				ToastHelper.showToastInBottom(NewsDetailActivity.this, collect.respMsg);
+			}
+		}
+		
+	}
 }

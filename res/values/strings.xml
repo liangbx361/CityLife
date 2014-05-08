@@ -37,11 +37,17 @@
     <string name="forget_password">忘记密码?</string>
     <string name="username_empty_toast">用户名不能为空</string>
     <string name="password_empty_toast">密码不能为空</string>
+    <string name="need_login_toast">您需要先登录才能使用收藏哦~</string>
     
     <!-- 对话框  -->
     <string name="box_option_batch_manager">栏目排序</string>
     <string name="box_option_setlauncher">发送至桌面</string>
     <string name="box_option_delete_item">删除栏目</string>
+    
+    <!-- 分享、收藏 -->
+    <string name="share">分享</string>
+    <string name="collect">收藏</string>
+    <string name="collect_success">收藏成功</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

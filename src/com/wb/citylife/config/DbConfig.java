@@ -34,4 +34,9 @@ public interface DbConfig {
 	 * 栏目
 	 */
 	public static final String TN_CHANNEL = "channel";	
+	
+	/**
+	 * 滚动新闻
+	 */
+	public static final String TN_SCROLL_NEWS = "scroll_news";
 }

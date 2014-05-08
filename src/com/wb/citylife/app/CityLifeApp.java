@@ -114,14 +114,30 @@ public class CityLifeApp extends Application {
 	public void setUser(User user) {
 		this.mUser = user;
 	}
-
+	
+	/**
+	 * 获取栏目列表
+	 * @return
+	 */
 	public List<DbChannel> getChannels() {
 		return mChannels;
 	}
-
+	
+	/**
+	 * 设置栏目列表
+	 * @param channels
+	 */
 	public void setChannels(List<DbChannel> channels) {
 		this.mChannels = channels;
 	}
 	
-	
+	/**
+	 * 判断用户是否登录
+	 * @return
+	 */
+	public boolean checkLogin() {
+		if(mUser != null && mUser.isLogin > 0) return true;
+		else return false;
+			
+	}
 }

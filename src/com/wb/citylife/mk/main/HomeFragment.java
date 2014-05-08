@@ -27,6 +27,7 @@ import com.wb.citylife.adapter.ChannelAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.db.DbChannel;
+import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.dialog.BoxDialog;
@@ -48,7 +49,8 @@ public class HomeFragment extends Fragment implements HomeListener,
 	private AdvPagerAdapter mAdvAdapter;
 	private LinePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
-	private Advertisement mAdv;
+	private Advertisement mAdv;	
+	private List<DbScrollNews> scrollNewsList;
 	
 	//栏目
 	private GrideViewForScrollView mTypeGrideView;
@@ -87,7 +89,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 		super.onViewCreated(view, savedInstanceState);		
 		initView(view);
 		mainListener.setHomeListener(this);
-		advTest();
+//		advTest();
 	}
 	
 	private void initView(View view) {
@@ -109,6 +111,14 @@ public class HomeFragment extends Fragment implements HomeListener,
 	}
 	
 	@Override
+	public void onLoadLocalScrollNews(List<DbScrollNews> scrollNews) {
+		scrollNewsList = scrollNews;
+		mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
+		mAdvViewPager.setAdapter(mAdvAdapter);
+		mAdvIndicator.setViewPager(mAdvViewPager);
+	}
+	
+	@Override
 	public void onChannelComplete(List<DbChannel> channelList) {
 		if(mChannelList == null) {
 			mChannelList = channelList;
@@ -116,6 +126,18 @@ public class HomeFragment extends Fragment implements HomeListener,
 			mTypeGrideView.setAdapter(mChannelAdapter);
 		} else {
 			mChannelAdapter.notifyDataSetChanged();
+		}
+	}
+	
+	@Override
+	public void onScrollNewsCommplete(List<DbScrollNews> scrollNews) {
+		if(scrollNewsList == null) {
+			scrollNewsList = scrollNews;
+			mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
+			mAdvViewPager.setAdapter(mAdvAdapter);
+			mAdvIndicator.setViewPager(mAdvViewPager);
+		} else {
+			mAdvAdapter.notifyDataSetChanged();
 		}
 	}
 	
@@ -264,31 +286,31 @@ public class HomeFragment extends Fragment implements HomeListener,
 	}
 	
 	/************************************************ 测试数据 **********************************************/
-	private void advTest() {
-		mAdv = new Advertisement();
-		mAdv.respCode = 0;
-		mAdv.respMsg = "ok";
-		mAdv.totalCount = 2;
-		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
-		
-		Advertisement.AdvItem item  = mAdv.new AdvItem();
-		item.id = "1";
-		item.imageUrl = "http://pic27.nipic.com/20130313/1628220_145734522153_2.jpg";
-		item.title = "舞动青春";
-		item.linkUrl = "";
-		mAdv.resources.add(item);
-		
-		item  = mAdv.new AdvItem();
-		item.id = "2";
-		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
-		item.title = "创意无限";
-		item.linkUrl = "";
-		mAdv.resources.add(item);
-		
-		mAdvAdapter = new AdvPagerAdapter(mActivity, mAdv);
-		mAdvViewPager.setAdapter(mAdvAdapter);
-		mAdvIndicator.setViewPager(mAdvViewPager);
-	}
-			
+//	private void advTest() {
+//		mAdv = new Advertisement();
+//		mAdv.respCode = 0;
+//		mAdv.respMsg = "ok";
+//		mAdv.totalCount = 2;
+//		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
+//		
+//		Advertisement.AdvItem item  = mAdv.new AdvItem();
+//		item.id = "1";
+//		item.imageUrl = "http://pic27.nipic.com/20130313/1628220_145734522153_2.jpg";
+//		item.title = "舞动青春";
+//		item.linkUrl = "";
+//		mAdv.resources.add(item);
+//		
+//		item  = mAdv.new AdvItem();
+//		item.id = "2";
+//		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
+//		item.title = "创意无限";
+//		item.linkUrl = "";
+//		mAdv.resources.add(item);
+//		
+//		mAdvAdapter = new AdvPagerAdapter(mActivity, mAdv);
+//		mAdvViewPager.setAdapter(mAdvAdapter);
+//		mAdvIndicator.setViewPager(mAdvViewPager);
+//	}
+				
 }
 	

@@ -7,4 +7,10 @@ public interface MainListener {
 	 * @param listener
 	 */
 	public void setHomeListener(HomeListener listener);
+	
+	/**
+	 * 设置个人中心监听器
+	 * @author listener
+	 */
+	public void setMyCenter(MyCenterListener listener);
 }

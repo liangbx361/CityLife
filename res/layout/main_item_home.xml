@@ -36,8 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:listSelector="@drawable/type_item_selector"
-            android:numColumns="3" 
-            android:animateLayoutChanges="true"/>
+            android:numColumns="3" />
     </LinearLayout>
 
 </ScrollView>

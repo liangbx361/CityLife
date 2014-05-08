@@ -1,10 +1,12 @@
 package com.wb.citylife.mk.main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.tsz.afinal.FinalDb;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
@@ -24,12 +26,17 @@ import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Channel;
+import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.Channel.ChannelItem;
+import com.wb.citylife.bean.ScrollNews.NewsItem;
 import com.wb.citylife.bean.db.DbChannel;
+import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.task.ChannelRequest;
+import com.wb.citylife.task.ScrollNewsRequest;
 
 public class MainActivity extends BaseActivity implements MainListener,
 	Listener<Channel>, ErrorListener{
@@ -54,7 +61,13 @@ public class MainActivity extends BaseActivity implements MainListener,
 	private Channel mChannel;
 	private List<DbChannel> mChannelList;
 	
+	//滚动新闻
+	private ScrollNewsRequest mScrollNewsRequest;
+	private ScrollNews mScrollNews;
+	private List<DbScrollNews> mScrollNewsList;
+	
 	private HomeListener mHomeListener;
+	private MyCenterListener mCenterListener;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +76,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 		
 		getIntentData();
 		initView();
-		loadDbChannel();		
+		loadDbData();		
 	}
 	
 	@Override
@@ -89,9 +102,10 @@ public class MainActivity extends BaseActivity implements MainListener,
 	/**
 	 * 加载数据库中的栏目数据
 	 */
-	public void loadDbChannel() {
+	public void loadDbData() {
 		FinalDb finalDb = CityLifeApp.getInstance().getDb();
 		mChannelList = finalDb.findAll(DbChannel.class, "weight asc");
+		mScrollNewsList = finalDb.findAll(DbScrollNews.class);
 	}
 	
 	@Override
@@ -101,6 +115,8 @@ public class MainActivity extends BaseActivity implements MainListener,
 		setDisplayShowHomeEnabled(true);
 		
 		requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
+		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
+				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -222,7 +238,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 							channel.updateNum = channelItem.updateNum;
 							channel.name = channelItem.name;
 							channel.imageUrl = channelItem.imageUrl;
-							CityLifeApp.getInstance().getDb().update(channel);
+							CityLifeApp.getInstance().getDb().update(channel, "channelId='" + channel.channelId + "'");
 							break;
 						}
 					}
@@ -235,12 +251,98 @@ public class MainActivity extends BaseActivity implements MainListener,
 		}
 	}
 	
+	/**
+	 * 获取滚动新闻请求参数
+	 * @return
+	 */
+	private Map<String, String> getScrollNewsRequestParams() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("type", "0");		
+		return params;
+	}
+	
+	/**
+	 * 执行滚动新闻任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestScrollNews(int method, String methodUrl, Map<String, String> params,	 
+			Listener<ScrollNews> listenre, ErrorListener errorListener) {			
+		if(mScrollNewsRequest != null) {
+			mScrollNewsRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mScrollNewsRequest = new ScrollNewsRequest(method, url, params, listenre, errorListener);
+		startRequest(mScrollNewsRequest);		
+	}
+	
+	/**
+	 * 处理滚动新闻
+	 * @author liangbx
+	 *
+	 */
+	class ScrollNewsListener implements Listener<ScrollNews> {
+
+		@Override
+		public void onResponse(ScrollNews scrollNews) {
+			mScrollNews = scrollNews;			
+			
+			if(mScrollNews.respCode == RespCode.SUCCESS) {
+				FinalDb finalDb = CityLifeApp.getInstance().getDb();
+				
+				if(mScrollNewsList != null) {
+					for(DbScrollNews newItem : mScrollNewsList) {
+						finalDb.deleteById(DbScrollNews.class, newItem.id);
+					}										
+				} 
+				
+				mScrollNewsList = new ArrayList<DbScrollNews>();
+				for(int i=0; i<mScrollNews.datas.size(); i++) {
+					DbScrollNews scrolllNews = new DbScrollNews();
+					NewsItem newsItem = mScrollNews.datas.get(i);
+					scrolllNews.newsId = newsItem.id;
+					scrolllNews.type = newsItem.type;
+					scrolllNews.title = newsItem.title;
+					scrolllNews.imageUrl = newsItem.imageUrl;
+					mScrollNewsList.add(scrolllNews);
+					finalDb.save(scrolllNews);
+				}
+				
+				if(mHomeListener != null) {
+					mHomeListener.onScrollNewsCommplete(mScrollNewsList);
+				}
+			}
+		}
+		
+	}
+	
 	@Override
 	public void setHomeListener(HomeListener listener) {
 		mHomeListener = listener;
 		if(mChannelList != null && mChannelList.size() != 0) {
 			mHomeListener.onLoadLocalChannel(mChannelList);
 		}
+		
+		if(mScrollNewsList != null && mScrollNewsList.size() != 0) {
+			mHomeListener.onLoadLocalScrollNews(mScrollNewsList);
+		}
 	}	
-
+	
+	@Override
+	public void setMyCenter(MyCenterListener listener) {
+		mCenterListener = listener;
+	}
+	
+	//应用返回时的结果处理
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(resultCode == ResultCode.RESULT_LOGIN) {
+			//登录成功后的处理 显示用户名称、用户头像
+			mCenterListener.onLogin();
+		}
+	}	
 }

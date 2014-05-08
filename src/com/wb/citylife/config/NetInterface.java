@@ -20,4 +20,10 @@ public interface NetInterface {
 	
 	/***************************** 栏目  **********************************************/
 	public static final String METHOD_CHANNEL = "channel";
+	
+	/***************************** 广告  **********************************************/
+	public static final String METHOD_SCROLL_NEWS = "scrollNews";
+	
+	/***************************** 收藏  **********************************************/
+	public static final String METHOD_COLLECT = "collect";
 }
