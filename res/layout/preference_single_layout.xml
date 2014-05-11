@@ -47,7 +47,7 @@
             android:singleLine="true"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal" 
-            android:textColor="#101010"
+            android:textColor="@color/common_text_selector"
             android:textSize="16dp"/>
 
         <TextView android:id="@+android:id/summary"
@@ -70,6 +70,6 @@
         android:orientation="vertical" />
     
     <include 
-        layout="@layout/preference_submenu"/>"
+        layout="@layout/preference_submenu"/>
 
 </LinearLayout>

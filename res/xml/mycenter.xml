@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:layout="@layout/preference_category" />
-
-    <Preference
-        android:key="@string/pf_login"
-        android:layout="@layout/preference_first_layout"
-        android:title="@string/pf_login" />
     <Preference
         android:key="@string/pf_msg"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_msg" />
     <Preference
         android:key="@string/pf_collect"
-        android:layout="@layout/preference_last_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_collect" />
 
 </PreferenceScreen>

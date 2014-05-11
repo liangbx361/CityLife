@@ -18,6 +18,6 @@
     
     <!-- 账号管理  -->
     <string name="pf_modify_avatar">修改头像</string>
-    <string name="pf_modify_nickname">修改用户名</string>
+    <string name="pf_modify_nickname">修改昵称</string>
     <string name="pf_modify_password">修改密码</string>
 </resources>

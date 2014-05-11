@@ -6,9 +6,19 @@
     
     <!-- actionbar 菜单文字颜色  -->
     <color name="actionbar_menu_text_color">#FF9FA0A0</color>
-    
+        
     <!-- actionbar 标题颜色  -->
-    <color name="actionbar_tittle_color">#ff080808</color>
+    <color name="actionbar_tittle_color">#ffff732e</color>
+    
+    <!-- 通用菜单字体颜色  -->
+    <color name="common_menu_text_color">#ffff732e</color>
+    
+    <!-- 通用背景色  -->
+    <color name="common_bg_color">#ffffffff</color>
+    
+    <!-- 通用按钮上的字体颜色  -->
+    <color name="common_confirm_text_color">#ffffffff</color>
+    <color name="common_concle_text_color">#ffff732e</color> 
     
     <!-- 提示类型字体颜色  -->
     <color name="hint_text_color">#ff999999</color>
@@ -17,8 +27,6 @@
     <color name="news_list_title_color">#ff2f2f2f</color>
     <color name="news_list_desc_color">#ff808080</color>
     <color name="news_list_tag_color">#ff808080</color>    
-    <color name="news_content_color">#ff585858</color>
-    
-    <!-- 背景色  -->
-    <color name="bg_color">#fff0f0f0</color>
+    <color name="news_content_color">#ff585858</color>        
+        
 </resources>

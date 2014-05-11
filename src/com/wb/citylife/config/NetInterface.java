@@ -17,6 +17,10 @@ public interface NetInterface {
 	
 	/***************************** 登录注册  **********************************************/
 	public static final String METHOD_LOGIN = "login";
+	public static final String METHOD_REGISTER = "register";
+	public static final String METHOD_MODIFY_AVATAR = "modifyAvatar";
+	public static final String METHOD_MODIFY_NICKNAME = "modifyNickname";	
+	public static final String METHOD_MODIFY_PASSWORD = "modifyPwd";
 	
 	/***************************** 栏目  **********************************************/
 	public static final String METHOD_CHANNEL = "channel";

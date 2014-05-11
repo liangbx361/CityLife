@@ -32,7 +32,7 @@ public class DbHelper {
 	public static void saveUser(User user) {
 		FinalDb finalDb = CityLifeApp.getInstance().getDb();
 		if(checkUserExits(user)) {
-			finalDb.update(user);
+			finalDb.update(user, "userId='" + user.userId + "'");
 		} else {
 			finalDb.save(user);
 		}

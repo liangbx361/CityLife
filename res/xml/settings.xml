@@ -1,42 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	<PreferenceCategory 
-	    android:layout="@layout/preference_category" />
-    <Preference
-        android:key="@string/pf_account_manager"
-        android:layout="@layout/preference_first_layout"
-        android:title="@string/pf_account_manager" />
+
     <Preference
         android:key="@string/pf_home_background"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_home_background" />		        
     <Preference
         android:key="@string/pf_push_settings"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_push_settings" />
     <Preference
         android:key="@string/pf_feedbak"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_feedbak" />
     <Preference
         android:key="@string/pf_apk_share"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_apk_share" />
     <Preference
         android:key="@string/pf_update"
-        android:layout="@layout/preference_middle_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_update" />
     <Preference
         android:key="@string/pf_about"
-        android:layout="@layout/preference_last_layout"
+        android:layout="@layout/preference_single_layout"
         android:title="@string/pf_about" />
     
     <PreferenceCategory 
-	    android:layout="@layout/preference_category"/>
+	    android:layout="@layout/preference_category"/>    
     
-    <Preference
-        android:key="@string/pf_exit"
-        android:layout="@layout/preference_single_layout"
-        android:title="@string/pf_exit" />
-
 </PreferenceScreen>

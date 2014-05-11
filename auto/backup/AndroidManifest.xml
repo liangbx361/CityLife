@@ -59,8 +59,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- 栏目排序  -->
+        <activity
+            android:name="com.wb.citylife.mk.channel.OrderChannelActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/order_channel_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <!-- 资讯 -->
+        <!-- 资讯  -->
         <activity
             android:name="com.wb.citylife.mk.news.NewsListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -73,7 +81,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <!-- 评论 -->
+        <!-- 评论  -->
         <activity
             android:name="com.wb.citylife.mk.comment.CommentListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -87,7 +95,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
-
+        
+        <!-- 登录注册 -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.LoginActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/login_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+             
         <!-- ###################注册友盟SDK使用的Activity###################### -->
         <activity
             android:name="com.umeng.socialize.view.CommentActivity"
@@ -159,6 +175,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
+                
     </application>
 
 </manifest>

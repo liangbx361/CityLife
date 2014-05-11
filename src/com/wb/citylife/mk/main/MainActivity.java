@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 		requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
 				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
-		setIndeterminateBarVisibility(true);		
+		setIndeterminateBarVisibility(true);	
 		return super.onCreateOptionsMenu(menu);
 	}
 	

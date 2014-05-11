@@ -3,11 +3,15 @@
 	
     <!-- 应用名称  -->
     <string name="app_name">CityDemo</string>
-    <string name="news_name">最新资讯</string>		
-    <string name="detail_name">详情</string>
-    <string name="comment_name">评论</string>
-    <string name="login_name">登录</string>
-    <string name="order_channel_name">栏目排序</string>
+    <string name="ac_name_news">最新资讯</string>		
+    <string name="ac_name_detail">详情</string>
+    <string name="ac_name_comment">评论</string>
+    <string name="ac_name_login">登录</string>
+    <string name="ac_name_register">注册</string>
+    <string name="ac_name_order_channel">栏目排序</string>
+    <string name="ac_name_account_manager">账号管理</string>
+    <string name="ac_name_modify_nickname">修改昵称</string>
+    <string name="ac_name_modify_password">修改密码</string>
     
     <!-- 栏目  -->
     <string name="add">添加</string>
@@ -29,15 +33,31 @@
     <string name="comment_success">发表成功</string>
     <string name="comment_fail">发表不成功，请重试</string>
     
-    <!-- 用户登录注册  -->
-    <string name="hint_username">请输入手机号</string>
+    <!-- 用户登录注册  -->    
+    <string name="hint_username">请输入想修改的昵称</string>
+    <string name="hint_userphone">请输入手机号</string>
     <string name="hint_password">请输入密码</string>
+    <string name="hint_password_again">请再次输入密码确认</string>
+    <string name="hint_old_password">请输入登录密码</string>
+    <string name="hint_new_password">请输入新的登录密码</string>
+    <string name="hint_new_password_again">请再次输入新的登录密码</string>
     <string name="login">登录</string>
+    <string name="auto_login">自动登录中。。。</string>
+    <string name="login_success">登录成功</string>
     <string name="register">注册</string>
+    <string name="register_fail">注册失败，请重试</string>
     <string name="forget_password">忘记密码?</string>
-    <string name="username_empty_toast">用户名不能为空</string>
+    <string name="username_empty_toast">手机号不能为空</string>
+    <string name="username_error">手机号格式不正确</string>
     <string name="password_empty_toast">密码不能为空</string>
-    <string name="need_login_toast">您需要先登录才能使用收藏哦~</string>
+    <string name="password_no_equasl">密码两次输入不一致</string>
+    <string name="password_no_length">密码的长度不足%1$d位</string>
+    <string name="need_login_toast">您需要先登录才能使用收藏哦~</string>    
+    <string name="submit">提交</string>
+    <string name="nickname_empty_toast">昵称不能为空</string>
+    <string name="nickname_modify_success">昵称修改成功</string>
+    <string name="password_modify_success">密码修改成功</string>
+    <string name="logout">退出当前账号</string>    
     
     <!-- 对话框  -->
     <string name="box_option_batch_manager">栏目排序</string>
@@ -48,6 +68,11 @@
     <string name="share">分享</string>
     <string name="collect">收藏</string>
     <string name="collect_success">收藏成功</string>
+    
+    <!-- 照片上传  -->
+    <string name="take_picture">拍照</string>
+    <string name="photo_album">相册</string>
+    <string name="sdcard_error">请确认SD卡是否已插入</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

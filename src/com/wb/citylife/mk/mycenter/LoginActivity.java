@@ -3,6 +3,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,7 +61,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 	
 	@Override
 	public void initView() {
-		userphoneEt = (EditText) findViewById(R.id.userphone);
+		userphoneEt = (EditText) findViewById(R.id.userPhone);
 		passwordEt = (EditText) findViewById(R.id.password);
 		loginBtn = (Button) findViewById(R.id.login);
 		registerBtn = (Button) findViewById(R.id.register);
@@ -76,8 +77,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		//此处设置菜单		
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
-		
-		setIndeterminateBarVisibility(true);		
+				
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -97,7 +97,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			break;
 			
 		case R.id.register:
-			
+			startActivityForResult(new Intent(this, RegisterActivity.class), 0);
 			break;
 			
 		case R.id.forget_password:
@@ -125,6 +125,17 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		
 		this.userphone = userPhone;
 		requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(userPhone, password), this, this);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode == ResultCode.AUTO_LOGIN) {
+			ToastHelper.showToastInBottom(this, R.string.auto_login);
+			String userPhone = data.getStringExtra("userPhone");
+			String password = data.getStringExtra("password");
+			
+			requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(userPhone, password), this, this);		
+		}
 	}
 	
 	/**
@@ -174,6 +185,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		setIndeterminateBarVisibility(false);
 		mLogin = response;
 		if(mLogin.respCode == RespCode.SUCCESS) {
+			ToastHelper.showToastInBottom(this, R.string.login_success);
 			//存储到数据库中，并确保此时数据库中的所有用户为登出状态
 			User user = new User();
 			user.userId = mLogin.userId;

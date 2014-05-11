@@ -59,51 +59,79 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <!-- 栏目排序  -->
+
+        <!-- 栏目排序 -->
         <activity
             android:name="com.wb.citylife.mk.channel.OrderChannelActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/order_channel_name"
+            android:label="@string/ac_name_order_channel"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <!-- 资讯  -->
+        <!-- 资讯列表  -->
         <activity
             android:name="com.wb.citylife.mk.news.NewsListActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/news_name"
+            android:label="@string/ac_name_news"
             android:screenOrientation="portrait" />
+        
+        <!-- 资讯详情  -->
         <activity
             android:name="com.wb.citylife.mk.news.NewsDetailActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/detail_name"
+            android:label="@string/ac_name_detail"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <!-- 评论  -->
+        <!-- 评论 -->
         <activity
             android:name="com.wb.citylife.mk.comment.CommentListActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/comment_name"
+            android:label="@string/ac_name_comment"
             android:screenOrientation="portrait" />
 
         <!-- 账号管理 -->
         <activity
-            android:name=".mk.settings.AccountManagerActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:name="com.wb.citylife.mk.mycenter.AccountManagerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_account_manager"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
         
-        <!-- 登录注册 -->
+        <!-- 修改昵称  -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.ModifyNickNameActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_modify_nickname"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
+        </activity>
+        
+        <!-- 修改密码  -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.ModifyPasswordActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_modify_password"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
+        </activity>
+
+        <!-- 登录  -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/login_name"
+            android:label="@string/ac_name_login"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-             
+        
+        <!-- 注册  -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.RegisterActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_register"
+            android:screenOrientation="portrait" />
+
         <!-- ###################注册友盟SDK使用的Activity###################### -->
         <activity
             android:name="com.umeng.socialize.view.CommentActivity"
@@ -175,7 +203,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
-                
+        
     </application>
 
 </manifest>

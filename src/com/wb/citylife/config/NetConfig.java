@@ -41,5 +41,22 @@ public class NetConfig implements NetInterface {
 				return RELEASE_BASE_URL;
 			}
 		}
-	}	
+	}
+	
+	/**
+	 * 获取图片的URL地址
+	 * @param url
+	 * @return
+	 */
+	public static String getPictureUrl(String url){
+		if(url == null)
+		{
+			return "";
+		}
+		if(url.indexOf("http://")!=-1){
+			return url;
+		}else{
+			return getServerBaseUrl() + EXTEND_URL + url;
+		}
+	}
 }

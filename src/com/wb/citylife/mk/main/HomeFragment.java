@@ -30,7 +30,7 @@ import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
-import com.wb.citylife.dialog.BoxDialog;
+import com.wb.citylife.dialog.ChannelDialog;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 	//编辑的栏目位置
 	private int channelPosition;
 	
-	private BoxDialog optionDialog;
+	private ChannelDialog optionDialog;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mTypeGrideView.setOnItemClickListener(this);
 		mTypeGrideView.setOnItemLongClickListener(this);
 		
-		optionDialog = new BoxDialog(mActivity, R.style.popupStyle);
+		optionDialog = new ChannelDialog(mActivity, R.style.popupStyle);
 		optionDialog.setListener(this);
 	}
 	

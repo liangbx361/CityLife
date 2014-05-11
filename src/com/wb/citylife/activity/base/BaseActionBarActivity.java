@@ -102,6 +102,20 @@ public class BaseActionBarActivity extends ActionBarActivity implements MenuBuil
 	}
 	
 	/**
+	 * 隐藏ActionBar
+	 */
+	public void hideActionBar() {
+		getSupportActionBar().hide();
+	}
+	
+	/**
+	 * 显示ActionBar
+	 */
+	public void showActionBar() {
+		getSupportActionBar().show();
+	}
+	
+	/**
 	 * 设置是否显示返回按钮
 	 * @param showHomeAsUp
 	 */

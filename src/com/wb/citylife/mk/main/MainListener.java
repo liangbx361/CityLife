@@ -13,4 +13,15 @@ public interface MainListener {
 	 * @author listener
 	 */
 	public void setMyCenter(MyCenterListener listener);
+	
+	/**
+	 * 隐藏ActionBar
+	 */
+	public void hideActionBar();
+	
+	/**
+	 * 显示ActionBar
+	 */
+	public void showActionBar();
+	
 }
