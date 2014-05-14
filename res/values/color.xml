@@ -27,6 +27,9 @@
     <color name="news_list_title_color">#ff2f2f2f</color>
     <color name="news_list_desc_color">#ff808080</color>
     <color name="news_list_tag_color">#ff808080</color>    
-    <color name="news_content_color">#ff585858</color>        
+    <color name="news_content_color">#ff585858</color>  
+    
+    <!-- 滚动广告标题颜色  -->
+    <color name="sidebar_title_color">#ffffffff</color>
         
 </resources>

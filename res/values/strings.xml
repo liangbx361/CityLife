@@ -12,6 +12,7 @@
     <string name="ac_name_account_manager">账号管理</string>
     <string name="ac_name_modify_nickname">修改昵称</string>
     <string name="ac_name_modify_password">修改密码</string>
+    <string name="ac_name_vote">投票</string>    
     
     <!-- 栏目  -->
     <string name="add">添加</string>
@@ -73,6 +74,9 @@
     <string name="take_picture">拍照</string>
     <string name="photo_album">相册</string>
     <string name="sdcard_error">请确认SD卡是否已插入</string>
+    
+    <!-- 投票  -->
+    <string name="hint_feedback">请写下您的意见...</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

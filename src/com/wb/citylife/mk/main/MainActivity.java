@@ -257,7 +257,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 	 */
 	private Map<String, String> getScrollNewsRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("type", "0");		
+		params.put("type", "1");		
 		return params;
 	}
 	

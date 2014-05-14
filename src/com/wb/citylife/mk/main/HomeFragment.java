@@ -1,22 +1,25 @@
 package com.wb.citylife.mk.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
@@ -33,6 +36,7 @@ import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.dialog.ChannelDialog;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
+import com.wb.citylife.mk.vote.VoteListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
 
 public class HomeFragment extends Fragment implements HomeListener,
@@ -51,6 +55,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 	private AdvTimeCount advAdvTimeCount;
 	private Advertisement mAdv;	
 	private List<DbScrollNews> scrollNewsList;
+	private TextView advTitleTv;
 	
 	//栏目
 	private GrideViewForScrollView mTypeGrideView;
@@ -95,12 +100,32 @@ public class HomeFragment extends Fragment implements HomeListener,
 	private void initView(View view) {
 		mAdvViewPager = (ViewPager) view.findViewById(R.id.adv_pager);
 		mAdvIndicator = (LinePageIndicator) view.findViewById(R.id.adv_indicator);
+		advTitleTv = (TextView) view.findViewById(R.id.title);
 		mTypeGrideView = (GrideViewForScrollView) view.findViewById(R.id.type_grid);	
 		mTypeGrideView.setOnItemClickListener(this);
 		mTypeGrideView.setOnItemLongClickListener(this);
 		
 		optionDialog = new ChannelDialog(mActivity, R.style.popupStyle);
 		optionDialog.setListener(this);
+		
+		mAdvIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				advTitleTv.setText(scrollNewsList.get(position).title);
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//				advTitleTv.setText(scrollNewsList.get(position).title);
+//				Log.d("onPageScrolled", position+"");
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				
+			}
+		});
 	}
 	
 	@Override
@@ -116,6 +141,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
 		mAdvViewPager.setAdapter(mAdvAdapter);
 		mAdvIndicator.setViewPager(mAdvViewPager);
+		advTitleTv.setText(scrollNewsList.get(0).title);
 	}
 	
 	@Override
@@ -136,9 +162,11 @@ public class HomeFragment extends Fragment implements HomeListener,
 			mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
 			mAdvViewPager.setAdapter(mAdvAdapter);
 			mAdvIndicator.setViewPager(mAdvViewPager);
+			advTitleTv.setText(scrollNews.get(0).title);
 		} else {
 			mAdvAdapter.notifyDataSetChanged();
-		}
+			advTitleTv.setText(scrollNews.get(mAdvViewPager.getCurrentItem()).title);
+		}		
 	}
 	
 	@Override
@@ -148,7 +176,10 @@ public class HomeFragment extends Fragment implements HomeListener,
 		switch(channel.type) {
 		case ChannelType.CHANNEL_TYPE_NEWS:
 			startActivity(new Intent(getActivity(), NewsListActivity.class));
-			break;			
+			break;
+		case ChannelType.CHANNEL_TYPE_VOTE:
+			startActivity(new Intent(getActivity(), VoteListActivity.class));
+			break;
 		}		
 
 	}
@@ -181,6 +212,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 			
 		case R.id.box_option_setlauncher:
 			//发送至桌面
+			addShortCut("资讯");
 			break;
 			
 		case R.id.box_option_delete_item:
@@ -284,6 +316,33 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mActivity.unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
+	
+	/**
+	 * 添加图标
+	 * @param tName 快捷方式的名称
+	 */
+	private void addShortCut(String tName) {
+        // 安装的Intent  
+        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+
+        // 快捷名称  
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, tName);
+        // 快捷图标是允许重复
+        shortcut.putExtra("duplicate", false);
+
+        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+        shortcutIntent.putExtra("tName", tName);
+        shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.news.NewsListActivity");
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+
+        // 快捷图标  
+        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(mActivity, R.drawable.ic_launcher);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+
+        // 发送广播  
+        mActivity.sendBroadcast(shortcut);
+    }
 	
 	/************************************************ 测试数据 **********************************************/
 //	private void advTest() {

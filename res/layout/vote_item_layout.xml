@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp" >
+
+    <LinearLayout
+        android:id="@+id/option_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/vote_checkbox_selector"
+            android:clickable="false"
+            android:enabled="false"
+            android:focusable="false"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/option"
+            style="@style/vote_option_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/result_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible" >
+
+        <TextView
+            android:id="@+id/option2"
+            style="@style/vote_option_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.wb.citylife.widget.StatisticsBar
+            android:id="@+id/bar"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp" />
+    </LinearLayout>
+
+</FrameLayout>

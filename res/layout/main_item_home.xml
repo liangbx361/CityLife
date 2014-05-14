@@ -29,6 +29,14 @@
                 app:strokeWidth="2dp"
                 app:gapWidth="5dp"
                 app:unselectedColor="#60ffffff" />
+            
+            <TextView 
+                android:id="@+id/title"
+                style="@style/sidebar_title_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/adv_indicator"
+                android:gravity="left"/>
         </RelativeLayout>
 
         <com.wb.citylife.widget.GrideViewForScrollView

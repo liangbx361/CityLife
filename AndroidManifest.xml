@@ -39,6 +39,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- 桌面图标权限 -->
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+
     <application
         android:name="com.wb.citylife.app.CityLifeApp"
         android:allowBackup="true"
@@ -68,14 +72,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
-        <!-- 资讯列表  -->
+        <!-- 资讯列表 -->
         <activity
             android:name="com.wb.citylife.mk.news.NewsListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_news"
-            android:screenOrientation="portrait" />
-        
-        <!-- 资讯详情  -->
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <!-- 资讯详情 -->
         <activity
             android:name="com.wb.citylife.mk.news.NewsDetailActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -90,6 +98,20 @@
             android:label="@string/ac_name_comment"
             android:screenOrientation="portrait" />
 
+        <!-- 投票列表 -->
+        <activity
+            android:name="com.wb.citylife.mk.vote.VoteListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_vote"
+            android:screenOrientation="portrait" />
+        
+        <!-- 投票详情  -->
+        <activity
+            android:name="com.wb.citylife.mk.vote.VoteDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_detail"
+            android:screenOrientation="portrait" />
+
         <!-- 账号管理 -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.AccountManagerActivity"
@@ -98,8 +120,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
-        
-        <!-- 修改昵称  -->
+
+        <!-- 修改昵称 -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.ModifyNickNameActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -107,8 +129,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
-        
-        <!-- 修改密码  -->
+
+        <!-- 修改密码 -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.ModifyPasswordActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -117,15 +139,15 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
 
-        <!-- 登录  -->
+        <!-- 登录 -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_login"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        
-        <!-- 注册  -->
+
+        <!-- 注册 -->
         <activity
             android:name="com.wb.citylife.mk.mycenter.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"

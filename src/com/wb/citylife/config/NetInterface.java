@@ -30,4 +30,9 @@ public interface NetInterface {
 	
 	/***************************** 收藏  **********************************************/
 	public static final String METHOD_COLLECT = "collect";
+	
+	/***************************** 投票  **********************************************/
+	public static final String METHOD_VOTE_LIST = "voteList";
+	public static final String METHOD_VOTE_DETAIL = "voteDetail";
+	public static final String METHOD_VOTE_SATISTICS = "voteSatistics";
 }

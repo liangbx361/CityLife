@@ -157,4 +157,24 @@
         <item name="android:textColor">#ffffff</item>
         <item name="android:gravity">center</item>
     </style>
+    
+    <!-- 投票选项字体大小  -->
+    <style name="vote_option_text_style">
+        <item name="android:textSize">14sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/news_list_desc_color</item>
+    </style>
+    
+    <!-- 滑动广告标题样式  -->
+    <style name="sidebar_title_style">
+        <item name="android:textSize">14.0sp</item>
+        <item name="android:textColor">@color/sidebar_title_color</item>
+        <item name="android:layout_marginLeft">3.0dip</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+        <item name="android:singleLine">true</item>
+    </style>
 </resources>
