@@ -141,7 +141,7 @@
 	    <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@null</item>
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/AnimationBottom</item>
     </style>
@@ -176,5 +176,13 @@
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">1.0</item>
         <item name="android:singleLine">true</item>
+    </style>
+    
+    <!-- 价格样式  -->
+    <style name="price_text_style">
+    	<item name="android:textSize">16sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/price_text_color</item>
     </style>
 </resources>

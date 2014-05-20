@@ -13,4 +13,7 @@ public interface IntentExtraConfig {
 	
 	/***************************** 栏目排序  **********************************************/
 	public static final String OC_CHANNEL = "channel";
+	
+	/***************************** 二手市场  **********************************************/
+	public static final String OLD_TYPE = "type";
 }

@@ -31,5 +31,7 @@
     
     <!-- 滚动广告标题颜色  -->
     <color name="sidebar_title_color">#ffffffff</color>
-        
+    
+    <!-- 价格字体颜色  -->
+    <color name="price_text_color">#ffff5500</color>
 </resources>

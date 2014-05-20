@@ -104,12 +104,19 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_vote"
             android:screenOrientation="portrait" />
-        
-        <!-- 投票详情  -->
+
+        <!-- 投票详情 -->
         <activity
             android:name="com.wb.citylife.mk.vote.VoteDetailActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_detail"
+            android:screenOrientation="portrait" />
+        
+        <!-- 二手信息列表  -->
+        <activity
+            android:name="com.wb.citylife.mk.old.OldInfoListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_oldinfo"
             android:screenOrientation="portrait" />
 
         <!-- 账号管理 -->
@@ -225,7 +232,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
-        
+		        
     </application>
 
 </manifest>

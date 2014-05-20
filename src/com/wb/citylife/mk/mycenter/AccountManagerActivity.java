@@ -15,9 +15,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -98,7 +100,7 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 		case R.id.modify_avatar:
 			ModifyAvatarDialog dialog = new ModifyAvatarDialog(this, R.style.popupStyle);
 			dialog.setListener(this);
-			dialog.show();
+			dialog.show();			
 			break;
 			
 		case R.id.modify_nickname:

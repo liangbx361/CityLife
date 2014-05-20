@@ -23,6 +23,10 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader.ImageContainer;
+import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.common.widget.ToastHelper;
 import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.adapter.AdvPagerAdapter;
@@ -33,9 +37,11 @@ import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.dialog.ChannelDialog;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
+import com.wb.citylife.mk.old.OldInfoListActivity;
 import com.wb.citylife.mk.vote.VoteListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
 
@@ -180,6 +186,10 @@ public class HomeFragment extends Fragment implements HomeListener,
 		case ChannelType.CHANNEL_TYPE_VOTE:
 			startActivity(new Intent(getActivity(), VoteListActivity.class));
 			break;
+			
+		case ChannelType.CHANNEL_TYPE_OLD_MARKET:
+			startActivity(new Intent(getActivity(), OldInfoListActivity.class));
+			break;
 		}		
 
 	}
@@ -212,7 +222,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 			
 		case R.id.box_option_setlauncher:
 			//发送至桌面
-			addShortCut("资讯");
+			addShortCut(channelPosition);
 			break;
 			
 		case R.id.box_option_delete_item:
@@ -321,27 +331,46 @@ public class HomeFragment extends Fragment implements HomeListener,
 	 * 添加图标
 	 * @param tName 快捷方式的名称
 	 */
-	private void addShortCut(String tName) {
-        // 安装的Intent  
-        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+	private void addShortCut(int position) {		
+		final DbChannel channel = mChannelAdapter.getRealChannel(position);
+		
+        CityLifeApp.getInstance().getImageLoader().get(NetConfig.getPictureUrl(channel.getImageUrl()), new ImageListener() {
+			
+			@Override
+			public void onErrorResponse(VolleyError arg0) {
+				
+			}
+			
+			@Override
+			public void onResponse(ImageContainer container, boolean arg1) {
+				
+				// 安装的Intent  
+		        Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
 
-        // 快捷名称  
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, tName);
-        // 快捷图标是允许重复
-        shortcut.putExtra("duplicate", false);
+		        // 快捷名称  
+		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, channel.name);
+		        // 快捷图标是允许重复
+		        shortcut.putExtra("duplicate", false);
 
-        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
-        shortcutIntent.putExtra("tName", tName);
-        shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.news.NewsListActivity");
-        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+		        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+		        shortcutIntent.putExtra("tName", channel.name);
+		        shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.news.NewsListActivity");
+		        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 
-        // 快捷图标  
-        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(mActivity, R.drawable.ic_launcher);
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+		        // 快捷图标  
+		        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(mActivity, R.drawable.ic_launcher);       
+		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+		        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, container.getBitmap()); 
+		        
+		        // 发送广播  
+		        mActivity.sendBroadcast(shortcut);
+		        
+		        ToastHelper.showToastInBottom(mActivity, "图标发送成功");
+			}
+		});
 
-        // 发送广播  
-        mActivity.sendBroadcast(shortcut);
+        
     }
 	
 	/************************************************ 测试数据 **********************************************/

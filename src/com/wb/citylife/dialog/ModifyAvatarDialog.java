@@ -1,11 +1,14 @@
 package com.wb.citylife.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.wb.citylife.R;
@@ -14,7 +17,7 @@ public class ModifyAvatarDialog extends Dialog implements OnClickListener {
 	
 	private Button takePictureBtn;
 	private Button photoAlbum;
-	private Context mContext;
+	private Context mContext;	
 	
 	private android.view.View.OnClickListener listener;
 	
@@ -28,11 +31,12 @@ public class ModifyAvatarDialog extends Dialog implements OnClickListener {
 	public ModifyAvatarDialog(Context context, int theme) {
 		super(context, theme);
 		mContext = context;
+		
 	}
 
 	public ModifyAvatarDialog(Context context) {
 		super(context);
-		mContext = context;
+		mContext = context;		
 	}
 		
 	@Override
@@ -44,6 +48,8 @@ public class ModifyAvatarDialog extends Dialog implements OnClickListener {
 		setCancelable(true);
 		
 		initView();
+		
+		
 	}	
 	
 	private void initView() {
@@ -63,4 +69,15 @@ public class ModifyAvatarDialog extends Dialog implements OnClickListener {
 		if (listener != null)
 			listener.onClick(v);		
 	}
+
+	@Override
+	public void show() {
+		super.show();
+		
+		WindowManager windowManager = ((Activity)mContext).getWindowManager();
+		Display display = windowManager.getDefaultDisplay();
+		WindowManager.LayoutParams lp = getWindow().getAttributes();
+		lp.width = (int)(display.getWidth()); //设置宽度
+		getWindow().setAttributes(lp);
+	}		
 }

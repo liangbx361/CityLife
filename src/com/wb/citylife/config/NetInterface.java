@@ -35,4 +35,7 @@ public interface NetInterface {
 	public static final String METHOD_VOTE_LIST = "voteList";
 	public static final String METHOD_VOTE_DETAIL = "voteDetail";
 	public static final String METHOD_VOTE_SATISTICS = "voteSatistics";
+	
+	/***************************** 二手市场  **********************************************/
+	public static final String METHOD_OLD_INFO_LIST = "oldInfoList";
 }

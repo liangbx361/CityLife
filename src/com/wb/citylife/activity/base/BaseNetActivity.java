@@ -40,7 +40,7 @@ public class BaseNetActivity extends BaseEmptyActivity{
 		mQueue.add(request);
 		mQueue.start();
 	}
-	
+		
 	/**
 	 * 网络请求的错误处理
 	 * @param respCode 响应码
