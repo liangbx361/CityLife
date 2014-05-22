@@ -1,5 +1,6 @@
 ﻿package com.wb.citylife.mk.old;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -57,7 +58,14 @@ public class OldInfoListActivity extends BaseActivity {
 	 * 菜单点击处理
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {			
+	public boolean onOptionsItemSelected(MenuItem item) {		
+		
+		switch(item.getItemId()) {
+		case R.id.action_post:
+			startActivity(new Intent(this, PublishOldInfoActivity.class));
+			return true;
+		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	

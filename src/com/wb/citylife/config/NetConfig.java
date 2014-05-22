@@ -10,7 +10,7 @@ public class NetConfig implements NetInterface {
 	/*************************************测试环境配置************************************/
 	//接口地址
 	public static final String DEBUG_BASE_URL = "";
-	public static final String DEBUG_INTRANET_BASE_URL = "http://192.168.10.103:8081/"; 
+	public static final String DEBUG_INTRANET_BASE_URL = "http://192.168.10.109:8081/"; 
 		
 	/*************************************正式环境配置************************************/
 	//接口地址

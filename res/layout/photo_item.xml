@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="96dp"
+    android:layout_height="96dp"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/publish_add_image_bg" 
+        android:scaleType="fitXY"/>
+
+</LinearLayout>

@@ -103,7 +103,11 @@
             android:name="com.wb.citylife.mk.vote.VoteListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_vote"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <!-- 投票详情 -->
         <activity
@@ -117,6 +121,17 @@
             android:name="com.wb.citylife.mk.old.OldInfoListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_oldinfo"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
+        <!-- 发布二手信息  -->
+        <activity
+            android:name="com.wb.citylife.mk.old.PublishOldInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_publish_oldinfo"
             android:screenOrientation="portrait" />
 
         <!-- 账号管理 -->

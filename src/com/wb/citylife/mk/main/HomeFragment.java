@@ -353,24 +353,45 @@ public class HomeFragment extends Fragment implements HomeListener,
 		        shortcut.putExtra("duplicate", false);
 
 		        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
-		        shortcutIntent.putExtra("tName", channel.name);
-		        shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.news.NewsListActivity");
+		        switch(channel.type) {
+		        case ChannelType.CHANNEL_TYPE_NEWS:
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.news.NewsListActivity");
+		        	break;
+		        	
+		        case ChannelType.CHANNEL_TYPE_VOTE:
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.vote.VoteListActivity");
+		        	break;
+		        	
+		        case ChannelType.CHANNEL_TYPE_OLD_MARKET:
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.old.OldInfoListActivity");
+		        	break;
+		        	
+		        case ChannelType.CHANNEL_TYPE_SHOOT:
+		        	
+		        	break;
+		        	
+		        case ChannelType.CHANNEL_TYPE_HOUSE:
+		        	
+		        	break;
+		        }
+		        
 		        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 
 		        // 快捷图标  
-		        ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(mActivity, R.drawable.ic_launcher);       
-		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
-		        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, container.getBitmap()); 
+		        if(container.getBitmap() == null) {
+		        	ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(mActivity, R.drawable.ic_launcher);       
+		        	shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
+		        } else {
+		        	shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON, container.getBitmap());
+		        }
 		        
 		        // 发送广播  
 		        mActivity.sendBroadcast(shortcut);
 		        
 		        ToastHelper.showToastInBottom(mActivity, "图标发送成功");
 			}
-		});
-
-        
+		});     
     }
 	
 	/************************************************ 测试数据 **********************************************/
