@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.wb.citylife.adapter.OldInfoListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.OldInfoList;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.bean.OldInfoList.OldInfoItem;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -183,9 +185,9 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 
 	@Override
 	public void onResponse(OldInfoList response) {
-		mActivity.setIndeterminateBarVisibility(false);			
-		
+		mActivity.setIndeterminateBarVisibility(false);					
 		mPullListView.onRefreshComplete();
+		
 		if(response.respCode == RespCode.SUCCESS) {
 			if(oldPageInfo.pageNo == 1) {
 				mOldInfoList = response;
@@ -209,6 +211,9 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
+		OldInfoItem item = mOldInfoList.datas.get(position);
+		Intent intent = new Intent(mActivity, OldInfoDetailActivity.class);
+		intent.putExtra(IntentExtraConfig.DETAIL_ID, item.id);
+		startActivity(intent);
 	}
 }

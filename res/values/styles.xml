@@ -87,45 +87,45 @@
         <item name="android:footerDividersEnabled">true</item>
         <item name="android:smoothScrollbar">true</item>
     </style>
-    
+
     <!-- 城市生活水平进度条样式 -->
     <style name="CLrogressBarStyleHorizontal" parent="@android:style/Widget.ProgressBar.Horizontal"></style>
 
     <!-- 城市生活单选按钮样式 -->
     <style name="CLRadioButton" parent="@android:style/Widget.CompoundButton.RadioButton"></style>
-	
-    <!-- 资讯列表标题字体样式  -->
+
+    <!-- 资讯列表标题字体样式 -->
     <style name="news_list_title_style">
         <item name="android:textSize">@dimen/news_list_title_text_size</item>
         <item name="android:typeface">sans</item>
         <item name="android:textColor">@color/news_list_title_color</item>
     </style>
-	
-    <!-- 资讯列表描述字体样式  -->
+
+    <!-- 资讯列表描述字体样式 -->
     <style name="news_list_desc_style">
         <item name="android:textSize">@dimen/news_list_desc_text_size</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/news_list_desc_color</item>
     </style>
-	
-    <!-- 资讯列表标签字体样式  -->
+
+    <!-- 资讯列表标签字体样式 -->
     <style name="news_list_tag_style">
         <item name="android:textSize">@dimen/news_list_tag_text_size</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/news_list_tag_color</item>
     </style>
-    
-    <!-- 资讯标题样式  -->
+
+    <!-- 资讯标题样式 -->
     <style name="news_title_style">
         <item name="android:textSize">@dimen/news_title_text_size</item>
         <item name="android:typeface">sans</item>
-         <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/news_list_title_color</item>
     </style>
-	
-    <!-- 资讯内容样式  -->
+
+    <!-- 资讯内容样式 -->
     <style name="news_content_style">
         <item name="android:textSize">@dimen/news_content_text_size</item>
         <item name="android:typeface">sans</item>
@@ -133,40 +133,40 @@
         <item name="android:textColor">@color/news_content_color</item>
         <item name="android:lineSpacingMultiplier">1.5</item>
     </style>
-    
-    <!-- 底部弹出样式对话框  -->
+
+    <!-- 底部弹出样式对话框 -->
     <style name="popupStyle" parent="@android:style/Theme.Dialog">
-	    <item name="android:windowFrame">@null</item>
-	    <item name="android:windowNoTitle">true</item>
-	    <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:background">@null</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/AnimationBottom</item>
     </style>
-    
-    <style name="AnimationBottom">	    	    
+
+    <style name="AnimationBottom">
         <item name="android:windowEnterAnimation">@anim/push_up_in</item>
         <item name="android:windowExitAnimation">@anim/push_up_out</item>
     </style>
-    
-    <!-- 对话框字体样式  -->
+
+    <!-- 对话框字体样式 -->
     <style name="box_option_text_style" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/box_item_title_textsize</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:gravity">center</item>
     </style>
-    
-    <!-- 投票选项字体大小  -->
+
+    <!-- 投票选项字体大小 -->
     <style name="vote_option_text_style">
         <item name="android:textSize">14sp</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/news_list_desc_color</item>
     </style>
-    
-    <!-- 滑动广告标题样式  -->
+
+    <!-- 滑动广告标题样式 -->
     <style name="sidebar_title_style">
         <item name="android:textSize">14.0sp</item>
         <item name="android:textColor">@color/sidebar_title_color</item>
@@ -177,12 +177,48 @@
         <item name="android:shadowRadius">1.0</item>
         <item name="android:singleLine">true</item>
     </style>
-    
-    <!-- 价格样式  -->
+
+    <!-- 价格样式 -->
     <style name="price_text_style">
-    	<item name="android:textSize">16sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/price_text_color</item>
     </style>
+
+    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+        <item name="android:background">@drawable/custom_tab_indicator</item>
+        <item name="android:textAppearance">@style/CustomTabPageIndicator.Text</item>
+        <item name="android:textColor">#FF555555</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:divider">@drawable/custom_tab_indicator_divider</item>
+        <item name="dividerPadding">10dp</item>
+        <item name="showDividers">middle</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">8dp</item>
+    </style>
+
+    <!-- 通用按钮样式 -->
+    <style name="common_btn_style">
+        <item name="android:textSize">13.33sp</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/btn_common_selector</item>
+    </style>
+    
+    <!-- 通用输入框样式   -->
+    <style name="common_et_style">
+        <item name="android:textSize">13.33sp</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:textColorHint">#d5d5d5</item>
+        <item name="android:background">@null</item>
+        <item name="android:inputType">textMultiLine</item>
+    </style>
+
+    <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+        <item name="android:typeface">monospace</item>
+    </style>
+
 </resources>

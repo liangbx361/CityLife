@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="action_more">更多</string>
+    
+    <string name="action_search">搜索</string>
+    <string name="action_publish_oldinfo">发布二手货</string>
+    <string name="action_publish_shoot">发布随手拍</string>
 </resources>

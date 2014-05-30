@@ -53,7 +53,7 @@ public class PullListViewHelper implements OnClickListener{
 
 		case BOTTOM_STATE_NO_MORE_DATE:
 			holder.progressBar.setVisibility(View.GONE);
-			holder.stateTv.setText("无更多新闻");
+			holder.stateTv.setText("没有更多啦~");
 			break;
 		}
 	}

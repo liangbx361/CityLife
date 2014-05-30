@@ -60,9 +60,8 @@ public class OldInfoListAdapter extends BaseAdapter {
 		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
 		holder.thumbIv.setImageUrl(oldInfoItem.thumbnailUrl, CityLifeApp.getInstance().getImageLoader());
 		holder.titleTv.setText(oldInfoItem.title);
-//		holder.descTv.setText(oldInfoItem.summary);
-		holder.tagTv.setText(oldInfoItem.time);
-		holder.tag2Tv.setText(oldInfoItem.price + "元");
+		holder.descTv.setText(oldInfoItem.summary);
+		holder.tag2Tv.setText(oldInfoItem.price+"");
 		
 		return view;
 	}

@@ -9,6 +9,7 @@
     
     <!-- actionbar 菜单文字大小  -->
     <dimen name="actionbar_menu_text_size">16sp</dimen>
+    
     <!-- 通用菜单文字大小  -->
     <dimen name="common_menu_text_size">16sp</dimen>
     
@@ -33,4 +34,10 @@
     <dimen name="box_option_window_height">40.0dip</dimen>
     <dimen name="box_item_title_textsize">13.0sp</dimen>
     <dimen name="box_option_window_margin">15.0dip</dimen>
+    
+    <!-- 二手市场  -->
+    <dimen name="old_market_publish_text_size">14sp</dimen>
+    
+    <!-- 价格字体大小  -->
+    <dimen name="common_price_text_size">26.67sp</dimen>
 </resources>

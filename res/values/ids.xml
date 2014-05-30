@@ -2,5 +2,9 @@
 <resources>
 	
     <item name="action_post" type="id"></item>
+    
+    <item name="action_search" type="id"></item>
+    <item name="action_publish_oldinfo" type="id"></item>
+    <item name="action_publish_shoot" type="id"></item>
 
 </resources>

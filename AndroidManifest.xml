@@ -115,8 +115,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_detail"
             android:screenOrientation="portrait" />
-        
-        <!-- 二手信息列表  -->
+
+        <!-- 二手信息列表 -->
         <activity
             android:name="com.wb.citylife.mk.old.OldInfoListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -126,13 +126,52 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        
-        <!-- 发布二手信息  -->
+
+        <!-- 发布二手信息 -->
         <activity
             android:name="com.wb.citylife.mk.old.PublishOldInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/ac_name_publish_oldinfo"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!-- 二手信息详情 -->
+        <activity
+            android:name="com.wb.citylife.mk.old.OldInfoDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!-- 随手拍列表 -->
+        <activity
+            android:name="com.wb.citylife.mk.shoot.ShootListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_shoot"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <!-- 发布随手拍信息 -->
+        <activity
+            android:name="com.wb.citylife.mk.shoot.ShootPublishActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_publish_shoot"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        
+         <!-- 房地产列表 -->
+        <activity
+            android:name="com.wb.citylife.mk.estate.EstateListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_estate"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <!-- 账号管理 -->
         <activity
@@ -247,7 +286,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
-		        
+
     </application>
 
 </manifest>

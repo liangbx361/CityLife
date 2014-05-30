@@ -28,6 +28,7 @@ import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.common.widget.ToastHelper;
 import com.viewpagerindicator.LinePageIndicator;
+import com.wb.citylife.EstateListActivity;
 import com.wb.citylife.R;
 import com.wb.citylife.adapter.AdvPagerAdapter;
 import com.wb.citylife.adapter.ChannelAdapter;
@@ -42,6 +43,7 @@ import com.wb.citylife.dialog.ChannelDialog;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
 import com.wb.citylife.mk.old.OldInfoListActivity;
+import com.wb.citylife.mk.shoot.ShootListActivity;
 import com.wb.citylife.mk.vote.VoteListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
 
@@ -189,6 +191,14 @@ public class HomeFragment extends Fragment implements HomeListener,
 			
 		case ChannelType.CHANNEL_TYPE_OLD_MARKET:
 			startActivity(new Intent(getActivity(), OldInfoListActivity.class));
+			break;
+			
+		case ChannelType.CHANNEL_TYPE_SHOOT:
+			startActivity(new Intent(getActivity(), ShootListActivity.class));
+			break;
+			
+		case ChannelType.CHANNEL_TYPE_HOUSE:
+			startActivity(new Intent(getActivity(), EstateListActivity.class));
 			break;
 		}		
 
@@ -367,11 +377,11 @@ public class HomeFragment extends Fragment implements HomeListener,
 		        	break;
 		        	
 		        case ChannelType.CHANNEL_TYPE_SHOOT:
-		        	
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.shoot.ShootListActivity");
 		        	break;
 		        	
 		        case ChannelType.CHANNEL_TYPE_HOUSE:
-		        	
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.estate.EstateListActivity");
 		        	break;
 		        }
 		        

@@ -15,6 +15,9 @@
     <string name="ac_name_vote">投票</string>    
     <string name="ac_name_oldinfo">二手市场</string>
     <string name="ac_name_publish_oldinfo">发布二手信息</string>
+    <string name="ac_name_shoot">随手拍</string>
+    <string name="ac_name_publish_shoot">发布随手拍</string>
+    <string name="ac_name_estate">房地产</string>
     
     <!-- ActionBar -->
     <string name="action_post">发布</string>
@@ -85,6 +88,10 @@
     
     <!-- 投票  -->
     <string name="hint_feedback">请写下您的意见...</string>
+    
+    <!-- 随手拍  -->
+    <string name="hint_shoot_title">请填写标题</string>
+    <string name="hint_shoot_content">请填写内容</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

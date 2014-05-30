@@ -12,6 +12,7 @@ public class OldInfoList extends BaseBean{
     	public String id;
     	public String title;
     	public String time;
+    	public String summary;
     	public int price;
     	public String thumbnailUrl;
     }

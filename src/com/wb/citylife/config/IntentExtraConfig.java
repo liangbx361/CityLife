@@ -16,4 +16,10 @@ public interface IntentExtraConfig {
 	
 	/***************************** 二手市场  **********************************************/
 	public static final String OLD_TYPE = "type";
+	
+	/***************************** 随手拍  **********************************************/
+	public static final String SHOOT_TYPE = "type";
+	
+	/***************************** 房地产  **********************************************/
+	public static final String ESTATE_TYPE = "type";
 }

@@ -38,4 +38,8 @@ public interface NetInterface {
 	
 	/***************************** 二手市场  **********************************************/
 	public static final String METHOD_OLD_INFO_LIST = "oldInfoList";
+	public static final String METHOD_OLD_INFO_DETAIL = "oldInfoDetail";
+	
+	/***************************** 随手拍  **********************************************/
+	public static final String METHOD_SHOOT_LIST = "shootList";
 }

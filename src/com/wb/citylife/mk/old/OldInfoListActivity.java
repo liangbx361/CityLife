@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
@@ -48,7 +49,10 @@ public class OldInfoListActivity extends BaseActivity {
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		setActionBarItem(menu, R.id.action_post, R.string.action_post);
+		setActionBarItem(menu, R.id.action_publish_oldinfo, R.string.action_publish_oldinfo, 
+				R.drawable.actionbar_publish_oldinfo_icon);
+		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
+				R.drawable.actionbar_search_icon);
 		
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
@@ -61,7 +65,7 @@ public class OldInfoListActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {		
 		
 		switch(item.getItemId()) {
-		case R.id.action_post:
+		case R.id.action_publish_oldinfo:
 			startActivity(new Intent(this, PublishOldInfoActivity.class));
 			return true;
 		}
@@ -69,8 +73,10 @@ public class OldInfoListActivity extends BaseActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	class OldPageAdapter extends FragmentPagerAdapter {
+	class OldPageAdapter extends FragmentPagerAdapter implements IconPagerAdapter{
 		String[] titles = {"二手市场", "我的二手货"};
+		int[] icons = {R.drawable.old_info_icon_selector, R.drawable.my_old_info_icon_selector};
+		
 		int pageCount;
 		
 		public OldPageAdapter(FragmentManager fm) {
@@ -103,7 +109,13 @@ public class OldInfoListActivity extends BaseActivity {
 		public CharSequence getPageTitle(int position) {
 			
 			return titles[position];
+		}
+
+		@Override
+		public int getIconResId(int index) {
+			return icons[index];
 		}		
+		
 		
 	}
 		
