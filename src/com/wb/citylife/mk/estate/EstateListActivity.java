@@ -23,7 +23,7 @@ public class EstateListActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_estatelist);
+		setContentView(R.layout.activity_oldinfolist);
 		
 		getIntentData();
 		initView();				
@@ -78,10 +78,7 @@ public class EstateListActivity extends BaseActivity {
 		
 		public ShootPageAdapter(FragmentManager fm) {
 			super(fm);
-			pageCount = 2;
-			if(CityLifeApp.getInstance().checkLogin()) {
-				pageCount += 1;
-			}						
+			pageCount = 2;					
 		}
 
 		@Override

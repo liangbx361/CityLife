@@ -15,8 +15,6 @@ import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.config.IntentExtraConfig;
-import com.wb.citylife.mk.old.OldListFragment;
-import com.wb.citylife.mk.old.PublishOldInfoActivity;
 
 public class ShootListActivity extends BaseActivity {
 	
