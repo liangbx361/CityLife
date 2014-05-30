@@ -42,4 +42,7 @@ public interface NetInterface {
 	
 	/***************************** 随手拍  **********************************************/
 	public static final String METHOD_SHOOT_LIST = "shootList";
+	
+	/***************************** 房地产  **********************************************/
+	public static final String METHOD_ESTATE_LIST = "estateList";
 }

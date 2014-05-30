@@ -38,8 +38,6 @@
         android:layout_below="@id/name"
         android:layout_toRightOf="@id/img"
         android:lineSpacingExtra="2.0dip"
-        android:maxLines="2"
-        android:minLines="2"
         android:textAppearance="@style/news_list_desc_style" />
 
     <LinearLayout

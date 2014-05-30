@@ -96,7 +96,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//处理下拉刷新
 				shootPageInfo.pageNo = 1;
-				requestEstateList(Method.POST, NetInterface.METHOD_SHOOT_LIST, getEstateListRequestParams(), 
+				requestEstateList(Method.POST, NetInterface.METHOD_ESTATE_LIST, getEstateListRequestParams(), 
 						EstateListFragment.this, EstateListFragment.this);
 			}
 
@@ -113,7 +113,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 				if(loadState == PullListViewHelper.BOTTOM_STATE_LOAD_IDLE && mEstateList.hasNextPage) {
 					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
 					shootPageInfo.pageNo++;	
-					requestEstateList(Method.POST, NetInterface.METHOD_SHOOT_LIST, getEstateListRequestParams(), 
+					requestEstateList(Method.POST, NetInterface.METHOD_ESTATE_LIST, getEstateListRequestParams(), 
 							EstateListFragment.this, EstateListFragment.this);
 				}
 			}
@@ -136,7 +136,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 					//加载失败，点击重试
 					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
 					pullHelper.setBottomState(loadState, shootPageInfo.pageSize);		
-					requestEstateList(Method.POST, NetInterface.METHOD_SHOOT_LIST, getEstateListRequestParams(), 
+					requestEstateList(Method.POST, NetInterface.METHOD_ESTATE_LIST, getEstateListRequestParams(), 
 							EstateListFragment.this, EstateListFragment.this);
 				}
 			}
@@ -144,7 +144,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 		
 		//启动第一次二手列表请求
 		shootPageInfo = new PageInfo();
-		requestEstateList(Method.POST, NetInterface.METHOD_SHOOT_LIST, getEstateListRequestParams(), 
+		requestEstateList(Method.POST, NetInterface.METHOD_ESTATE_LIST, getEstateListRequestParams(), 
 				EstateListFragment.this, EstateListFragment.this);
 	}
 	
