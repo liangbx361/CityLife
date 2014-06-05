@@ -34,4 +34,8 @@
     
     <!-- 价格字体颜色  -->
     <color name="price_text_color">#ff247cce</color>
+    
+    <!-- banner -->
+    <color name="banner_nor_text_color">#ff732d</color>
+    <color name="banner_sel_text_color">#e66524</color>
 </resources>

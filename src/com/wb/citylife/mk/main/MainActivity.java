@@ -85,17 +85,16 @@ public class MainActivity extends BaseActivity implements MainListener,
 	}
 	
 	@Override
-	public void initView() {
-		
+	public void initView() {		
 		fTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
 		fTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		fTabHost.getTabWidget().setDividerDrawable(null);
+		fTabHost.getTabWidget().setBackgroundResource(R.drawable.tab_footer_bg_white);
 						
 		for(int i=0; i<fragments.length; i++) {
 			TabSpec tabSpec = fTabHost.newTabSpec(tabTags[i]); 
 			tabSpec.setIndicator(getTabItemView(tabIconIds[i], tabNameIds[i]));
-			fTabHost.addTab(tabSpec, fragments[i], null);
-			fTabHost.getTabWidget().setBackgroundResource(R.drawable.tab_footer_bg_white);			
+			fTabHost.addTab(tabSpec, fragments[i], null);						
 		}
 	}
 	

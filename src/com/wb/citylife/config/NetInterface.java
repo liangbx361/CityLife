@@ -45,4 +45,5 @@ public interface NetInterface {
 	
 	/***************************** 房地产  **********************************************/
 	public static final String METHOD_ESTATE_LIST = "estateList";
+	public static final String METHOD_ESTATE_DETAIL = "estateDetail";
 }

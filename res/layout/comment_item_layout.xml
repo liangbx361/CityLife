@@ -2,29 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="13.78dp"
+    android:paddingRight="13.78dp" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14.67dp" >
 
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"
+            android:text="小明"
+            android:textColor="#247cce"
+            android:textSize="@dimen/comment_source_text_size"
+            android:typeface="sans" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:textColor="#828282"
+            android:textSize="@dimen/comment_source_text_size"
+            android:typeface="sans"
+            android:text="1小时前" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/comment"
-        style="@style/news_content_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="19.33dp"
+        android:layout_marginTop="16dp"
+        android:text="施主，请留步,施主，请留步施主，请留步施主，请留步施主，请留步施主，请留步施主，请留步施主，请留步"
+        android:textColor="@color/news_content_color"
+        android:textSize="@dimen/comment_content_text_size"
+        android:typeface="sans" />
 
 </LinearLayout>

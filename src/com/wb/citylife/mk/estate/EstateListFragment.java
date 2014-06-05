@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -219,6 +220,9 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
+		String estateId = mEstateList.datas.get(position).id;
+		Intent intent = new Intent(mActivity, EstateDetailActivity.class);
+		intent.putExtra(IntentExtraConfig.DETAIL_ID, estateId);
+		startActivity(intent);
 	}
 }

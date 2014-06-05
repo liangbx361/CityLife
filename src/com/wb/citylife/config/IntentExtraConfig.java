@@ -22,4 +22,6 @@ public interface IntentExtraConfig {
 	
 	/***************************** 房地产  **********************************************/
 	public static final String ESTATE_TYPE = "type";
+	public static final String ESTATE_IMAGE_DATA = "image";	
+	
 }

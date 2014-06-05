@@ -161,8 +161,8 @@
             android:label="@string/ac_name_publish_shoot"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
-        
-         <!-- 房地产列表 -->
+
+        <!-- 房地产列表 -->
         <activity
             android:name="com.wb.citylife.mk.estate.EstateListActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -171,6 +171,23 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+        </activity>
+
+        <!-- 房地产详情 -->
+        <activity
+            android:name="com.wb.citylife.mk.estate.EstateDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!-- 图片浏览 -->
+        <activity
+            android:name="com.wb.citylife.mk.estate.ImageBrowseActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_image_browse"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
 
         <!-- 账号管理 -->
@@ -286,7 +303,6 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
-
     </application>
 
 </manifest>

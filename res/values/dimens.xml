@@ -40,4 +40,8 @@
     
     <!-- 价格字体大小  -->
     <dimen name="common_price_text_size">26.67sp</dimen>
+    
+    <!-- 评论类型  -->
+    <dimen name="comment_source_text_size">12sp</dimen>
+    <dimen name="comment_content_text_size">16sp</dimen>
 </resources>

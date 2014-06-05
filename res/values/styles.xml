@@ -133,7 +133,23 @@
         <item name="android:textColor">@color/news_content_color</item>
         <item name="android:lineSpacingMultiplier">1.5</item>
     </style>
-
+	
+    <!-- 房地产描述标题样式  -->
+    <style name="estate_desc_title_style">
+        <item name="android:textSize">@dimen/news_list_desc_text_size</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#000</item>
+    </style>
+    
+    <!-- 房地产描述内容样式  -->
+    <style name="estate_desc_content_style">
+        <item name="android:textSize">@dimen/news_list_desc_text_size</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/news_list_desc_color</item>
+    </style>
+    
     <!-- 底部弹出样式对话框 -->
     <style name="popupStyle" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>

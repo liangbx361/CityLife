@@ -12,7 +12,6 @@ import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
-import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.config.IntentExtraConfig;
 
 public class EstateListActivity extends BaseActivity {

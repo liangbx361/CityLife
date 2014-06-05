@@ -1,0 +1,315 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg_color" >
+
+    <RelativeLayout
+        android:id="@+id/comment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/comment_bg"
+        android:gravity="center_vertical" >
+
+        <Button
+            android:id="@+id/comment_btn"
+            style="@style/common_btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="评论" />
+
+        <EditText
+            android:id="@+id/comment_et"
+            style="@style/common_et_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/comment_btn"
+            android:hint="我来说两句" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/comment_layout" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13.78dp"
+                android:layout_marginRight="13.78dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5.78dp"
+                    android:text="万科广场"
+                    android:textColor="#000"
+                    android:textSize="@dimen/common_menu_text_size" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="185.33dp"
+                    android:layout_marginTop="6.22dp" >
+
+                    <!--
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.viewpagerindicator.LinePageIndicator
+                        android:id="@+id/indicator"
+                        android:layout_width="fill_parent"
+                        android:layout_height="14.67dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/adv_bar_bg"
+                        app:gapWidth="5dp"
+                        app:lineWidth="15dp"
+                        app:selectedColor="#ffffffff"
+                        app:strokeWidth="2dp"
+                        app:unselectedColor="#60ffffff" />
+                    -->
+
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:id="@+id/img"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14.67dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="均价"
+                        android:textAppearance="@style/news_list_title_style" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1980"
+                        android:textColor="@color/price_text_color"
+                        android:textSize="21.33sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="元/平米"
+                        android:textAppearance="@style/news_list_title_style" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13.78dp"
+                android:layout_marginRight="13.78dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:text="售楼热线:" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    style="@style/estate_desc_content_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18657436598" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="8.44dp"
+                android:background="@drawable/detail_divider_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13.78dp"
+                android:layout_marginRight="13.78dp"
+                android:layout_marginTop="9.78dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:text="售楼地址:" />
+
+                <TextView
+                    android:id="@+id/address"
+                    style="@style/estate_desc_content_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18657436598" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="8.44dp"
+                android:background="@drawable/detail_divider_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13.78dp"
+                android:layout_marginRight="13.78dp"
+                android:layout_marginTop="9.78dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:text="楼盘地址:" />
+
+                <TextView
+                    android:id="@+id/saleAddress"
+                    style="@style/estate_desc_content_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18657436598" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="8.44dp"
+                android:background="@drawable/detail_divider_line" />
+
+            <RelativeLayout
+                android:id="@+id/images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/banner_selector"
+                android:orientation="horizontal"
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp" >
+
+                <TextView
+                    android:id="@+id/name"
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="13.78dp"
+                    android:text="主力户型"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10.0dip"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="@drawable/banner_submenu" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/detail_divider_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13.78dp"
+                android:layout_marginRight="13.78dp"
+                android:layout_marginTop="9.78dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:text="楼盘信息:" />
+
+                <TextView
+                    android:id="@+id/detail"
+                    style="@style/estate_desc_content_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18657436598" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="8.44dp"
+                android:background="@drawable/detail_divider_line" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/banner_selector"
+                android:orientation="horizontal"
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp" >
+
+                <TextView
+                    android:id="@+id/name"
+                    style="@style/estate_desc_title_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="13.78dp"
+                    android:text="实时视频"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10.0dip"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="@drawable/banner_submenu" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/detail_tag_bg"
+                android:layout_marginTop="1dp"
+                android:gravity="center"
+                android:text="最新评论"
+                android:textColor="#fefcfb" />
+            
+            <com.wb.citylife.widget.ListViewForScrollView
+                android:id="@+id/comment_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" 
+                android:divider="@drawable/detail_divider_line"/>
+            
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

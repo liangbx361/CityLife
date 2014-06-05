@@ -18,6 +18,7 @@
     <string name="ac_name_shoot">随手拍</string>
     <string name="ac_name_publish_shoot">发布随手拍</string>
     <string name="ac_name_estate">房地产</string>
+    <string name="ac_name_image_browse">图片浏览</string>
     
     <!-- ActionBar -->
     <string name="action_post">发布</string>
