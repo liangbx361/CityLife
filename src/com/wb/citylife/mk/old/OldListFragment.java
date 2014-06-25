@@ -6,7 +6,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +26,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.BaseNetActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.OldInfoListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.OldInfoList;
@@ -41,8 +42,8 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.OldInfoListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
-public class OldListFragment extends Fragment implements Listener<OldInfoList>, ErrorListener,
-	OnItemClickListener{
+public class OldListFragment extends BaseExtraLayoutFragment implements Listener<OldInfoList>, ErrorListener,
+	OnItemClickListener, ReloadListener{
 	
 	public static final String TAG_OLD_INFO = "1";
 	public static final String TAG_MY_OLD_INFO = "2";
@@ -76,8 +77,8 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.old_info_list_layout, container, false);		
+			Bundle savedInstanceState) {	
+		return setContentView(inflater, R.layout.old_info_list_layout);
 	}
 	
 	@Override
@@ -85,6 +86,7 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 		super.onViewCreated(view, savedInstanceState);	
 		
 		initView(view);
+		showLoading();
 	}
 	
 	private void initView(View view) {
@@ -179,8 +181,22 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 	
 	@Override
 	public void onErrorResponse(VolleyError error) {
-		mActivity.setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(mActivity, VolleyErrorHelper.getErrorMessage(error));
+		
+		if(oldPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, oldPageInfo.pageSize);
+		}
+	}
+	
+	@Override
+	public void onReload() {
+		oldPageInfo.pageNo = 1;
+		requestOldInfoList(Method.POST, NetInterface.METHOD_OLD_INFO_LIST, getOldInfoListRequestParams(), 
+				OldListFragment.this, OldListFragment.this);
+		showLoading();
 	}
 
 	@Override
@@ -193,6 +209,7 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 				mOldInfoList = response;
 				mOldAdapter = new OldInfoListAdapter(mActivity, mOldInfoList);
 				mOldListView.setAdapter(mOldAdapter);
+				showContent();
 			} else {
 				mOldInfoList.hasNextPage = response.hasNextPage;
 				mOldInfoList.datas.addAll(response.datas);
@@ -215,5 +232,5 @@ public class OldListFragment extends Fragment implements Listener<OldInfoList>, 
 		Intent intent = new Intent(mActivity, OldInfoDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, item.id);
 		startActivity(intent);
-	}
+	}	
 }

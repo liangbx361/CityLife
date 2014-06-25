@@ -1,4 +1,4 @@
-package com.wb.citylife.mk.estate;
+package com.wb.citylife.mk.img;
 
 import java.util.ArrayList;
 import java.util.List;

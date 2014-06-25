@@ -78,7 +78,9 @@
     <!-- 分享、收藏 -->
     <string name="share">分享</string>
     <string name="collect">收藏</string>
+    <string name="collect_cancle">取消收藏</string>
     <string name="collect_success">收藏成功</string>
+    <string name="colletc_cancle_success">已取消收藏</string>    
     
     <!-- 照片上传  -->
     <string name="take_picture">拍照</string>

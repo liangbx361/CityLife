@@ -8,42 +8,46 @@ package com.wb.citylife.config;
 public interface NetInterface {
 	
 	/***************************** 资讯  **********************************************/
-	public static final String METHOD_NEWS_LIST = "newsList";
-	public static final String METHOD_NEWS_DETAIL= "newsDetail";
+	public static final String METHOD_NEWS_LIST = "newsList.do";
+	public static final String METHOD_NEWS_DETAIL= "newsDetail.do";
 	
 	/***************************** 评论  **********************************************/
-	public static final String METHOD_COMMENT_LIST = "commentList";
-	public static final String METHOD_COMMENT = "comment";
+	public static final String METHOD_COMMENT_LIST = "commentList.do";
+	public static final String METHOD_COMMENT = "comment.do";
 	
 	/***************************** 登录注册  **********************************************/
-	public static final String METHOD_LOGIN = "login";
-	public static final String METHOD_REGISTER = "register";
-	public static final String METHOD_MODIFY_AVATAR = "modifyAvatar";
-	public static final String METHOD_MODIFY_NICKNAME = "modifyNickname";	
-	public static final String METHOD_MODIFY_PASSWORD = "modifyPwd";
+	public static final String METHOD_LOGIN = "login.do";
+	public static final String METHOD_REGISTER = "register.do";
+	public static final String METHOD_MODIFY_AVATAR = "modifyAvatar.do";
+	public static final String METHOD_MODIFY_NICKNAME = "modifyNickname.do";	
+	public static final String METHOD_MODIFY_PASSWORD = "modifyPwd.do";
 	
 	/***************************** 栏目  **********************************************/
-	public static final String METHOD_CHANNEL = "channel";
+	public static final String METHOD_CHANNEL = "channel.do";
 	
 	/***************************** 广告  **********************************************/
-	public static final String METHOD_SCROLL_NEWS = "scrollNews";
+	public static final String METHOD_SCROLL_NEWS = "scrollNews.do";
 	
 	/***************************** 收藏  **********************************************/
-	public static final String METHOD_COLLECT = "collect";
+	public static final String METHOD_COLLECT = "collect.do";
+	
+	/***************************** 点赞  **********************************************/
+	public static final String METHOD_FAVOUR = "favour.do";
 	
 	/***************************** 投票  **********************************************/
-	public static final String METHOD_VOTE_LIST = "voteList";
-	public static final String METHOD_VOTE_DETAIL = "voteDetail";
-	public static final String METHOD_VOTE_SATISTICS = "voteSatistics";
+	public static final String METHOD_VOTE_LIST = "voteList.do";
+	public static final String METHOD_VOTE_DETAIL = "voteDetail.do";
+	public static final String METHOD_VOTE_SATISTICS = "voteSatistics.do";
 	
 	/***************************** 二手市场  **********************************************/
-	public static final String METHOD_OLD_INFO_LIST = "oldInfoList";
-	public static final String METHOD_OLD_INFO_DETAIL = "oldInfoDetail";
+	public static final String METHOD_OLD_INFO_LIST = "oldInfoList.do";
+	public static final String METHOD_OLD_INFO_DETAIL = "oldInfoDetail.do";
 	
 	/***************************** 随手拍  **********************************************/
-	public static final String METHOD_SHOOT_LIST = "shootList";
+	public static final String METHOD_SHOOT_LIST = "shootList.do";
+	public static final String METHOD_SHOOT_DETAIL = "shootDetail.do";
 	
 	/***************************** 房地产  **********************************************/
-	public static final String METHOD_ESTATE_LIST = "estateList";
-	public static final String METHOD_ESTATE_DETAIL = "estateDetail";
+	public static final String METHOD_ESTATE_LIST = "estateList.do";
+	public static final String METHOD_ESTATE_DETAIL = "estateDetail.do";
 }

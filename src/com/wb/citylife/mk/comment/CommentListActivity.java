@@ -6,6 +6,8 @@ import java.util.Map;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -15,21 +17,35 @@ import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
+import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.CommentListRequest;
+import com.wb.citylife.widget.PullListViewHelper;
 
-public class CommentListActivity extends BaseActivity implements Listener<CommentList>, ErrorListener{
+public class CommentListActivity extends BaseActivity implements Listener<CommentList>, ErrorListener,
+	ReloadListener{
 	
 	private PullToRefreshListView mPullListView;
+	private PullListViewHelper pullHelper;
+	private int loadState;
+	
+	private ListView commentLv;
+	private CommentAdapter mCommentAdapter;
+	
+	public String commentId;
 	
 	//评论数据
 	private CommentListRequest mCommentListRequest;
@@ -42,12 +58,14 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		setContentView(R.layout.activity_commentlist);
 		
 		getIntentData();
-		initView();				
+		initView();			
+		
+		showLoading();
 	}
 			
 	@Override
 	public void getIntentData() {
-		
+		commentId = getIntent().getStringExtra(IntentExtraConfig.COMMENT_ID);
 	}
 	
 	@Override
@@ -58,6 +76,9 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//处理下拉刷新
+				commentPageInfo.pageNo = 1;
+				requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+						CommentListActivity.this, CommentListActivity.this);
 			}
 
 			@Override
@@ -71,11 +92,36 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 			@Override
 			public void onLastItemVisible() {
 				//滑动到底部的处理
+				if(loadState == PullListViewHelper.BOTTOM_STATE_LOAD_IDLE && mCommentList.hasNextPage) {
+					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
+					commentPageInfo.pageNo++;
+					requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+							CommentListActivity.this, CommentListActivity.this);
+				}
 			}
 		});
 				
-		//设置自动刷新
-		mPullListView.setRefreshing(false);
+		//设置允许下拉刷新
+		mPullListView.setMode(Mode.PULL_FROM_START);
+						
+		commentLv = mPullListView.getRefreshableView();
+		
+		//底部添加正在加载视图
+		pullHelper = new PullListViewHelper(this, commentLv);
+		pullHelper.setBottomClick(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(loadState == PullListViewHelper.BOTTOM_STATE_LOAD_FAIL) {
+					//加载失败，点击重试
+					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
+					pullHelper.setBottomState(loadState, commentPageInfo.pageSize);	
+					requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+							CommentListActivity.this, CommentListActivity.this);
+				}
+			}
+		});
+		
 	}
 	
 	@Override
@@ -106,6 +152,7 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		params.put(RespParams.ID, commentId);
 		return params;
 	}
 	
@@ -135,14 +182,45 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+		showLoadError(this);
 	}
 	
 	/**
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(CommentList response) {
-		mCommentList = response;
-		setIndeterminateBarVisibility(false);
+	public void onResponse(CommentList response) {		
+		mPullListView.onRefreshComplete();
+		setIndeterminateBarVisibility(false);		
+		
+		if(response.respCode == RespCode.SUCCESS) {
+			if(response.totalNum == 0) {
+				showEmpty();
+				return;
+			}
+			
+			showContent();
+			if(commentPageInfo.pageNo == 1) {
+				mCommentList = response;
+				mCommentAdapter = new CommentAdapter(CommentListActivity.this, mCommentList);
+				commentLv.setAdapter(mCommentAdapter);
+			} else {
+				mCommentList.hasNextPage = response.hasNextPage;
+				mCommentList.datas.addAll(response.datas);
+				mCommentAdapter.notifyDataSetChanged();
+			}
+			
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
+			if(mCommentList.hasNextPage) {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, commentPageInfo.pageSize);
+			} else {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, commentPageInfo.pageSize);
+			}
+		}
+	}
+
+	@Override
+	public void onReload() {
+		
 	}
 }

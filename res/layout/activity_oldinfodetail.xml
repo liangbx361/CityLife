@@ -5,32 +5,9 @@
     android:layout_height="match_parent"
     android:background="@color/common_bg_color" >
 
-    <RelativeLayout
+    <include
         android:id="@+id/comment_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/comment_bg"
-        android:gravity="center_vertical">
-        
-        <Button
-            android:id="@+id/comment_btn"
-            style="@style/common_btn_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="评论" />
-        
-        <EditText
-            android:id="@+id/comment_et"
-            style="@style/common_et_style"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/comment_btn"
-            android:layout_marginLeft="10dp"
-            android:hint="我来说两句" />
-    </RelativeLayout>
+        layout="@layout/publish_comment_layout" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -50,14 +27,29 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5.78dp"
-                    android:text="玩具小熊"
-                    android:textColor="#000"
-                    android:textSize="@dimen/common_menu_text_size" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5.78dp"
+                        android:layout_centerHorizontal="true"
+                        android:text="玩具小熊"
+                        android:textColor="#000"
+                        android:textSize="@dimen/common_menu_text_size" />
+                    
+                    <TextView 
+                        android:id="@+id/imgNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="13.33dp"
+                        android:textColor="#4a4a4a"
+                        android:layout_alignParentRight="true"
+                        android:text="1/2"/>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -69,17 +61,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
-                    <com.viewpagerindicator.LinePageIndicator
-                        android:id="@+id/indicator"
-                        android:layout_width="fill_parent"
-                        android:layout_height="14.67dp"
-                        android:layout_alignParentBottom="true"
-                        android:background="@drawable/adv_bar_bg"
-                        app:gapWidth="5dp"
-                        app:lineWidth="15dp"
-                        app:selectedColor="#ffffffff"
-                        app:strokeWidth="2dp"
-                        app:unselectedColor="#60ffffff" />
+                    <ImageButton
+                        android:id="@+id/leftBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/btn_left_arrow_selector" />
+
+                    <ImageButton
+                        android:id="@+id/rightBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/btn_right_arrow_selector" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -106,7 +103,8 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/username"
                             android:layout_marginTop="8.44dp"
-                            android:text="2014-05-27" />
+                            android:text="2014-05-27"
+                            android:textColor="#757575" />
                     </RelativeLayout>
 
                     <TextView
@@ -115,7 +113,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="30dp"
                         android:layout_weight="1"
-                        android:gravity="left|center_vertical"
+                        android:gravity="right|bottom|center_vertical"
                         android:text="￥100"
                         android:textColor="@color/price_text_color"
                         android:textSize="@dimen/common_price_text_size" />
@@ -132,13 +130,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="16dp"
-                        android:text="评论" />
+                        android:text="评论"
+                        android:textColor="@color/old_info_desc_text_color" />
 
                     <TextView
                         android:id="@+id/click"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="点击" />
+                        android:text="点击"
+                        android:textColor="@color/old_info_desc_text_color" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -162,7 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12.89dp"
                 android:layout_marginTop="14.67dp"
-                android:text="详细信息" />
+                android:text="详细信息"
+                android:textColor="@color/old_info_desc_text_color" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -186,7 +187,15 @@
                 android:layout_marginLeft="12.89dp"
                 android:layout_marginTop="14.67dp"
                 android:text="手机号：18657436598 \n联系人：梁先生"
+                android:textColor="@color/old_info_desc_text_color"
+                android:autoLink="phone|email"
                 android:textSize="14sp" />
+
+            <com.wb.citylife.widget.ListViewForScrollView
+                android:id="@+id/comment_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/detail_divider_line" />
         </LinearLayout>
     </ScrollView>
 

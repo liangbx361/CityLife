@@ -6,7 +6,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,24 +26,22 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.BaseNetActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.EstateListAdapter;
-import com.wb.citylife.adapter.ShootListAdapter;
-import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.EstateList;
 import com.wb.citylife.bean.PageInfo;
-import com.wb.citylife.bean.ShootList;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.EstateListRequest;
-import com.wb.citylife.task.ShootListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
-public class EstateListFragment extends Fragment implements Listener<EstateList>, ErrorListener,
-	OnItemClickListener{
+public class EstateListFragment extends BaseExtraLayoutFragment implements Listener<EstateList>, ErrorListener,
+	OnItemClickListener, ReloadListener{
 	
 	public static final String ESTATE_TYPE_NEW = "1";
 	public static final String ESTATE_TYPE_HOT = "2";
@@ -79,7 +76,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.common_pull_list_layout, container, false);		
+		return setContentView(inflater, R.layout.common_pull_list_layout);	
 	}
 	
 	@Override
@@ -87,6 +84,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 		super.onViewCreated(view, savedInstanceState);	
 		
 		initView(view);
+		showLoading();
 	}
 	
 	private void initView(View view) {
@@ -185,8 +183,22 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 	 */
 	@Override
 	public void onErrorResponse(VolleyError error) {		
-		mActivity.setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getActivity(), VolleyErrorHelper.getErrorMessage(error));
+		
+		if(shootPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, shootPageInfo.pageSize);
+		}
+	}
+	
+	@Override
+	public void onReload() {
+		shootPageInfo.pageNo = 1;
+		requestEstateList(Method.POST, NetInterface.METHOD_ESTATE_LIST, getEstateListRequestParams(), 
+				EstateListFragment.this, EstateListFragment.this);
+		showLoading();
 	}
 	
 	/**
@@ -194,7 +206,6 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 	 */
 	@Override
 	public void onResponse(EstateList response) {		
-		mActivity.setIndeterminateBarVisibility(false);
 		mPullListView.onRefreshComplete();
 		
 		if(response.respCode == RespCode.SUCCESS) {
@@ -202,6 +213,7 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 				mEstateList = response;
 				mEstateAdapter = new EstateListAdapter(mActivity, mEstateList);
 				mShootLv.setAdapter(mEstateAdapter);
+				showContent();
 			} else {
 				mEstateList.hasNextPage = response.hasNextPage;
 				mEstateList.datas.addAll(response.datas);
@@ -224,5 +236,5 @@ public class EstateListFragment extends Fragment implements Listener<EstateList>
 		Intent intent = new Intent(mActivity, EstateDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, estateId);
 		startActivity(intent);
-	}
+	}	
 }

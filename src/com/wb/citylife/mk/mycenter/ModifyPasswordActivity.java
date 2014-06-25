@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -22,6 +23,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -153,6 +155,7 @@ public class ModifyPasswordActivity extends BaseActivity implements Listener<Reg
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("oldPassword", oldPwd);
 		params.put("newPassword", newPwd);
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}
 	

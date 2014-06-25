@@ -38,4 +38,7 @@
     <!-- banner -->
     <color name="banner_nor_text_color">#ff732d</color>
     <color name="banner_sel_text_color">#e66524</color>
+    
+    <!-- 二手市场字体颜色 -->
+    <color name="old_info_desc_text_color">#6c6c6c</color>
 </resources>

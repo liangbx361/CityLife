@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NewsAdapter extends BaseAdapter {
@@ -46,6 +47,7 @@ public class NewsAdapter extends BaseAdapter {
 			view = LayoutInflater.from(mContext).inflate(R.layout.news_item_layout, null);
 			holder = new ViewHolder();
 			holder.thumbIv = (NetworkImageView) view.findViewById(R.id.img);
+			holder.videoIv = (ImageView) view.findViewById(R.id.video);
 			holder.titleTv = (TextView) view.findViewById(R.id.title);
 			holder.descTv = (TextView) view.findViewById(R.id.desc);
 			holder.tagTv = (TextView) view.findViewById(R.id.tag);
@@ -58,11 +60,17 @@ public class NewsAdapter extends BaseAdapter {
 		
 		NewsItem newsItem = mNewsList.datas.get(position);
 		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
-		holder.thumbIv.setImageUrl(newsItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());
+		holder.thumbIv.setImageUrl(newsItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());		
 		holder.titleTv.setText(newsItem.title);
 		holder.descTv.setText(newsItem.summary);
 		holder.tagTv.setText("点击" + newsItem.commentNum);
 		holder.tag2Tv.setText("评论" + newsItem.clickNum);
+		
+		if(newsItem.type == 0) {
+			holder.videoIv.setVisibility(View.GONE);
+		} else {
+			holder.videoIv.setVisibility(View.VISIBLE);
+		}
 		
 		return view;
 	}
@@ -74,6 +82,7 @@ public class NewsAdapter extends BaseAdapter {
 	
 	public class ViewHolder {
 		NetworkImageView thumbIv;
+		ImageView videoIv;
 		TextView titleTv;
 		TextView descTv;
 		TextView tagTv;

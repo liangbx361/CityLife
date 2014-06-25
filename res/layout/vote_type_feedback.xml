@@ -3,20 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-	
-    <TextView 
+
+    <TextView
         android:id="@+id/title"
         style="@style/news_list_title_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
     
+    <TextView 
+        android:id="@+id/index"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:textColor="#ff732e"
+        android:textSize="15sp"
+        android:text="Q1/Q3"/>
+
     <EditText
         android:id="@+id/opinion"
-        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shoot_et_content"
+        android:ems="10"
+        android:gravity="top"
         android:hint="@string/hint_feedback"
-        android:gravity="left">
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:layout_marginTop="9.33dp"
+        android:textColorHint="#ffd5d5d5"
+        android:textSize="15sp" >
+
+        <requestFocus />
     </EditText>
 
 </LinearLayout>

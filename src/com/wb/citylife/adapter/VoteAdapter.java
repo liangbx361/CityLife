@@ -59,18 +59,20 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 	private VoteSatistics mvoteSatistics;
 	
 	private QuestionItem submitQItem;
+	private String detailId;
 	
 	public VoteAdapter(Context context, ViewPager viewPager, CirclePageIndicator voteIndicator, 
-			Button submitBtn, VoteDetail voteDetail) {
+			Button submitBtn, VoteDetail voteDetail, String detailId) {
 		mContext = context;
 		mViewPager = viewPager;
 		mSubmitBtn = submitBtn;
 		mVoteDetail = voteDetail;	
 		voteDetailActivity = (VoteDetailActivity) mContext;
+		this.detailId = detailId;
 		
 		for(int i=0; i<mVoteDetail.datas.size(); i++) {
 			QuestionItem qItem = mVoteDetail.datas.get(i);				
-			mViewList.add(initView(qItem));
+			mViewList.add(initView(qItem, i+1));
 			
 			List<Int> cbList = new ArrayList<Int>();
 			mCheckList.add(cbList);
@@ -96,7 +98,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			@Override
 			public void onPageSelected(int position) {
 				QuestionItem qItem = mVoteDetail.datas.get(position);
-				if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
+				if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE || qItem.hasVote) {
 					mSubmitBtn.setVisibility(View.GONE);
 				} else {					
 					mSubmitBtn.setVisibility(View.VISIBLE);
@@ -118,16 +120,20 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		});
 	}
 	
-	private View initView(QuestionItem qItem) {
+	private View initView(QuestionItem qItem, int index) {
 		View view;
 		if(qItem.questionType == VoteType.VOTE_TYPE_OPINION) {
 			view = LayoutInflater.from(mContext).inflate(R.layout.vote_type_feedback, null);
 			TextView titleTv = (TextView) view.findViewById(R.id.title);
 			titleTv.setText(qItem.questionTitle);
+			TextView indexTv = (TextView) view.findViewById(R.id.index);
+			indexTv.setText("Q" + index + " / Q" + mVoteDetail.datas.size());
 		} else {
 			view = LayoutInflater.from(mContext).inflate(R.layout.vote_type_select_layout, null);
 			TextView titleTv = (TextView) view.findViewById(R.id.title);
 			titleTv.setText(qItem.questionTitle);
+			TextView indexTv = (TextView) view.findViewById(R.id.index);
+			indexTv.setText("Q" + index + " / Q" + mVoteDetail.datas.size());
 			ListView voteLv = (ListView) view.findViewById(R.id.vote_list);
 			QuestionAdapter adapter = new QuestionAdapter(mContext, qItem);
 			voteLv.setAdapter(adapter);
@@ -180,7 +186,10 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		
 		@Override
 		public int getCount() {
-			return qItem.questionOptions.length;
+			if(qItem.questionOptions == null)
+				return 0;
+			else
+				return qItem.questionOptions.length;
 		}
 
 		@Override
@@ -205,6 +214,8 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				holder.voteCb = (CheckBox) view.findViewById(R.id.check);				
 				if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
 					holder.voteCb.setVisibility(View.VISIBLE);
+				} else {
+					holder.voteCb.setVisibility(View.INVISIBLE);
 				}
 				TextView optionTv = (TextView) view.findViewById(R.id.option);
 				holder.optionTv = optionTv;
@@ -231,7 +242,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				holder.resultGroup.setVisibility(View.VISIBLE);				
 				String option = (position + 1) + ". " +  qItem.questionOptions[position];
 				holder.option2Tv.setText(option);
-				int rate = qItem.results[position];
+				int rate = qItem.result[position];
 				int itemIndex = mVoteDetail.datas.indexOf(qItem);
 				Bool animBool = animList.get(itemIndex);
 				if(animBool.value) {
@@ -301,6 +312,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		}
 		
 		String answer = "";
+		String answerId = "";
 		int page = mViewPager.getCurrentItem();
 		QuestionItem qItem = mVoteDetail.datas.get(page);
 		
@@ -308,16 +320,19 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		
 		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			answer = position + "";
+			answerId = qItem.questionOptionIds[position];
 		} else if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
 			List<Int> checkList = mCheckList.get(page);
 			for(int i=0; i<checkList.size(); i++) {
 				if(checkList.get(i).value == 1) {
 					answer += i + ",";
+					answerId += qItem.questionOptionIds[i] + ",";
 				}
 			}
 			
 			if(!answer.equals("")) {				
 				answer = answer.substring(0, answer.length()-1);
+				answerId = answerId.substring(0, answerId.length()-1);
 			} else {
 				ToastHelper.showToastInBottom(mContext, "请至少选择一项");
 				return;			
@@ -336,20 +351,22 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		submitQItem = qItem;
 		voteDetailActivity.setIndeterminateBarVisibility(true);
 		requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
-				getVoteSatisticsRequestParams(qItem, answer), new StatisticsListener(), voteDetailActivity);
+				getVoteSatisticsRequestParams(qItem, answer, answerId), new StatisticsListener(), voteDetailActivity);
 	}
 	
 	/**
 	 * 获取统计请求参数
 	 * @return
 	 */
-	private Map<String, String> getVoteSatisticsRequestParams(QuestionItem qItem, String answer) {
+	private Map<String, String> getVoteSatisticsRequestParams(QuestionItem qItem, String answer, String answerId) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
-		params.put("id", mVoteDetail.id);
+		params.put("id", detailId);
 		params.put("questionId", qItem.questionId);
 		params.put("questionType", qItem.questionType+"");
-		params.put("answer", answer);
+		params.put("answer", answerId);
+		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
+//		params.put("answerId", answerId);
 		return params;
 	}
 	
@@ -387,15 +404,20 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			mvoteSatistics = response;
 			if(response.respCode == RespCode.SUCCESS) {
 				submitQItem.hasVote = true;
-				submitQItem.results = new int[submitQItem.questionOptions.length];
-				for(int i=0; i<submitQItem.questionOptions.length; i++) {
-					submitQItem.results[i] = response.result[i];
-				}
+				if(submitQItem.questionType == VoteType.VOTE_TYPE_SINGLE ||
+						submitQItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
+					submitQItem.result = new int[submitQItem.questionOptions.length];
+					for(int i=0; i<submitQItem.questionOptions.length; i++) {
+						submitQItem.result[i] = response.result[i];
+					}
 				
-				int page = mViewPager.getCurrentItem();
-				animList.get(page).value = true;
-				mAdapterList.get(page).notifyDataSetChanged();
-				mSubmitBtn.setVisibility(View.GONE);								
+					int page = mViewPager.getCurrentItem();
+					animList.get(page).value = true;
+					mAdapterList.get(page).notifyDataSetChanged();
+					mSubmitBtn.setVisibility(View.GONE);						
+				} else {
+					mSubmitBtn.setVisibility(View.GONE);
+				}
 			}
 		}
 	}

@@ -1,43 +1,60 @@
 package com.wb.citylife.mk.old;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Request.Method;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
-import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
+import com.wb.citylife.adapter.CommentAdapter;
+import com.wb.citylife.adapter.ImageAdapter;
+import com.wb.citylife.bean.Comment;
+import com.wb.citylife.bean.CommentList;
+import com.wb.citylife.bean.ImagesItem;
 import com.wb.citylife.bean.OldInfoDetail;
+import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
+import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.task.CommentListRequest;
+import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.task.OldInfoDetailRequest;
+import com.wb.citylife.widget.ListViewForScrollView;
 
 public class OldInfoDetailActivity extends BaseActivity implements OnClickListener,
-	Listener<OldInfoDetail>, ErrorListener{
-	
-	private EditText commentEt;
-	private Button commentBtn;
-	
+	Listener<OldInfoDetail>, ErrorListener, ReloadListener {
+		
 	private TextView titleTv;
-	private ViewPager viewPager;
-	private LinePageIndicator pageIndicator;
+	private TextView imgNumTv;
+	private ImageButton leftBtn;
+	private ImageButton rightBtn;
+	private ViewPager imgPager;
+	private ImageAdapter mImgAdapter;
 	
 	private TextView usernameTv;
 	private TextView timeTv;
@@ -46,11 +63,25 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	private TextView clickTv;
 	private TextView detailTv;
 	private TextView contactTv;
-		
-	private OldInfoDetailRequest mOldInfoDetailRequest;
-	private OldInfoDetail mOldInfoDetail;
 	
 	private String id;
+	
+	//二手市场详情
+	private OldInfoDetailRequest mOldInfoDetailRequest;
+	private OldInfoDetail mOldInfoDetail;		
+	
+	//最新评论
+	private ListViewForScrollView commentLv;
+	private CommentListRequest mCommentListRequest;
+	private CommentList mCommentList;
+	private CommentAdapter mCommentAdapter;
+	private PageInfo commentPageInfo;
+	
+	//发表评论
+	private EditText commentEt;
+	private Button commentBtn;
+	private CommentRequest mCommentRequest;
+	private Comment mComment;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +90,8 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		
 		getIntentData();
 		initView();
+		
+		showLoading();
 	}
 	
 	@Override
@@ -67,12 +100,17 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	}
 
 	@Override
-	public void initView() {
-		commentEt = (EditText) findViewById(R.id.comment_et);
-		commentBtn = (Button) findViewById(R.id.comment_btn);
+	public void initView() {		
 		titleTv = (TextView) findViewById(R.id.title);
-		viewPager = (ViewPager) findViewById(R.id.pager);
-		pageIndicator = (LinePageIndicator) findViewById(R.id.indicator);
+		
+		imgNumTv = (TextView) findViewById(R.id.imgNum);
+		leftBtn = (ImageButton) findViewById(R.id.leftBtn);
+		leftBtn.setVisibility(View.GONE);
+		leftBtn.setOnClickListener(this);
+		rightBtn = (ImageButton) findViewById(R.id.rightBtn);
+		rightBtn.setOnClickListener(this);
+		imgPager = (ViewPager) findViewById(R.id.pager);
+		
 		usernameTv = (TextView) findViewById(R.id.username);
 		timeTv = (TextView) findViewById(R.id.time);
 		priceTv = (TextView) findViewById(R.id.price);
@@ -80,13 +118,46 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		clickTv = (TextView) findViewById(R.id.click);
 		detailTv = (TextView) findViewById(R.id.detail);
 		contactTv = (TextView) findViewById(R.id.contactInfo);
-	}
-
-	@Override
-	public void onClick(View v) {
 		
+		commentLv = (ListViewForScrollView) findViewById(R.id.comment_list);
+		commentEt = (EditText) findViewById(R.id.comment_et);
+		commentBtn = (Button) findViewById(R.id.comment_btn);
+		commentBtn.setOnClickListener(this);
+		
+		View bottomView = LayoutInflater.from(this).inflate(R.layout.bottom_click_layout, null);
+		commentLv.addFooterView(bottomView);
+		Button clickBtn = (Button)bottomView.findViewById(R.id.click);
+		clickBtn.setOnClickListener(this);
+		
+		imgPager.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				setImgeNum(position);
+				if(position == 0) {					
+					leftBtn.setVisibility(View.GONE);
+					rightBtn.setVisibility(View.VISIBLE);
+				} else if(position == mOldInfoDetail.imagesUrl.length-1) {
+					leftBtn.setVisibility(View.VISIBLE);
+					rightBtn.setVisibility(View.GONE);
+				} else {
+					leftBtn.setVisibility(View.VISIBLE);
+					rightBtn.setVisibility(View.VISIBLE);
+				}
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				
+			}
+		});
 	}
-	
+		
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//此处设置菜单		
@@ -94,8 +165,11 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		setDisplayShowHomeEnabled(false);
 		
 		requestOldInfoDetail(Method.POST, NetInterface.METHOD_OLD_INFO_DETAIL, 
-				getOldInfoDetailRequestParams(), this, this);
-		setIndeterminateBarVisibility(true);		
+				getOldInfoDetailRequestParams(), this, this);			
+		
+		commentPageInfo = new PageInfo(5, 1);
+		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+				getCommentListRequestParams(), new CommentListListener(), this);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -105,6 +179,70 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {			
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		super.onClick(v);
+		
+		switch(v.getId()) {
+		//点击提交评论
+		case R.id.comment_btn:{
+			String comment = commentEt.getText().toString();
+			if(comment != null && !comment.equals("")) {
+				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
+			}	
+		}break;		
+				
+		case R.id.click:{
+			Intent intent = new Intent(this, CommentListActivity.class);
+			intent.putExtra(IntentExtraConfig.COMMENT_ID, id);
+			startActivity(intent);
+		}break;
+		
+		case R.id.leftBtn:{
+			int currentItem = imgPager.getCurrentItem();
+			currentItem--;
+			if(currentItem >= 0) {
+				imgPager.setCurrentItem(currentItem);
+				setImgeNum(currentItem);
+				if(currentItem == 0) {
+					leftBtn.setVisibility(View.GONE);
+				}
+				rightBtn.setVisibility(View.VISIBLE);
+			}
+		}break;
+			
+		case R.id.rightBtn:{
+			int currentItem = imgPager.getCurrentItem();
+			currentItem++;
+			if(currentItem < mOldInfoDetail.imagesUrl.length) {
+				imgPager.setCurrentItem(currentItem);
+				setImgeNum(currentItem);
+				if(currentItem >= mOldInfoDetail.imagesUrl.length-1) {
+					rightBtn.setVisibility(View.GONE);
+				}
+				leftBtn.setVisibility(View.VISIBLE);
+			} 
+		}break;
+		}
+	}
+	
+	private void setImgeNum(int position) {
+		imgNumTv.setText((position + 1) + "/" + mOldInfoDetail.imagesUrl.length);
+	}
+
+	@Override
+	public void onReload() {
+		showLoading();
+		requestOldInfoDetail(Method.POST, NetInterface.METHOD_OLD_INFO_DETAIL, 
+				getOldInfoDetailRequestParams(), this, this);	
+		
+		commentPageInfo = new PageInfo(5, 1);
+		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+				getCommentListRequestParams(), new CommentListListener(), this);
 	}
 	
 	/**
@@ -144,6 +282,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+		showLoadError(this);
 	}
 	
 	/**
@@ -152,9 +291,116 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void onResponse(OldInfoDetail response) {		
 		setIndeterminateBarVisibility(false);
-		if(response.respCode == RespCode.SUCCESS) {
+		if(response.respCode == RespCode.SUCCESS) {			
 			mOldInfoDetail = response;
+			mImgAdapter = new ImageAdapter(this, mOldInfoDetail.imagesUrl);
+			imgPager.setAdapter(mImgAdapter);
+			imgNumTv.setText("1/" + mOldInfoDetail.imagesUrl.length);
+			
+			titleTv.setText(mOldInfoDetail.title);
+			usernameTv.setText(mOldInfoDetail.userName);
+			timeTv.setText(mOldInfoDetail.time);
+			priceTv.setText("￥" + mOldInfoDetail.price/100.0f + "");
+			commentTv.setText("评论 " + mOldInfoDetail.commentNum + "");
+			clickTv.setText("点击 " + mOldInfoDetail.clickNum + "");
+			detailTv.setText(mOldInfoDetail.content);
+			contactTv.setText(mOldInfoDetail.contactInfo);
+			showContent();
+		} else {
+			showLoadError(this);
 		}
 	}
+		
+	/**
+	 * 获取评论请求参数
+	 * @return
+	 */
+	private Map<String, String> getCommentListRequestParams() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
+		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		return params;
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestCommentList(int method, String methodUrl, Map<String, String> params,	 
+			Listener<CommentList> listenre, ErrorListener errorListener) {			
+		if(mCommentListRequest != null) {
+			mCommentListRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mCommentListRequest = new CommentListRequest(method, url, params, listenre, errorListener);
+		startRequest(mCommentListRequest);		
+	}
+	
+	/**
+	 * 评论数据更新
+	 * @author liangbx
+	 *
+	 */
+	class CommentListListener implements Listener<CommentList> {
 
+		@Override
+		public void onResponse(CommentList commentList) {
+			mCommentList = commentList;
+			mCommentAdapter = new CommentAdapter(OldInfoDetailActivity.this, mCommentList);
+			commentLv.setAdapter(mCommentAdapter);
+		}		
+	}
+		
+	/**
+	 * 获取评论参数请求参数
+	 * @return
+	 */
+	private Map<String, String> getCommentRequestParams(String comment) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", "");
+		params.put("id", id);
+		params.put("comment", comment);
+		return params;
+	}
+	
+	/**
+	 * 执行评论任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestComment(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Comment> listenre, ErrorListener errorListener) {			
+		if(mCommentRequest != null) {
+			mCommentRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mCommentRequest = new CommentRequest(method, url, params, listenre, errorListener);
+		startRequest(mCommentRequest);		
+	}
+	
+	/**
+	 * 提交评论结果
+	 * @author liangbx
+	 *
+	 */
+	class CommentListener implements Listener<Comment> {
+
+		@Override
+		public void onResponse(Comment comment) {
+			if(comment.respCode == RespCode.SUCCESS) {
+				commentEt.setText("");
+				ToastHelper.showToastInBottom(OldInfoDetailActivity.this, R.string.comment_success);
+			} else {
+				ToastHelper.showToastInBottom(OldInfoDetailActivity.this, R.string.comment_fail);
+			}
+		}
+		
+	}	
 }

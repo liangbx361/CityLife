@@ -3,12 +3,11 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Text;
-
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,23 +16,23 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.NetworkImageView;
+import com.common.net.volley.VolleyErrorHelper;
+import com.common.widget.ToastHelper;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.VoteAdapter;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.VoteDetail;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
-import com.common.net.volley.VolleyErrorHelper;
-import com.common.widget.ToastHelper;
-import com.wb.citylife.bean.VoteDetail;
-import com.wb.citylife.bean.VoteSatistics;
 import com.wb.citylife.task.VoteDetailRequest;
-import com.wb.citylife.task.voteSatisticsRequest;
 
-public class VoteDetailActivity extends BaseActivity implements Listener<VoteDetail>, ErrorListener{
+public class VoteDetailActivity extends BaseActivity implements Listener<VoteDetail>, 
+	ErrorListener, ReloadListener{
 	
 	private TextView voteTitleTv;
 	private NetworkImageView imgIv;
@@ -57,7 +56,9 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 		setContentView(R.layout.activity_votedetail);
 		
 		getIntentData();
-		initView();				
+		initView();		
+		
+		showLoading();
 	}
 			
 	@Override
@@ -83,8 +84,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, 
-				getVoteDetailRequestParams(), this, this);
+		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, getVoteDetailRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -107,6 +107,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 			params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		}
 		params.put("id", voteId);
+		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
 		return params;
 	}
 	
@@ -132,9 +133,18 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	 * 网络请求错误处理
 	 */
 	@Override
-	public void onErrorResponse(VolleyError error) {		
+	public void onErrorResponse(VolleyError error) {	
+		showLoadError(this);
 		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+	}
+	
+	/**
+	 * 加载失败重，点击重新加载的处理
+	 */
+	@Override
+	public void onReload() {
+		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, getVoteDetailRequestParams(), this, this);
 	}
 	
 	/**
@@ -144,7 +154,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	public void onResponse(VoteDetail response) {		
 		setIndeterminateBarVisibility(false);
 		mVoteDetail = response;
-		if(mVoteDetail.respCode == RespCode.SUCCESS) {
+		if(mVoteDetail.respCode == RespCode.SUCCESS) {			
 			voteTitleTv.setText(mVoteDetail.title);
 			imgIv.setImageUrl(mVoteDetail.thumbnailUrl, CityLifeApp.getInstance().getImageLoader());
 			imgIv.setDefaultImageResId(R.drawable.base_list_default_icon);
@@ -152,10 +162,11 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 			timeTv.setText(mVoteDetail.time);
 			numTv.setText(mVoteDetail.participantNum + "人参与");		
 			
-			mVoteAdapter = new VoteAdapter(this, mVotePager, mVoteIndicator, mSubmitBtn, mVoteDetail);
+			mVoteAdapter = new VoteAdapter(this, mVotePager, mVoteIndicator, mSubmitBtn, mVoteDetail, voteId);
 			mVotePager.setAdapter(mVoteAdapter);
 			mVoteIndicator.setViewPager(mVotePager);
+			
+			showContent();
 		} 
-	}
-		
+	}			
 }

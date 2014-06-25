@@ -25,6 +25,7 @@ import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Comment;
@@ -36,13 +37,15 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.mk.img.ImageBrowseActivity;
 import com.wb.citylife.task.CommentListRequest;
 import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.task.EstateDetailRequest;
 import com.wb.citylife.widget.ListViewForScrollView;
 
 public class EstateDetailActivity extends BaseActivity implements Listener<EstateDetail>, ErrorListener,
-	OnClickListener{
+	OnClickListener, ReloadListener{
 	
 	private TextView titleTv;
 	private TextView priceTv;
@@ -78,7 +81,9 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		setContentView(R.layout.activity_estatedetail);
 		
 		getIntentData();
-		initView();				
+		initView();		
+		
+		showLoading();
 	}
 	
 	@Override
@@ -117,10 +122,9 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		
 		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
-		commentPageInfo = new PageInfo();
+		commentPageInfo = new PageInfo(5, 1);
 		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
-				getCommentListRequestParams(), new CommentListListener(), this);
-		setIndeterminateBarVisibility(true);		
+				getCommentListRequestParams(), new CommentListListener(), this);		
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -151,9 +155,11 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			}	
 		}break;		
 		
-		case R.id.click:
-			
-			break;
+		case R.id.click:{
+			Intent intent = new Intent(this, CommentListActivity.class);
+			intent.putExtra(IntentExtraConfig.COMMENT_ID, estateId);
+			startActivity(intent);
+		}break;
 		}
 	}
 		
@@ -193,6 +199,17 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+		showLoadError(this);
+	}
+	
+	@Override
+	public void onReload() {
+		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
+				getEstateDetailRequestParams(), this, this);
+		commentPageInfo.pageNo = 1;
+		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+				getCommentListRequestParams(), new CommentListListener(), this);
+		showLoading();
 	}
 	
 	/**
@@ -213,6 +230,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			imgIv.setDefaultImageResId(R.drawable.base_list_adv_default_icon);
 			imgIv.setImageUrl(NetConfig.getPictureUrl(mEstateDetail.imagesUrl.get(0).images[0]), 
 					CityLifeApp.getInstance().getImageLoader());
+			showContent();
 		}
 	}
 	

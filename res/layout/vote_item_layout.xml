@@ -6,12 +6,19 @@
     android:paddingBottom="10dp"
     android:paddingTop="10dp" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/option_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:id="@+id/option"
+            style="@style/vote_option_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="abcd"/>
+        
         <CheckBox
             android:id="@+id/check"
             android:layout_width="wrap_content"
@@ -20,14 +27,11 @@
             android:clickable="false"
             android:enabled="false"
             android:focusable="false"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/option"
-            style="@style/vote_option_text_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:visibility="visible" />
+        
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/result_layout"

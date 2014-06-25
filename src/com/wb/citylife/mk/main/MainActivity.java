@@ -1,6 +1,7 @@
 package com.wb.citylife.mk.main;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.common.date.FormatDateTime;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
@@ -172,7 +174,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 	 */
 	private Map<String, String> getChannelRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-				
+		params.put("lastAccessTime", FormatDateTime.date2String(new Date(), FormatDateTime.DATETIME_YMDHMSS_STR));
 		return params;
 	}
 	
@@ -222,7 +224,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 					channel.imageUrl = channelItem.imageUrl;
 					channel.type = channelItem.type;
 					channel.name = channelItem.name;
-					channel.isAdd = channelItem.isAdd;
+					channel.isAdd = true;
 					channel.updateNum = 0;
 					channel.weight = i;	
 					mChannelList.add(channel);

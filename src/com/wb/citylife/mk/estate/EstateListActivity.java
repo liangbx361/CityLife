@@ -49,8 +49,7 @@ public class EstateListActivity extends BaseActivity {
 		
 		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
 				R.drawable.actionbar_search_icon);
-		
-		setIndeterminateBarVisibility(true);		
+			
 		return super.onCreateOptionsMenu(menu);
 	}
 	

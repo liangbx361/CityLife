@@ -1,4 +1,4 @@
-package com.wb.citylife.mk.estate;
+package com.wb.citylife.mk.img;
 
 import java.util.ArrayList;
 
@@ -19,6 +19,7 @@ public class ImageBrowseActivity extends BaseActivity {
 	
 	private FragmentTabHost fTabHost;
 	private ArrayList<ImagesItem> imageList;
+	private boolean disTab;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class ImageBrowseActivity extends BaseActivity {
 	@Override
 	public void getIntentData() {
 		imageList = getIntent().getParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA);
+		disTab = getIntent().getBooleanExtra(IntentExtraConfig.ESTATE_DIS_TAB, true);
 	}
 
 	@Override
@@ -47,6 +49,10 @@ public class ImageBrowseActivity extends BaseActivity {
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(IntentExtraConfig.ESTATE_IMAGE_DATA, imagesItem);
 			fTabHost.addTab(tabSpec, ImageBrowseFragment.class, bundle);
+		}
+		
+		if(!disTab) {
+			fTabHost.setVisibility(View.GONE);
 		}
 	}
 	

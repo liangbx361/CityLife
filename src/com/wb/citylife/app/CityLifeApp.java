@@ -8,6 +8,7 @@ import net.tsz.afinal.utils.Utils;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.common.device.DeviceUuidFactory;
 import com.common.net.volley.cache.VolleyImageCache;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.User;
@@ -34,6 +35,9 @@ public class CityLifeApp extends Application {
 	//用户
 	private User mUser;
 	
+	//手机唯一标识
+	private String mPhoneId;
+	
 	//栏目列表
 	private List<DbChannel> mChannels;
 	
@@ -54,8 +58,12 @@ public class CityLifeApp extends Application {
 		//初始化用户信息
 		List<User> userList = mFinalDb.findAllByWhere(User.class, "isLogin=1");
 		if(userList != null && userList.size() > 0) {
-			mUser = userList.get(0);
+			mUser = userList.get(0);			
 		}
+		
+		//获取手机唯一标识符
+		DeviceUuidFactory device = new DeviceUuidFactory(this);
+		mPhoneId = device.getDeviceUuid().toString();
 	}
 	
 	/**
@@ -139,5 +147,13 @@ public class CityLifeApp extends Application {
 		if(mUser != null && mUser.isLogin > 0) return true;
 		else return false;
 			
+	}
+	
+	/**
+	 * 获取手机唯一标识符
+	 * @return
+	 */
+	public String getPhoneId() {
+		return mPhoneId;
 	}
 }

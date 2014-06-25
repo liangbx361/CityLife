@@ -53,8 +53,7 @@ public class OldInfoListActivity extends BaseActivity {
 				R.drawable.actionbar_publish_oldinfo_icon);
 		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
 				R.drawable.actionbar_search_icon);
-		
-		setIndeterminateBarVisibility(true);		
+			
 		return super.onCreateOptionsMenu(menu);
 	}
 	

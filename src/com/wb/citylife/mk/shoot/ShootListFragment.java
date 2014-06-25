@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,11 +26,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.BaseNetActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.ShootListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ShootList;
+import com.wb.citylife.bean.ShootList.ShootItem;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -39,8 +42,8 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.ShootListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
-public class ShootListFragment extends Fragment implements Listener<ShootList>, ErrorListener,
-	OnItemClickListener{
+public class ShootListFragment extends BaseExtraLayoutFragment implements Listener<ShootList>, ErrorListener,
+	OnItemClickListener, ReloadListener{
 	
 	public static final String SHOOT_TYPE_NEW = "1";
 	public static final String SHOOT_TYPE_HOT = "2";
@@ -75,8 +78,8 @@ public class ShootListFragment extends Fragment implements Listener<ShootList>, 
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.common_pull_list_layout, container, false);		
+			Bundle savedInstanceState) {	
+		return setContentView(inflater, R.layout.common_pull_list_layout);
 	}
 	
 	@Override
@@ -84,6 +87,7 @@ public class ShootListFragment extends Fragment implements Listener<ShootList>, 
 		super.onViewCreated(view, savedInstanceState);	
 		
 		initView(view);
+		showLoading();
 	}
 	
 	private void initView(View view) {
@@ -185,8 +189,22 @@ public class ShootListFragment extends Fragment implements Listener<ShootList>, 
 	 */
 	@Override
 	public void onErrorResponse(VolleyError error) {		
-		mActivity.setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getActivity(), VolleyErrorHelper.getErrorMessage(error));
+		
+		if(shootPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, shootPageInfo.pageSize);
+		}	
+	}
+	
+	@Override
+	public void onReload() {
+		shootPageInfo.pageNo = 1;
+		requestShootList(Method.POST, NetInterface.METHOD_SHOOT_LIST, getShootListRequestParams(), 
+				ShootListFragment.this, ShootListFragment.this);
+		showLoading();
 	}
 	
 	/**
@@ -202,6 +220,7 @@ public class ShootListFragment extends Fragment implements Listener<ShootList>, 
 				mShootList = response;
 				mShootAdapter = new ShootListAdapter(mActivity, mShootList);
 				mShootLv.setAdapter(mShootAdapter);
+				showContent();
 			} else {
 				mShootList.hasNextPage = response.hasNextPage;
 				mShootList.datas.addAll(response.datas);
@@ -220,6 +239,9 @@ public class ShootListFragment extends Fragment implements Listener<ShootList>, 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
-	}
+		ShootItem sItem = mShootList.datas.get(position);
+		Intent intent = new Intent(mActivity, ShootDetailActivity.class);
+		intent.putExtra(IntentExtraConfig.DETAIL_ID, sItem.id);
+		startActivity(intent);
+	}	
 }

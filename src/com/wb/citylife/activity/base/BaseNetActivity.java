@@ -11,7 +11,7 @@ import com.wb.citylife.app.CityLifeApp;
  * @author liangbx
  *
  */
-public class BaseNetActivity extends BaseEmptyActivity{
+public class BaseNetActivity extends BaseExtraLayoutActivity{
 	
 	public RequestQueue mQueue;
 	private String requestTag;

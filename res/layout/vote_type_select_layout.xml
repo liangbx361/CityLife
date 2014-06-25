@@ -9,7 +9,16 @@
         style="@style/news_list_title_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
+    
+    <TextView 
+        android:id="@+id/index"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:textColor="#ff732e"
+        android:textSize="15sp"
+        android:text="Q1/Q3"/>
+    
     <ListView
         android:id="@+id/vote_list"
         android:layout_marginTop="5dp"

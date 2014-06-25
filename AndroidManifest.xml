@@ -96,7 +96,8 @@
             android:name="com.wb.citylife.mk.comment.CommentListActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_comment"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <!-- 投票列表 -->
         <activity
@@ -113,6 +114,7 @@
         <activity
             android:name="com.wb.citylife.mk.vote.VoteDetailActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/ac_name_detail"
             android:screenOrientation="portrait" />
 
@@ -154,6 +156,14 @@
             </intent-filter>
         </activity>
 
+        <!-- 随手拍详情 -->
+        <activity
+            android:name="com.wb.citylife.mk.shoot.ShootDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
         <!-- 发布随手拍信息 -->
         <activity
             android:name="com.wb.citylife.mk.shoot.ShootPublishActivity"
@@ -183,7 +193,7 @@
 
         <!-- 图片浏览 -->
         <activity
-            android:name="com.wb.citylife.mk.estate.ImageBrowseActivity"
+            android:name="com.wb.citylife.mk.img.ImageBrowseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_image_browse"
             android:screenOrientation="portrait"
@@ -231,6 +241,22 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_register"
             android:screenOrientation="portrait" />
+        
+        <!-- 视频  -->
+        <activity
+            android:name="com.wb.citylife.mk.video.VideoActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_register"
+            android:screenOrientation="landscape" />
+        
+        <!-- Don't forgot InitActivity -->
+        <activity
+            android:name="io.vov.vitamio.activity.InitActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- ###################注册友盟SDK使用的Activity###################### -->
         <activity
@@ -303,6 +329,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
+
     </application>
 
 </manifest>

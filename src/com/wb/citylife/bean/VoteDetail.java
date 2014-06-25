@@ -5,6 +5,7 @@ import java.util.List;
 public class VoteDetail extends BaseBean{
 
     public String id;
+    public int type;
     public String title;
     public String summary;
     public String thumbnailUrl;
@@ -18,8 +19,9 @@ public class VoteDetail extends BaseBean{
     	public String questionTitle;
     	public int questionType;
     	public String[] questionOptions;
+    	public String[] questionOptionIds;
     	public boolean hasVote;
-    	public int[] results;
+    	public int[] result;
     }
 	
 }

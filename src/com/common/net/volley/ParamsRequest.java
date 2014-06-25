@@ -72,6 +72,7 @@ public abstract class ParamsRequest<T> extends Request<T> {
 	public Map<String, String> getHeaders() throws AuthFailureError {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Charset", "UTF-8"); 
+		headers.put("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");
 		return headers;
 	}
 	

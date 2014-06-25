@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment_bg"
+    android:layout_alignParentBottom="true"
+    android:gravity="center_vertical">
+
+    <Button
+        android:id="@+id/comment_btn"
+        style="@style/common_btn_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="评论" />
+
+    <EditText
+        android:id="@+id/comment_et"
+        style="@style/common_et_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/comment_btn"
+        android:hint="我来说两句" />
+
+</RelativeLayout>

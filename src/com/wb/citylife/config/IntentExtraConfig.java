@@ -23,5 +23,11 @@ public interface IntentExtraConfig {
 	/***************************** 房地产  **********************************************/
 	public static final String ESTATE_TYPE = "type";
 	public static final String ESTATE_IMAGE_DATA = "image";	
+	public static final String ESTATE_DIS_TAB = "dis_tab";
 	
+	/***************************** 类型列表  **********************************************/
+	public static final String COMMENT_ID = "id";
+	
+	/***************************** 视频  **********************************************/
+	public static final String VIDEO_PATH = "video_path";
 }

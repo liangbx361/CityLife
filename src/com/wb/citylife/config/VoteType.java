@@ -15,5 +15,5 @@ public interface VoteType {
 	/**
 	 * 意见征集
 	 */
-	public static final int VOTE_TYPE_OPINION = 3;
+	public static final int VOTE_TYPE_OPINION = 2;
 }

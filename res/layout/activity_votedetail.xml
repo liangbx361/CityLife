@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="@color/common_bg_color"> 
+    android:background="@color/common_bg_color">
 -->
-    
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,15 +24,56 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp" />
 
-    <include
+    <RelativeLayout
+        android:id="@+id/news_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        layout="@layout/news_item_layout" >
-    </include>
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp" >
+
+        <RelativeLayout
+            android:id="@+id/img_layout"
+            android:layout_width="91dp"
+            android:layout_height="64.5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" >
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="6dp" />
+
+            <ImageView
+                android:id="@+id/video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/list_video_icon"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="3.0dip"
+            android:layout_toRightOf="@id/img_layout"
+            android:gravity="top|left|center"
+            android:lineSpacingExtra="2.0dip"
+            android:textAppearance="@style/news_list_desc_style" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -52,10 +93,17 @@
             android:layout_weight="1"
             android:gravity="right" />
     </LinearLayout>
-
-    <RelativeLayout
+	
+    <View 
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="1px"
+        android:layout_marginTop="15dp"
+        android:background="#6c6c6c"/>
+    
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/bottom"
@@ -68,10 +116,11 @@
                 android:id="@+id/submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_confirm_selector"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_cancle_selector"
                 android:text="@string/submit"
-                android:textColor="@color/common_confirm_text_color" 
-                android:visibility="gone"/>
+                android:textColor="@color/common_concle_text_color"
+                android:visibility="gone" />
 
             <com.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/vote_indicator"
@@ -83,7 +132,8 @@
                 app:pageColor="#FFFFFFFF"
                 app:radius="2dp"
                 app:strokeColor="#FF000000"
-                app:strokeWidth="0dp" />
+                app:strokeWidth="0dp" 
+                android:visibility="gone"/>
         </LinearLayout>
 
         <android.support.v4.view.ViewPager

@@ -31,6 +31,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.AdvPagerAdapter;
 import com.wb.citylife.adapter.VoteListAdapter;
 import com.wb.citylife.bean.Advertisement;
@@ -48,7 +49,7 @@ import com.wb.citylife.task.VoteListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
 public class VoteListActivity extends BaseActivity implements Listener<VoteList>, ErrorListener,
-	OnItemClickListener{
+	OnItemClickListener, ReloadListener{
 	
 	private PullToRefreshListView mPullListView;
 	private PullListViewHelper pullHelper;
@@ -73,6 +74,8 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	private ScrollNews mScrollNews;
 	private List<DbScrollNews> mScrollNewsList;
 	
+	private ScrollNewsListener listener = new ScrollNewsListener();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,6 +83,8 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		
 		getIntentData();
 		initView();	
+		
+		showLoading();
 	}
 	
 	@Override
@@ -159,7 +164,6 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		votePageInfo = new PageInfo();
 		requestVoteList(Method.POST, NetInterface.METHOD_VOTE_LIST, getVoteListRequestParams(), 
 				VoteListActivity.this, VoteListActivity.this);
-		ScrollNewsListener listener = new ScrollNewsListener();
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
 				getScrollNewsRequestParams(), listener, listener);
 		return super.onCreateOptionsMenu(menu);
@@ -202,11 +206,25 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	 */
 	@Override
 	public void onErrorResponse(VolleyError error) {				
-		mPullListView.onRefreshComplete();
-		setIndeterminateBarVisibility(false);
+		mPullListView.onRefreshComplete();	
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
-		loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
-		pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, votePageInfo.pageSize);
+		
+		if(votePageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, votePageInfo.pageSize);
+		}
+	}
+	
+	@Override
+	public void onReload() {
+		votePageInfo.pageNo = 1;
+		requestVoteList(Method.POST, NetInterface.METHOD_VOTE_LIST, getVoteListRequestParams(), 
+				VoteListActivity.this, VoteListActivity.this);
+		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
+				getScrollNewsRequestParams(), listener, listener);
+		showLoading();
 	}
 	
 	/**
@@ -220,6 +238,7 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 			mVoteList = response;
 			mVoteAdapter = new VoteListAdapter(VoteListActivity.this, mVoteList);
 			mVoteListView.setAdapter(mVoteAdapter);
+			showContent();
 		} else {
 			mVoteList.hasNextPage = response.hasNextPage;
 			mVoteList.datas.addAll(response.datas);
@@ -341,5 +360,5 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 			setIndeterminateBarVisibility(false);
 			ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 		}
-	}
+	}	
 }

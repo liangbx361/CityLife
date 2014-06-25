@@ -5,4 +5,6 @@
     <string name="action_search">搜索</string>
     <string name="action_publish_oldinfo">发布二手货</string>
     <string name="action_publish_shoot">发布随手拍</string>
+    
+    <string name="action_favour">点赞</string>
 </resources>

@@ -207,16 +207,18 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 			params.put("avatar", file);
 			FinalHttp fh = new FinalHttp(); 
+			fh.addHeader("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");;
 			fh.addHeader("connection", "keep-alive");
 			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
-			fh.post(NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR, params,
-					new AjaxCallBack<Avatar>(){
+			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR;
+			fh.post(url, params,
+					new AjaxCallBack<String>(){
 				
 						@Override
-						public void onSuccess(Avatar t) {							
-							DebugConfig.showLog("loadFile", t.avatarUrl);
-							AvatarParser parser = new AvatarParser();
-							parser.parse(t.toString());	
+						public void onSuccess(String t) {							
+							DebugConfig.showLog("loadFile", t);
+//							AvatarParser parser = new AvatarParser();
+//							parser.parse(t.toString());	
 						}				
 			});
 		} catch (FileNotFoundException e) {

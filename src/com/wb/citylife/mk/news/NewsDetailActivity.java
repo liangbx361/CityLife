@@ -3,14 +3,28 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request.Method;
@@ -22,8 +36,10 @@ import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.BaseBean;
 import com.wb.citylife.bean.Collect;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
@@ -34,6 +50,9 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.mk.video.VideoActivity;
+import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
 import com.wb.citylife.task.CommentRequest;
@@ -41,7 +60,7 @@ import com.wb.citylife.task.NewsDetailRequest;
 import com.wb.citylife.widget.ListViewForScrollView;
 
 public class NewsDetailActivity extends BaseActivity implements Listener<NewsDetail>, ErrorListener,
-	OnClickListener, OnMenuItemClickListener{
+	OnClickListener, OnMenuItemClickListener, ReloadListener{
 				
 	private String id;
 	private int type;
@@ -50,11 +69,13 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	private TextView titleTv;
 	private TextView timeTv;
 	private NetworkImageView imgIv;
-	private TextView contentTv;
+	private ViewGroup imgVg;
+	private WebView contentWv;
 	private NewsDetailRequest mNewsDetailRequest;
 	private NewsDetail mNewsDetail;
 	
 	//最新评论
+	private ViewGroup commentListVg;
 	private ListViewForScrollView commentLv;
 	private CommentListRequest mCommentListRequest;
 	private CommentList mCommentList;
@@ -70,6 +91,13 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	//收藏
 	private CollectRequest mCollectRequest;
 	private Collect mCollect;
+	private MenuItem mColletcMenuItem;
+	
+	//点赞
+	private BaseRequest mBaseRequest;
+	private MenuItem mFavourMenuItem;
+	
+	private Handler mHandler = new Handler();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +106,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		
 		getIntentData();
 		initView();				
+		initWebView();
+		
+		showLoading();
 	}
 			
 	@Override
@@ -91,26 +122,51 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		titleTv = (TextView) findViewById(R.id.title);
 		timeTv = (TextView) findViewById(R.id.time);
 		imgIv = (NetworkImageView) findViewById(R.id.img);
-		contentTv = (TextView) findViewById(R.id.content);
+		imgVg = (RelativeLayout) findViewById(R.id.img_layout);
+		imgVg.setOnClickListener(this);
+		contentWv = (WebView) findViewById(R.id.content);
+		
+		commentListVg = (ViewGroup) findViewById(R.id.comment_list_layout);
 		commentLv = (ListViewForScrollView) findViewById(R.id.comment_list);
-		commentEt = (EditText) findViewById(R.id.comment);
-		sendBtn = (Button) findViewById(R.id.send);
+		commentEt = (EditText) findViewById(R.id.comment_et);
+		sendBtn = (Button) findViewById(R.id.comment_btn);
 		sendBtn.setOnClickListener(this);
+		
+		View bottomView = LayoutInflater.from(this).inflate(R.layout.bottom_click_layout, null);
+		commentLv.addFooterView(bottomView);
+		Button clickBtn = (Button)bottomView.findViewById(R.id.click);
+		clickBtn.setOnClickListener(this);				
 	}
 	
+	private void initWebView() {
+		
+		contentWv.setWebChromeClient(new WebChromeClient() {
+
+			@Override
+			public void onProgressChanged(WebView view, int newProgress) {
+				super.onProgressChanged(view, newProgress);
+				
+				if(newProgress == 100) {
+					showContent();
+				}
+			}
+			
+		});
+	}
+			
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//此处设置菜单		
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
-		setIndeterminateBarVisibility(true);
 		
-		// 此处设置ActionBar的菜单按钮
-		setOverflowMenu(R.menu.browse_content_menu, R.drawable.actionbar_overflow_icon, this);
+		mFavourMenuItem = setActionBarItem(menu, R.id.action_favour, R.string.action_favour, R.drawable.favour);
+		//此处设置ActionBar的菜单按钮
+		setOverflowMenu(R.menu.browse_content_menu, R.drawable.actionbar_overflow_icon, this);		
 		
 		//网络请求
 		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
-		commentPageInfo = new PageInfo();
+		commentPageInfo = new PageInfo(5, 1);
 		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
 		
 		return super.onCreateOptionsMenu(menu);
@@ -120,7 +176,22 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * 菜单点击处理
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {			
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		
+		switch(item.getItemId()) {
+		case R.id.action_favour:
+			if(CityLifeApp.getInstance().checkLogin()) {
+				if(mNewsDetail.favourState == 0) {
+					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(1), new FavourListener(), this);
+				} else {
+					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(0), new FavourListener(), this);
+				}
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+			}
+			break;
+		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -132,7 +203,11 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			
 		case R.id.collect:
 			if(CityLifeApp.getInstance().checkLogin()) {
-				requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(), new CollectListener(), this);
+				if(mNewsDetail.collectState == 0) {
+					requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(0), new CollectListener(), this);
+				} else {
+					requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(1), new CollectListener(), this);
+				}
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
 			}
@@ -140,14 +215,42 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		}
 		return false;
 	}
+	
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		//点击提交评论
+		case R.id.comment_btn:{
+			String comment = commentEt.getText().toString();
+			if(comment != null && !comment.equals("")) {
+				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
+			}	
+		}break;		
 		
+		case R.id.click:{
+			Intent intent = new Intent(this, CommentListActivity.class);
+			intent.putExtra(IntentExtraConfig.COMMENT_ID, id);
+			startActivity(intent);
+		}break;
+		
+		case R.id.img_layout:{
+			Intent intent = new Intent(this, VideoActivity.class);
+			intent.putExtra(IntentExtraConfig.VIDEO_PATH, NetConfig.getPictureUrl(mNewsDetail.imagesUrl[1]));
+			startActivity(intent);
+		}
+		}
+	}
+	
 	/**
 	 * 获取请求参数
 	 * @return
 	 */
 	private Map<String, String> getNewsDetailRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put(IntentExtraConfig.DETAIL_ID, id);		
+		params.put(RespParams.ID, id);		
+		params.put(RespParams.PHONE_ID, CityLifeApp.getInstance().getPhoneId());
 		return params;
 	}
 	
@@ -174,9 +277,20 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 *
 	 */
 	@Override
-	public void onErrorResponse(VolleyError error) {		
-		setIndeterminateBarVisibility(false);
+	public void onErrorResponse(VolleyError error) {	
+		showLoadError(this);
+		setIndeterminateBarVisibility(false);		
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+	}
+	
+	/**
+	 * 加载失败重，点击重新加载的处理
+	 */
+	@Override
+	public void onReload() {
+		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
+		commentPageInfo = new PageInfo(5, 1);
+		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
 	}
 	
 	/**
@@ -189,8 +303,31 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		
 		titleTv.setText(mNewsDetail.title);
 		timeTv.setText(mNewsDetail.time);
-		imgIv.setImageUrl(mNewsDetail.imagesUrl[0], CityLifeApp.getInstance().getImageLoader());
-		contentTv.setText(mNewsDetail.content);
+		if(mNewsDetail.type == 0) {
+			imgIv.setVisibility(View.GONE);
+			imgVg.setVisibility(View.GONE);
+		} else {
+			imgIv.setVisibility(View.VISIBLE);			
+			imgIv.setImageUrl(mNewsDetail.imagesUrl[0], CityLifeApp.getInstance().getImageLoader());
+			imgVg.setVisibility(View.VISIBLE);
+		}
+		
+		contentWv.loadDataWithBaseURL(NetConfig.getServerBaseUrl(), mNewsDetail.content, null, "utf-8", null);
+		
+		if(mNewsDetail.favourState == 0) {
+			mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favour));
+		} else {
+			mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favoured));
+		}		
+		
+		mColletcMenuItem = getOverflowMenuItem(1);
+		if(mNewsDetail.collectState == 0) {
+			mColletcMenuItem.setIcon(R.drawable.un_collect_icon);
+			mColletcMenuItem.setTitle(R.string.collect);
+		} else {
+			mColletcMenuItem.setIcon(R.drawable.collect_icon);
+			mColletcMenuItem.setTitle(R.string.collect_cancle);
+		}
 	}
 	
 	/**
@@ -231,24 +368,18 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 
 		@Override
 		public void onResponse(CommentList commentList) {
-			mCommentList = commentList;
-			mCommentAdapter = new CommentAdapter(NewsDetailActivity.this, mCommentList);
-			commentLv.setAdapter(mCommentAdapter);
+			if(commentList.totalNum > 0) {
+				commentListVg.setVisibility(View.VISIBLE);
+				mCommentList = commentList;
+				mCommentAdapter = new CommentAdapter(NewsDetailActivity.this, mCommentList);
+				commentLv.setAdapter(mCommentAdapter);
+			} else {
+				commentListVg.setVisibility(View.GONE);
+			}
 		}		
 	}
 	
-	/**
-	 * 点击提交评论
-	 */
-	@Override
-	public void onClick(View v) {
-		String comment = commentEt.getText().toString();
-		if(comment != null && !comment.equals("")) {
-			requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
-		} else {
-			ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
-		}		
-	}
+	
 	
 	/**
 	 * 获取评论参数请求参数
@@ -303,9 +434,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * 获取收藏请求参数
 	 * @return
 	 */
-	private Map<String, String> getCollectRequestParams() {
+	private Map<String, String> getCollectRequestParams(int option) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("option", "0");
+		params.put("option", option+"");			
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 		params.put("id", id);
 		params.put("type", type+"");
@@ -340,11 +471,93 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		@Override
 		public void onResponse(Collect collect) {
 			if(collect.respCode == RespCode.SUCCESS) {
-				ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.collect_success);
+				if(mNewsDetail.collectState == 0) {
+					mNewsDetail.collectState = 1;
+					mColletcMenuItem.setIcon(R.drawable.collect_icon);
+					mColletcMenuItem.setTitle(R.string.collect_cancle);
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.collect_success);
+				} else {
+					mNewsDetail.collectState = 0;
+					mColletcMenuItem.setIcon(R.drawable.un_collect_icon);
+					mColletcMenuItem.setTitle(R.string.collect);
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.colletc_cancle_success);
+				}
 			} else {
 				ToastHelper.showToastInBottom(NewsDetailActivity.this, collect.respMsg);
 			}
 		}
 		
 	}
+	
+	/**
+	 * 获取请求参数
+	 * @return
+	 */
+	private Map<String, String> getFavourRequestParams(int option) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
+		params.put("id", id);
+		params.put("type", "1");
+		params.put("option", option + "");
+		return params;
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestFavour(int method, String methodUrl, Map<String, String> params,	 
+			Listener<BaseBean> listenre, ErrorListener errorListener) {			
+		if(mBaseRequest != null) {
+			mBaseRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mBaseRequest = new BaseRequest(method, url, params, listenre, errorListener);
+		startRequest(mBaseRequest);		
+	}
+	
+	class FavourListener implements Listener<BaseBean> {
+
+		@Override
+		public void onResponse(BaseBean baseBean) {
+			
+			if(baseBean.respCode == RespCode.SUCCESS) {
+				if(mNewsDetail.favourState == 0) {
+					mNewsDetail.favourState = 1;
+					mNewsDetail.favourNum++;
+					mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favoured));
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, "感谢您的赞赏");
+				} else {
+					mNewsDetail.favourState = 0;
+					mNewsDetail.favourNum--;
+					mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favour));
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, "您取消了赞赏");
+				}
+				
+			} else {
+				ToastHelper.showToastInBottom(NewsDetailActivity.this, baseBean.respMsg);
+			}
+		}
+		
+	}
+	
+	private Drawable getFavDrawable(int resId) {
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+		Bitmap newBmp = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+		Canvas canvas = new Canvas(newBmp);
+		Paint textPaint = new Paint();
+		textPaint.setTypeface(Typeface.MONOSPACE);
+		textPaint.setAntiAlias(true);
+		textPaint.setTextSize(30);
+		textPaint.setColor(0xff5c5c5c);
+		canvas.drawText(mNewsDetail.favourNum+"", 70.0f, 32.0f, textPaint);
+		Drawable drawable = new BitmapDrawable(getResources(), newBmp);
+		//mFavourMenuItem.set
+		
+		return drawable;
+	}	
 }

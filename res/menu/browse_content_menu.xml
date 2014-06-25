@@ -8,5 +8,5 @@
     <item
         android:id="@+id/collect"      
         android:icon="@drawable/un_collect_icon"
-        android:title="@string/collect"/>   
+        android:title="@string/collect"/>     
 </menu>

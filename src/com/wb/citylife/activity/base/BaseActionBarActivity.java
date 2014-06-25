@@ -34,6 +34,7 @@ public class BaseActionBarActivity extends ActionBarActivity implements MenuBuil
 	
 	//默认不显示溢出菜单
 	private boolean mShowOverflowMenu = false;
+	private MenuBuilder mMenuBuilder;
 	private MenuPopupHelper mMenuHelper;
 	private int mMenuId;
 	private int mOverflowMenuIconId;
@@ -196,7 +197,12 @@ public class BaseActionBarActivity extends ActionBarActivity implements MenuBuil
 		if(mShowOverflowMenu) {
 			MenuItem moreItem = menu.add(0, ID_ACTION_OVERFLOW, 0, R.string.action_more);         
 	        moreItem.setIcon(mOverflowMenuIconId);
-	        MenuItemCompat.setShowAsAction(moreItem, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);	
+	        MenuItemCompat.setShowAsAction(moreItem, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);		 
+	        
+	        mMenuBuilder = new MenuBuilder(this);
+			mMenuBuilder.setCallback(this);
+			MenuInflater inflater = new MenuInflater(this);			
+			inflater.inflate(mMenuId, mMenuBuilder);
 		}
 		
 		return super.onCreateOptionsMenu(menu);
@@ -247,18 +253,26 @@ public class BaseActionBarActivity extends ActionBarActivity implements MenuBuil
 	}
 	
 	private void showOverflowMenu() {
-		if(mMenuHelper == null) {
-			MenuBuilder menuBuilder = new MenuBuilder(this);
-			MenuInflater inflater = new MenuInflater(this);
-			menuBuilder.setCallback(this);
-			inflater.inflate(mMenuId, menuBuilder);
-			mMenuHelper = new MenuPopupHelper(this, menuBuilder, findViewById(ID_ACTION_OVERFLOW), true);
+		if(mMenuHelper == null) {			
+			mMenuHelper = new MenuPopupHelper(this, mMenuBuilder, findViewById(ID_ACTION_OVERFLOW), true);
 			mMenuHelper.setForceShowIcon(true);
 			mMenuHelper.setCallback(this);
-			mMenuHelper.show();
+			mMenuHelper.show();		
 		} else {
 			mMenuHelper.show();
 		}
+	}
+	
+	/**
+	 * 获取更多菜单中的Item
+	 * @param index
+	 * @return
+	 */
+	public MenuItem getOverflowMenuItem(int index) {
+		if(mMenuBuilder != null) {
+			return mMenuBuilder.getItem(index);
+		}
+		return null; 
 	}
 
 	@Override

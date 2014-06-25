@@ -4,7 +4,7 @@ package com.wb.citylife.bean;
 public class OldInfoDetail extends BaseBean{
 
     public int favourNum;
-    public String imagesUrl;
+    public String[] imagesUrl;
     public String title;
     public String userName;
     public String time;

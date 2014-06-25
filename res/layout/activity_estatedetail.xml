@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/common_bg_color" >
-
+<!--  
     <RelativeLayout
         android:id="@+id/comment_layout"
         android:layout_width="match_parent"
@@ -31,6 +31,11 @@
             android:layout_toLeftOf="@id/comment_btn"
             android:hint="我来说两句" />
     </RelativeLayout>
+-->
+
+	<include 
+	    android:id="@+id/comment_layout"
+	    layout="@layout/publish_comment_layout"/>
 
     <ScrollView
         android:layout_width="match_parent"

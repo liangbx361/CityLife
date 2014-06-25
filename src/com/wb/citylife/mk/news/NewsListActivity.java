@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,33 +25,35 @@ import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.viewpagerindicator.CirclePageIndicator;
-import com.wb.citylife.R;
-import com.wb.citylife.activity.base.BaseActivity;
-import com.wb.citylife.adapter.AdvPagerAdapter;
-import com.wb.citylife.adapter.NewsAdapter;
-import com.wb.citylife.config.IntentExtraConfig;
-import com.wb.citylife.config.NetConfig;
-import com.wb.citylife.config.NetInterface;
-import com.wb.citylife.config.RespParams;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.viewpagerindicator.LinePageIndicator;
+import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.ReloadListener;
+import com.wb.citylife.adapter.NewsAdapter;
+import com.wb.citylife.adapter.ScrollNewsPagerAdapter;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.NewsList;
+import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ScrollNews;
-import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
+import com.wb.citylife.config.RespParams;
 import com.wb.citylife.task.NewsListRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
 
 public class NewsListActivity extends BaseActivity implements Listener<NewsList>, ErrorListener,
-	OnItemClickListener{
+	OnItemClickListener, ReloadListener{
 	
 	//正在加载
 	public static final int BOTTOM_STATE_LOADING = 0;
@@ -66,6 +69,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private NewsAdapter mNewsAdapter;
 	private View bottomView;
 	
+	//新闻列表
 	private NewsListRequest mNewsListRequest;	
 	private NewsList mNewsList;
 	private PageInfo newsPageInfo;
@@ -73,15 +77,17 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	
 	//广告
 	private ViewPager mAdvViewPager;
-	private AdvPagerAdapter mAdvAdapter;
-	private CirclePageIndicator mAdvIndicator;
+	private ScrollNewsPagerAdapter mAdvAdapter;
+	private LinePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
 	private Advertisement mAdv;
+	private TextView advTitleTv;
 	
 	//滚动新闻
 	private ScrollNewsRequest mScrollNewsRequest;
 	private ScrollNews mScrollNews;
 	private List<DbScrollNews> mScrollNewsList;
+	private ScrollNewsListener scrollNewsListener = new ScrollNewsListener();
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +97,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		getIntentData();
 		initView();		
 		
+		showLoading();
 //		advTest();
 	}
 	
@@ -138,10 +145,28 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		mNewsListView.setOnItemClickListener(this);
 		
 		//广告视图添加到List头部
-		View advView = LayoutInflater.from(this).inflate(R.layout.adv_layout, null);
+		View advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
 		mAdvViewPager = (ViewPager) advView.findViewById(R.id.adv_pager);
-		mAdvIndicator = (CirclePageIndicator) advView.findViewById(R.id.adv_indicator);
-		mNewsListView.addHeaderView(advView, null, false);		
+		mAdvIndicator = (LinePageIndicator) advView.findViewById(R.id.adv_indicator);
+		advTitleTv = (TextView) advView.findViewById(R.id.title);
+		mNewsListView.addHeaderView(advView, null, false);	
+		mAdvIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				advTitleTv.setText(mScrollNewsList.get(position).title);
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				
+			}
+		});
 		
 		//底部添加正在加载视图
 		bottomView = LayoutInflater.from(this).inflate(R.layout.bottom_loading_layout, null);
@@ -163,7 +188,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 							NewsListActivity.this, NewsListActivity.this);					
 				}
 			}
-		});
+		});				
 	}
 	
 	@Override
@@ -172,12 +197,13 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
+		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
+				R.drawable.actionbar_search_icon);
+		
 		newsPageInfo = new PageInfo();
 		requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);
-		ScrollNewsListener listener = new ScrollNewsListener();
-		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
-				getScrollNewsRequestParams(), listener, listener);
-		setIndeterminateBarVisibility(true);		
+		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, getScrollNewsRequestParams(), scrollNewsListener, scrollNewsListener);
+	
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -227,10 +253,15 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	@Override
 	public void onErrorResponse(VolleyError error) {	
 		mPullListView.onRefreshComplete();
-		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
-		loadState = BOTTOM_STATE_LOAD_FAIL;
-		setBottomState(BOTTOM_STATE_LOAD_FAIL);
+		
+		if(newsPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = BOTTOM_STATE_LOAD_FAIL;
+			setBottomState(BOTTOM_STATE_LOAD_FAIL);
+		}
+		
 	}
 	
 	/**
@@ -238,12 +269,13 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 */
 	@Override
 	public void onResponse(NewsList response) {
-		mPullListView.onRefreshComplete();
-		setIndeterminateBarVisibility(false);						
+		mPullListView.onRefreshComplete();			
+		
 		if(newsPageInfo.pageNo == 1) {
 			mNewsList = response;
 			mNewsAdapter = new NewsAdapter(NewsListActivity.this, mNewsList);
 			mNewsListView.setAdapter(mNewsAdapter);
+			showContent();
 		} else {
 			mNewsList.hasNextPage = response.hasNextPage;
 			mNewsList.datas.addAll(response.datas);
@@ -371,53 +403,66 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		@Override
 		public void onResponse(ScrollNews scrollNews) {
 			setIndeterminateBarVisibility(false);
-			mScrollNews = scrollNews;
-			List<DbScrollNews> scrollNewsList = new ArrayList<DbScrollNews>();
-			for(int i=0; i<mScrollNews.datas.size(); i++) {
-				ScrollNews.NewsItem newsItem = mScrollNews.datas.get(i);
-				DbScrollNews dbScrollNews = new DbScrollNews();
-				dbScrollNews.newsId = newsItem.id;
-				dbScrollNews.imageUrl = newsItem.imageUrl;
-				dbScrollNews.title = newsItem.title;
-				dbScrollNews.type = newsItem.type;
-				scrollNewsList.add(dbScrollNews);
+			if(scrollNews.respCode == RespCode.SUCCESS) {
+				mScrollNews = scrollNews;
+				mScrollNewsList = new ArrayList<DbScrollNews>();
+				for(int i=0; i<mScrollNews.datas.size(); i++) {
+					ScrollNews.NewsItem newsItem = mScrollNews.datas.get(i);
+					DbScrollNews dbScrollNews = new DbScrollNews();
+					dbScrollNews.newsId = newsItem.id;
+					dbScrollNews.imageUrl = newsItem.imageUrl;
+					dbScrollNews.title = newsItem.title;
+					dbScrollNews.type = newsItem.type;
+					mScrollNewsList.add(dbScrollNews);
+				}
+				mAdvAdapter = new ScrollNewsPagerAdapter(NewsListActivity.this, mScrollNewsList);
+				mAdvViewPager.setAdapter(mAdvAdapter);
+				mAdvIndicator.setViewPager(mAdvViewPager);
+				advTitleTv.setText(mScrollNewsList.get(0).title);
 			}
-			mAdvAdapter = new AdvPagerAdapter(NewsListActivity.this, scrollNewsList);
-			mAdvViewPager.setAdapter(mAdvAdapter);
-			mAdvIndicator.setViewPager(mAdvViewPager);
 		}
 
 		@Override
 		public void onErrorResponse(VolleyError error) {
 			setIndeterminateBarVisibility(false);
-			ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+			showLoadError(NewsListActivity.this);
+			ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));			
 		}
 	}
 	
+	@Override
+	public void onReload() {
+		newsPageInfo.pageNo = 1;
+		requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);		
+		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, getScrollNewsRequestParams(), scrollNewsListener, scrollNewsListener);
+		showLoading();
+	}	
+	
 	/************************************************ 测试数据 **********************************************/
-	private void advTest() {
-		mAdv = new Advertisement();
-		mAdv.respCode = 0;
-		mAdv.respMsg = "ok";
-		mAdv.totalCount = 2;
-		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
-		
-		Advertisement.AdvItem item  = mAdv.new AdvItem();
-		item.id = "1";
-		item.imageUrl = "http://img3.cache.netease.com/photo/0007/2014-04-29/9R0BQDPF1OQR0007.jpg";
-		item.title = "舞动青春";
-		item.linkUrl = "";
-		mAdv.resources.add(item);
-		
-		item  = mAdv.new AdvItem();
-		item.id = "2";
-		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
-		item.title = "创意无限";
-		item.linkUrl = "";
-		mAdv.resources.add(item);
-		
+//	private void advTest() {
+//		mAdv = new Advertisement();
+//		mAdv.respCode = 0;
+//		mAdv.respMsg = "ok";
+//		mAdv.totalCount = 2;
+//		mAdv.resources = new ArrayList<Advertisement.AdvItem>();
+//		
+//		Advertisement.AdvItem item  = mAdv.new AdvItem();
+//		item.id = "1";
+//		item.imageUrl = "http://img3.cache.netease.com/photo/0007/2014-04-29/9R0BQDPF1OQR0007.jpg";
+//		item.title = "舞动青春";
+//		item.linkUrl = "";
+//		mAdv.resources.add(item);
+//		
+//		item  = mAdv.new AdvItem();
+//		item.id = "2";
+//		item.imageUrl = "http://pic16.nipic.com/20110910/4582261_110721084388_2.jpg";
+//		item.title = "创意无限";
+//		item.linkUrl = "";
+//		mAdv.resources.add(item);
+//		
 //		mAdvAdapter = new AdvPagerAdapter(this, mAdv);
 //		mAdvViewPager.setAdapter(mAdvAdapter);
 //		mAdvIndicator.setViewPager(mAdvViewPager);
-	}	
+//	}
+	
 }

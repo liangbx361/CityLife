@@ -76,7 +76,8 @@ public class ChannelAdapter extends BaseAdapter {
 		
 		DbChannel channel = mShowList.get(position);
 		if(channel.type != ChannelType.CHANNEL_TYPE_ADD) {
-			holder.icon.setImageUrl(NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + channel.getImageUrl(), 
+			String imgUrl = NetConfig.getPictureUrl(channel.getImageUrl());
+			holder.icon.setImageUrl(NetConfig.getPictureUrl(channel.getImageUrl()), 
 					CityLifeApp.getInstance().getImageLoader());
 			holder.name.setText(channel.getName());
 		} else {
