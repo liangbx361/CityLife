@@ -1,5 +1,6 @@
 ﻿package com.wb.citylife.mk.mycenter;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
+import com.common.security.MD5;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
@@ -145,7 +147,12 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 	private Map<String, String> getLoginRequestParams(String phone, String pwd) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userPhone", phone);
-		params.put("password", pwd);
+		
+		try {
+			params.put("password", MD5.getDigest(pwd).toUpperCase());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		return params;
 	}
 	

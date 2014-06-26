@@ -211,12 +211,11 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			fh.addHeader("connection", "keep-alive");
 			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
 			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR;
-			fh.post(url, params,
-					new AjaxCallBack<String>(){
+			fh.post(url, params, new AjaxCallBack<Avatar>(){
 				
 						@Override
-						public void onSuccess(String t) {							
-							DebugConfig.showLog("loadFile", t);
+						public void onSuccess(Avatar t) {							
+							DebugConfig.showLog("loadFile", t.avatarUrl);
 //							AvatarParser parser = new AvatarParser();
 //							parser.parse(t.toString());	
 						}				
