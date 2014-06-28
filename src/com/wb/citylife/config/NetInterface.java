@@ -42,6 +42,7 @@ public interface NetInterface {
 	/***************************** 二手市场  **********************************************/
 	public static final String METHOD_OLD_INFO_LIST = "oldInfoList.do";
 	public static final String METHOD_OLD_INFO_DETAIL = "oldInfoDetail.do";
+	public static final String METHOD_PUBLISH_OLD_INFO = "publishOldInfo.do";
 	
 	/***************************** 随手拍  **********************************************/
 	public static final String METHOD_SHOOT_LIST = "shootList.do";

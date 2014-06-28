@@ -18,8 +18,8 @@ public class NetConfig implements NetInterface {
 	public static final String RELEASE_INTRANET_BASE_URL = "";
 	
 	/*************************************项目扩展地址************************************/
-	public static final String EXTEND_URL = "citylive/client/";
-//	public static final String EXTEND_URL = "CityLife/";
+//	public static final String EXTEND_URL = "citylive/client/";
+	public static final String EXTEND_URL = "CityLife/";
 	
 	/*************************************应用下载地址************************************/
 	public static final String APK_DOWNLOAD_URL = "";

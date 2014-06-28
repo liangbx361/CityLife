@@ -21,7 +21,8 @@ public class VoteDetail extends BaseBean{
     	public String[] questionOptions;
     	public String[] questionOptionIds;
     	public boolean hasVote;
-    	public int[] result;
+    	public String[] result;
+    	public int[] rate;
     }
 	
 }

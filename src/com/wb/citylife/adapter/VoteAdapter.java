@@ -59,6 +59,8 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 	private VoteSatistics mvoteSatistics;
 	
 	private QuestionItem submitQItem;
+	private int submitIndex;
+	private boolean submited = false;
 	private String detailId;
 	
 	public VoteAdapter(Context context, ViewPager viewPager, CirclePageIndicator voteIndicator, 
@@ -124,10 +126,20 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		View view;
 		if(qItem.questionType == VoteType.VOTE_TYPE_OPINION) {
 			view = LayoutInflater.from(mContext).inflate(R.layout.vote_type_feedback, null);
-			TextView titleTv = (TextView) view.findViewById(R.id.title);
-			titleTv.setText(qItem.questionTitle);
-			TextView indexTv = (TextView) view.findViewById(R.id.index);
-			indexTv.setText("Q" + index + " / Q" + mVoteDetail.datas.size());
+			FeedbackViewHolder viewHolder = new FeedbackViewHolder();
+			viewHolder.titleTv = (TextView) view.findViewById(R.id.title);
+			viewHolder.titleTv.setText(qItem.questionTitle);
+			viewHolder.indexTv = (TextView) view.findViewById(R.id.index);
+			viewHolder.indexTv.setText("Q" + index + " / Q" + mVoteDetail.datas.size());
+			viewHolder.opinionEt = (EditText) view.findViewById(R.id.opinion);
+			viewHolder.answerTv = (TextView) view.findViewById(R.id.answer);
+			view.setTag(viewHolder);
+			
+			if(qItem.hasVote) {
+				viewHolder.opinionEt.setVisibility(View.GONE);
+				viewHolder.answerTv.setVisibility(View.VISIBLE);
+				viewHolder.answerTv.setText(qItem.result[0]);
+			}
 		} else {
 			view = LayoutInflater.from(mContext).inflate(R.layout.vote_type_select_layout, null);
 			TextView titleTv = (TextView) view.findViewById(R.id.title);
@@ -242,13 +254,14 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				holder.resultGroup.setVisibility(View.VISIBLE);				
 				String option = (position + 1) + ". " +  qItem.questionOptions[position];
 				holder.option2Tv.setText(option);
-				int rate = qItem.result[position];
+				int rate = qItem.rate[position];
+				int num = Integer.parseInt(qItem.result[position]);
 				int itemIndex = mVoteDetail.datas.indexOf(qItem);
 				Bool animBool = animList.get(itemIndex);
 				if(animBool.value) {
-					holder.bar.setRateWithAnim(rate, StatisticsBar.ANIM_TYPE_FIXED, position);
+					holder.bar.setRateWithAnim(rate, num, StatisticsBar.ANIM_TYPE_FIXED, position, animList);
 				} else {
-					holder.bar.setRate(rate, position);					
+					holder.bar.setRate(rate, num, position);					
 				}
 			}
 			holder.optionGroup.invalidate();
@@ -298,7 +311,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 	 */
 	@Override
 	public void onClick(View v) {		
-		startSatistics(0);
+		startSatistics(mViewPager.getCurrentItem());
 	}
 	
 	/**
@@ -317,6 +330,8 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		QuestionItem qItem = mVoteDetail.datas.get(page);
 		
 		if(qItem.hasVote) return;
+		
+		if(submited) return;
 		
 		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			answer = position + "";
@@ -349,6 +364,8 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		}
 		
 		submitQItem = qItem;
+		submitIndex = position;
+		submited = true;
 		voteDetailActivity.setIndeterminateBarVisibility(true);
 		requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
 				getVoteSatisticsRequestParams(qItem, answer, answerId), new StatisticsListener(), voteDetailActivity);
@@ -364,9 +381,9 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		params.put("id", detailId);
 		params.put("questionId", qItem.questionId);
 		params.put("questionType", qItem.questionType+"");
-		params.put("answer", answerId);
+		params.put("answer", answer);
 		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
-//		params.put("answerId", answerId);
+		params.put("answerId", answerId);
 		return params;
 	}
 	
@@ -400,25 +417,44 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		 */
 		@Override
 		public void onResponse(VoteSatistics response) {
-			voteDetailActivity.setIndeterminateBarVisibility(false);
-			mvoteSatistics = response;
+			
 			if(response.respCode == RespCode.SUCCESS) {
 				submitQItem.hasVote = true;
 				if(submitQItem.questionType == VoteType.VOTE_TYPE_SINGLE ||
 						submitQItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
-					submitQItem.result = new int[submitQItem.questionOptions.length];
+					
+					submitQItem.result = new String[submitQItem.questionOptions.length];
 					for(int i=0; i<submitQItem.questionOptions.length; i++) {
 						submitQItem.result[i] = response.result[i];
 					}
-				
+					
+					//将投票计接收，并转化成百分比
+					submitQItem.rate = new int[submitQItem.result.length];
+					int total = 0;
+					for(int i=0; i<submitQItem.result.length; i++) {
+						submitQItem.rate[i] = Integer.parseInt(submitQItem.result[i]);
+						total += submitQItem.rate[i];
+					}
+					for(int i=0; i<submitQItem.rate.length; i++) {
+						submitQItem.rate[i] = submitQItem.rate[i] * 100 / total;
+					}
+					
 					int page = mViewPager.getCurrentItem();
 					animList.get(page).value = true;
 					mAdapterList.get(page).notifyDataSetChanged();
 					mSubmitBtn.setVisibility(View.GONE);						
 				} else {
 					mSubmitBtn.setVisibility(View.GONE);
+					FeedbackViewHolder viewHolder = (FeedbackViewHolder) mViewList.get(submitIndex).getTag();
+					viewHolder.opinionEt.setVisibility(View.GONE);
+					viewHolder.answerTv.setVisibility(View.VISIBLE);
+					viewHolder.answerTv.setText(response.result[0]);
 				}
 			}
+			
+			voteDetailActivity.setIndeterminateBarVisibility(false);
+			mvoteSatistics = response;
+			submited = false;
 		}
 	}
 	
@@ -430,11 +466,18 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		}
 	}
 	
-	class Bool {
+	public class Bool {
 		public boolean value;
 		
 		public Bool (boolean value) {
 			this.value = value;
 		}
+	}
+	
+	class FeedbackViewHolder {
+		TextView titleTv;
+		TextView indexTv;
+		EditText opinionEt;
+		TextView answerTv;
 	}
 }

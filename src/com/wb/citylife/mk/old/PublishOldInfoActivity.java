@@ -1,10 +1,17 @@
 package com.wb.citylife.mk.old;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,28 +21,48 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 
+import com.android.volley.Request.Method;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.common.media.BitmapHelper;
 import com.common.media.CarameHelper;
+import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.common.widget.hzlib.HorizontalAdapterView;
 import com.common.widget.hzlib.HorizontalAdapterView.OnItemClickListener;
 import com.common.widget.hzlib.HorizontalListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.BaseBean;
+import com.wb.citylife.bean.PublishOldInfo;
+import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
+import com.wb.citylife.task.PublishOldInfoRequest;
 
-public class PublishOldInfoActivity extends BaseActivity implements OnItemClickListener, OnClickListener{
+public class PublishOldInfoActivity extends BaseActivity implements OnItemClickListener, OnClickListener,
+	Listener<PublishOldInfo>, ErrorListener{
 		
 	public int maxNum = 6;
 	public int itemWidth = 96;
@@ -46,12 +73,26 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	private PhotoAdapter photoAdapter;
 	private List<File> fileList = new ArrayList<File>();
 	private List<SoftReference<Bitmap>> photoList = new ArrayList<SoftReference<Bitmap>>();
+	private int currentFileIndex;
 	
 	private File photoFile;
 	private Uri photoUri;
 	
 	private AddPhotoDialog optDialog;
 	
+	private EditText titleEt;
+	private EditText descEt;
+	private EditText priceEt;
+	private EditText addressEt;
+	private EditText contactsEt;
+	private EditText phoneEt;
+	private RadioGroup typeRg;
+	private Button submitBtn;
+	
+	//发布二手信息
+	private PublishOldInfoRequest mPublishOldInfoRequest;
+	private PublishOldInfo mPublishOldInfo;
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,6 +119,16 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		itemWidth = (int) (itemWidth * dm.density);
+		
+		titleEt = (EditText) findViewById(R.id.title);
+		descEt = (EditText) findViewById(R.id.desc);
+		priceEt = (EditText) findViewById(R.id.price);
+		addressEt = (EditText) findViewById(R.id.address);
+		contactsEt = (EditText) findViewById(R.id.contacts);
+		phoneEt = (EditText) findViewById(R.id.phone);
+		typeRg = (RadioGroup) findViewById(R.id.type);
+		submitBtn = (Button) findViewById(R.id.submit);
+		submitBtn.setOnClickListener(this);
 	}
 	
 	@Override
@@ -215,7 +266,85 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			}
 			photoAdapter.notifyDataSetChanged();
 			break;
+			
+		case R.id.submit:
+			submitOldInfo();
+			break;
+		}				
+	}
+	
+	/**
+	 * 提交二手信息
+	 */
+	private void submitOldInfo() {
+		if(!CityLifeApp.getInstance().checkLogin()) {
+			ToastHelper.showToastInBottom(this, R.string.login_toast);
+			return;
 		}
+		
+		Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+		
+		String title = titleEt.getText().toString();				
+		if(TextUtils.isEmpty(title)) {
+			ToastHelper.showToastInBottom(this, R.string.title_empty_toast);
+			return;
+		}		
+		if(title.length() < 6) {
+			ToastHelper.showToastInBottom(this, R.string.title_no_length);
+			return;
+		}
+		
+		String desc = descEt.getText().toString();
+		if(TextUtils.isEmpty(desc)) {
+			ToastHelper.showToastInBottom(this, R.string.desc_empty_toast);
+			return;
+		}
+		if(desc.length() < 10) {
+			ToastHelper.showToastInBottom(this, R.string.desc_no_length);
+			return;
+		}
+		
+		String price = priceEt.getText().toString();
+		if(TextUtils.isEmpty(price)) {
+			ToastHelper.showToastInBottom(this, R.string.price_empty_toast);
+			return;
+		}
+		
+		String address = addressEt.getText().toString();
+		if(TextUtils.isEmpty(address)) {
+			ToastHelper.showToastInBottom(this, R.string.address_empty_toast);
+			return;
+		}
+		
+		String contacts = contactsEt.getText().toString();
+		if(TextUtils.isEmpty(contacts)) {
+			ToastHelper.showToastInBottom(this, R.string.contacts_empty_toast);
+			return;
+		}
+		
+		String phone = phoneEt.getText().toString();
+		if(TextUtils.isEmpty(phone)) {
+			ToastHelper.showToastInBottom(this, R.string.phone_empty_toast);
+			return;
+		}
+		
+		int type = 0;
+		if(typeRg.getCheckedRadioButtonId() == R.id.merchant) {
+			type = 1;
+		}
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
+		params.put("title", title);
+		params.put("desc", desc);
+		params.put("price", price);
+		params.put("address", address);
+		params.put("contact", contacts);
+		params.put("phone", phone);
+		params.put("identity", type+"");
+		
+		requestPublishOldInfo(Method.POST, NetInterface.METHOD_PUBLISH_OLD_INFO, params, this, this);
+		showDialog("正在发布...");
 	}
 	
 	/**
@@ -321,5 +450,91 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		
 		super.onDestroy();
 	}
+		
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestPublishOldInfo(int method, String methodUrl, Map<String, String> params,	 
+			Listener<PublishOldInfo> listenre, ErrorListener errorListener) {			
+		if(mPublishOldInfoRequest != null) {
+			mPublishOldInfoRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mPublishOldInfoRequest = new PublishOldInfoRequest(method, url, params, listenre, errorListener);
+		startRequest(mPublishOldInfoRequest);		
+	}
 	
+	/**
+	 * 网络请求错误处理
+	 *
+	 */
+	@Override
+	public void onErrorResponse(VolleyError error) {	
+		dismissDialog();
+		setIndeterminateBarVisibility(false);
+		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+	}
+	
+	/**
+	 * 请求完成，处理UI更新
+	 */
+	@Override
+	public void onResponse(PublishOldInfo response) {
+		mPublishOldInfo = response;
+		setIndeterminateBarVisibility(false);
+		
+		if(response.respCode == RespCode.SUCCESS) {
+			if(fileList.size() > 0) {
+				currentFileIndex = 0;
+				upLoadPhoto(fileList.get(0), mPublishOldInfo.id);
+			}
+		} else {
+			dismissDialog();
+			ToastHelper.showToastInBottom(this, R.string.publish_fail);
+		}			
+	}
+	
+	/**
+	 * 上传照片
+	 * @param file
+	 */
+	private void upLoadPhoto(File file, String id) {		
+		String  BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
+		String PREFIX = "--" , LINE_END = "\r\n"; 
+		String CONTENT_TYPE = "multipart/form-data";   //内容类型
+
+		try {
+			AjaxParams params = new AjaxParams();
+			params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
+			params.put("id", id);
+			params.put("type", ChannelType.CHANNEL_TYPE_OLD_MARKET+"");
+			params.put("photo", file);
+			FinalHttp fh = new FinalHttp(); 
+			fh.addHeader("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");;
+			fh.addHeader("connection", "keep-alive");
+			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR;
+			fh.post(url, params, new AjaxCallBack<BaseBean>(){
+				
+						@Override
+						public void onSuccess(BaseBean baseBean) {
+							currentFileIndex++;
+							if(currentFileIndex < fileList.size()) {
+								upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+							} else {
+								dismissDialog();
+								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
+							}
+						}				
+			});
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

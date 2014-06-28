@@ -1,5 +1,9 @@
 package com.wb.citylife.widget;
 
+import java.util.List;
+
+import com.wb.citylife.adapter.VoteAdapter.Bool;
+import com.wb.citylife.bean.VoteDetail.QuestionItem;
 import com.wb.citylife.config.DebugConfig;
 
 import android.content.Context;
@@ -33,6 +37,8 @@ public class StatisticsBar extends View implements Runnable{
 	
 	//ͳ����
 	private int rate = 0;
+	private int num = 0;
+	private List<Bool> animList;
 	private Rect rect;
 	private Paint paint;			
 	
@@ -95,7 +101,7 @@ public class StatisticsBar extends View implements Runnable{
 			int fontHeight = (int) (textPaint.getTextSize() / textRate);
 			int textBaseY = barHeight - (barHeight - fontHeight) / 2;
 		
-			canvas.drawText(rate+"%", rect.right + textMarginLeft, textBaseY, textPaint);	
+			canvas.drawText(num+"", rect.right + textMarginLeft, textBaseY, textPaint);	
 		} else {
 			setRectWidth((int)rateCount);
 			canvas.drawRect(rect, paint);
@@ -104,7 +110,7 @@ public class StatisticsBar extends View implements Runnable{
 			int fontHeight = (int) (textPaint.getTextSize() / textRate);
 			int textBaseY = barHeight - (barHeight - fontHeight) / 2;
 		
-			canvas.drawText((int)rateCount+"%", rect.right + textMarginLeft, textBaseY, textPaint);
+			canvas.drawText((int)num+"", rect.right + textMarginLeft, textBaseY, textPaint);
 			invalidate();
 		}		
 			
@@ -114,26 +120,28 @@ public class StatisticsBar extends View implements Runnable{
 	 * ���ðٷֱȣ�ͳ����������ʾΪ�ý��
 	 * @param rate
 	 */
-	public void setRate(int rate) {
+	public void setRate(int rate, int num) {
 		this.rate = rate;
+		this.num = num;
 		rect.bottom = barHeight;
 		setRectWidth(rate);
 		anmiState = false;
 		invalidate();
 	}
 	
-	public void setRate(int rate, int position) {
+	public void setRate(int rate, int num, int position) {
 		int colorIndex = position % DEFAULT_COLOR.length;
 		setBarColor(DEFAULT_COLOR[colorIndex]);
-		setRate(rate);
+		setRate(rate, num);
 	}
 	
 	/**
 	 * ���İٷֱ�����
 	 * @param rate
 	 */
-	public void setRateWithAnim(int rate, int type) {
+	public void setRateWithAnim(int rate, int num, int type) {
 		this.rate = rate;
+		this.num = num;
 		timeCount = 0.0f;
 		anmiState = true;
 		rateCount = 0.0f;
@@ -150,10 +158,11 @@ public class StatisticsBar extends View implements Runnable{
 		}
 	}
 	
-	public void setRateWithAnim(int rate, int type, int position) {
+	public void setRateWithAnim(int rate, int num, int type, int position, List<Bool> animList) {
 		int colorIndex = position % DEFAULT_COLOR.length;
 		setBarColor(DEFAULT_COLOR[colorIndex]);
-		setRateWithAnim(rate, type);
+		setRateWithAnim(rate, num, type);
+		this.animList = animList;
 	}
 	
 	private void setRectWidth(int rate) {
@@ -184,15 +193,36 @@ public class StatisticsBar extends View implements Runnable{
 				rateCount = timeCount * rateInvterval;
 				if(rateCount > rate) {
 					rateCount = rate;
+					if(animList != null) {
+						for(Bool bool : animList) {
+							bool.value = false;
+						}
+					}
+					anmiState = false;
 				}
 				postDelayed(this, (int)animInterval);
+			} else {
+				rateCount = rate;
+				if(animList != null) {
+					for(Bool bool : animList) {
+						bool.value = false;
+					}
+				}
+				anmiState = false;
 			}
 		} else {
 			rateCount += rateInvterval;
 			if(rateCount > rate) {
 				rateCount = rate;
+				if(animList != null) {
+					for(Bool bool : animList) {
+						bool.value = false;
+					}
+				}
+				anmiState = false;
+			} else {
+				postDelayed(this, (int)animInterval);
 			}
-			postDelayed(this, (int)animInterval);
 		}
 	}
 	

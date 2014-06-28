@@ -1,5 +1,6 @@
 package com.wb.citylife.mk.mycenter;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -29,6 +30,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.common.net.volley.VolleyErrorHelper;
+import com.common.security.MD5;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.bean.Register;
 import com.wb.citylife.task.RegisterRequest;
@@ -153,8 +155,12 @@ public class ModifyPasswordActivity extends BaseActivity implements Listener<Reg
 	 */
 	private Map<String, String> getRegisterRequestParams(String oldPwd, String newPwd) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("oldPassword", oldPwd);
-		params.put("newPassword", newPwd);
+		try {
+			params.put("oldPassword", MD5.getDigest(oldPwd).toUpperCase());
+			params.put("newPassword", MD5.getDigest(newPwd).toUpperCase());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}		
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}

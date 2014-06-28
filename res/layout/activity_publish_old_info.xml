@@ -164,6 +164,7 @@
                         android:paddingBottom="15dp"
                         android:paddingTop="15dp"
                         android:textColorHint="#d5d5d5"
+                        android:inputType="numberDecimal"
                         android:textSize="@dimen/old_market_publish_text_size" />
 
                     <TextView
@@ -348,6 +349,7 @@
                     android:background="#d6d6d6" />
 
                 <RadioGroup
+                    android:id="@+id/type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16.89dp"
