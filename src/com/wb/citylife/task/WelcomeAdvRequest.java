@@ -9,21 +9,21 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.common.net.volley.ParamsRequest;
 import com.wb.citylife.config.DebugConfig;
-import com.wb.citylife.parser.PublishOldInfoParser;
-import com.wb.citylife.bean.PublishOldInfo;
+import com.wb.citylife.parser.WelcomeAdvParser;
+import com.wb.citylife.bean.WelcomeAdv;
 
-public class PublishOldInfoRequest extends ParamsRequest<PublishOldInfo> {
-	public PublishOldInfoRequest (int method, String url, Map<String, String> params, 
-			Listener<PublishOldInfo> listenre, ErrorListener errorListener) {
+public class WelcomeAdvRequest extends ParamsRequest<WelcomeAdv> {
+	public WelcomeAdvRequest (int method, String url, Map<String, String> params, 
+			Listener<WelcomeAdv> listenre, ErrorListener errorListener) {
 		super(method, url, params, listenre, errorListener);
 	}
 	
 	@Override
-	protected Response<PublishOldInfo> parseNetworkResponse(NetworkResponse response) {
+	protected Response<WelcomeAdv> parseNetworkResponse(NetworkResponse response) {
 		String resultStr = new String(response.data);
 		DebugConfig.showLog("volleyresponse", resultStr);
 							
-		PublishOldInfoParser parser = new PublishOldInfoParser();
+		WelcomeAdvParser parser = new WelcomeAdvParser();
 		return Response.success(parser.parse(resultStr), getCacheEntry());
 	}
 	

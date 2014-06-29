@@ -28,10 +28,12 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.adapter.ImageAdapter;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ShootDetail;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -163,7 +165,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 				getShootDetailRequestParams(), this, this);			
 		
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -185,7 +187,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		case R.id.comment_btn:{
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -236,7 +238,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 				getShootDetailRequestParams(), this, this);	
 		
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);
 	}
 	
@@ -247,7 +249,8 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 	private Map<String, String> getShootDetailRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", id);		
-		params.put("phoneId", "");		
+		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());		
+		params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
 		return params;
 	}
 	
@@ -314,6 +317,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		params.put("id", id);
 		return params;
 	}
 	
@@ -356,9 +360,10 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 	 */
 	private Map<String, String> getCommentRequestParams(String comment) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("userId", "");
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
 		params.put("comment", comment);
+		params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
 		return params;
 	}
 	

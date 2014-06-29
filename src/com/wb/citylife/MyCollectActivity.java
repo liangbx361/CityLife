@@ -16,13 +16,13 @@ import com.wb.citylife.config.NetConfig;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 
-import com.wb.citylife.bean.Publish;
-import com.wb.citylife.task.PublishRequest;
+import com.wb.citylife.bean.MyCollect;
+import com.wb.citylife.task.MyCollectRequest;
 
-public class PublishOldInfoActivity extends BaseActivity implements Listener<Publish>, ErrorListener{
+public class MyCollectActivity extends BaseActivity implements Listener<MyCollect>, ErrorListener{
 		
-	private PublishRequest mPublishOldInfoRequest;
-	private Publish mPublishOldInfo;
+	private MyCollectRequest mMyCollectRequest;
+	private MyCollect mMyCollect;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		//requestPublishOldInfo(Method.GET, "请求方法", getPublishOldInfoRequestParams(), this, this);
+		//requestMyCollect(Method.GET, "请求方法", getMyCollectRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -65,7 +65,7 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * 获取请求参数
 	 * @return
 	 */
-	private Map<String, String> getPublishOldInfoRequestParams() {
+	private Map<String, String> getMyCollectRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 				
 		return params;
@@ -79,14 +79,14 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * @param listenre
 	 * @param errorListener
 	 */	
-	private void requestPublishOldInfo(int method, String methodUrl, Map<String, String> params,	 
-			Listener<Publish> listenre, ErrorListener errorListener) {			
-		if(mPublishOldInfoRequest != null) {
-			mPublishOldInfoRequest.cancel();
+	private void requestMyCollect(int method, String methodUrl, Map<String, String> params,	 
+			Listener<MyCollect> listenre, ErrorListener errorListener) {			
+		if(mMyCollectRequest != null) {
+			mMyCollectRequest.cancel();
 		}	
 		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
-		mPublishOldInfoRequest = new PublishRequest(method, url, params, listenre, errorListener);
-		startRequest(mPublishOldInfoRequest);		
+		mMyCollectRequest = new MyCollectRequest(method, url, params, listenre, errorListener);
+		startRequest(mMyCollectRequest);		
 	}
 	
 	/**
@@ -103,8 +103,8 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(Publish response) {
-		mPublishOldInfo = response;
+	public void onResponse(MyCollect response) {
+		mMyCollect = response;
 		setIndeterminateBarVisibility(false);
 	}
 }

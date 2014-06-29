@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.common.media.CarameHelper;
 import com.common.widget.ToastHelper;
+import com.tencent.mm.sdk.openapi.GetMessageFromWX.Resp;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
@@ -33,6 +34,7 @@ import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.ModifyAvatarDialog;
 import com.wb.citylife.parser.AvatarParser;
@@ -49,6 +51,8 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 	private LinearLayout modifyNicknameLayout;
 	private LinearLayout modifyPasswordLayout;
 	private Button logoutBtn;
+	
+	private ModifyAvatarDialog dialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,7 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			break;
 			
 		case R.id.modify_avatar:
-			ModifyAvatarDialog dialog = new ModifyAvatarDialog(this, R.style.popupStyle);
+			dialog = new ModifyAvatarDialog(this, R.style.popupStyle);
 			dialog.setListener(this);
 			dialog.show();			
 			break;
@@ -144,10 +148,12 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 		} else if(requestCode == ResultCode.REQUEST_CODE_PICK_IMAGE) {
 			//上传头像
 			upLoadAvatar(photoFile);
+			dialog.dismiss();
 			
 		} else if(requestCode == ResultCode.REQUEST_CODE_IMAGE_CROP) {
 			//上传头像
 			upLoadAvatar(photoFile);
+			dialog.dismiss();
 		}
 	}
 	
@@ -211,13 +217,18 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			fh.addHeader("connection", "keep-alive");
 			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
 			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR;
-			fh.post(url, params, new AjaxCallBack<Avatar>(){
+			fh.post(url, params, new AjaxCallBack<String>(){
 				
 						@Override
-						public void onSuccess(Avatar t) {							
-							DebugConfig.showLog("loadFile", t.avatarUrl);
-//							AvatarParser parser = new AvatarParser();
-//							parser.parse(t.toString());	
+						public void onSuccess(String result) {							
+							AvatarParser parser = new AvatarParser();
+							Avatar avatar = parser.parse(result);	
+							if(avatar.respCode == RespCode.SUCCESS) {
+								CityLifeApp.getInstance().getUser().avatarUrl = avatar.avatarUrl;
+								ToastHelper.showToastInBottom(AccountManagerActivity.this, "头像上传成功");
+							} else {
+								ToastHelper.showToastInBottom(AccountManagerActivity.this, "头像上传失败");
+							}
 						}				
 			});
 		} catch (FileNotFoundException e) {

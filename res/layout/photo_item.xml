@@ -11,6 +11,6 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:src="@drawable/publish_add_image_bg" 
-        android:scaleType="fitXY"/>
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>

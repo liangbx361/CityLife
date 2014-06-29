@@ -158,10 +158,10 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, shootPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, shootPageInfo.pageNo+"");	
-		if(mType.equals(SHOOT_TYPE_MY)) {
+//		if(mType.equals(SHOOT_TYPE_MY)) {
 			params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
-		}
-		params.put("type", mType);		
+//		}
+		params.put("type", mType);
 		return params;
 	}
 	
@@ -216,6 +216,16 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		mPullListView.onRefreshComplete();
 		
 		if(response.respCode == RespCode.SUCCESS) {
+			if(response.totalNum == 0) {
+				if(mType.equals("3")) {
+					setEmptyToastText(R.string.my_shoot_list_empty_toast);
+				} else {
+					setEmptyToastText(R.string.shoot_list_empty_toast);
+				}
+				showEmpty();
+				return;
+			}
+			
 			if(shootPageInfo.pageNo == 1) {
 				mShootList = response;
 				mShootAdapter = new ShootListAdapter(mActivity, mShootList);
@@ -239,7 +249,7 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		ShootItem sItem = mShootList.datas.get(position);
+		ShootItem sItem = mShootList.datas.get(position-1);
 		Intent intent = new Intent(mActivity, ShootDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, sItem.id);
 		startActivity(intent);

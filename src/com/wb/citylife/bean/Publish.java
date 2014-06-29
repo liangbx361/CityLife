@@ -1,7 +1,7 @@
 package com.wb.citylife.bean;
 
 
-public class PublishOldInfo extends BaseBean{
+public class Publish extends BaseBean{
 
     public String id;
 	

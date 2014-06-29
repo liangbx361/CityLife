@@ -1,10 +1,12 @@
 ﻿package com.wb.citylife.mk.mycenter;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -27,6 +30,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.common.net.volley.VolleyErrorHelper;
+import com.common.security.MD5;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.bean.Register;
 import com.wb.citylife.task.RegisterRequest;
@@ -134,6 +138,9 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 		setIndeterminateBarVisibility(true);
 		requestRegister(Method.POST, NetInterface.METHOD_REGISTER, 
 				getRegisterRequestParams(userPhone, password), this, this);
+		
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);	
 	}
 	
 	/**
@@ -151,7 +158,11 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 	private Map<String, String> getRegisterRequestParams(String phone, String pwd) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userPhone", phone);
-		params.put("password", pwd);
+		try {
+			params.put("password", MD5.getDigest(pwd).toUpperCase());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		return params;
 	}
 	

@@ -30,11 +30,13 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.adapter.ImageAdapter;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.ImagesItem;
 import com.wb.citylife.bean.OldInfoDetail;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -168,7 +170,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 				getOldInfoDetailRequestParams(), this, this);			
 		
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -190,7 +192,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		case R.id.comment_btn:{
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -241,7 +243,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 				getOldInfoDetailRequestParams(), this, this);	
 		
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);
 	}
 	
@@ -252,7 +254,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	private Map<String, String> getOldInfoDetailRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", id);		
-		params.put("phoneId", "");
+		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
 		return params;
 	}
 	
@@ -300,11 +302,16 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			titleTv.setText(mOldInfoDetail.title);
 			usernameTv.setText(mOldInfoDetail.userName);
 			timeTv.setText(mOldInfoDetail.time);
-			priceTv.setText("￥" + mOldInfoDetail.price/100.0f + "");
+			priceTv.setText("￥" + mOldInfoDetail.price + "");
 			commentTv.setText("评论 " + mOldInfoDetail.commentNum + "");
 			clickTv.setText("点击 " + mOldInfoDetail.clickNum + "");
 			detailTv.setText(mOldInfoDetail.content);
 			contactTv.setText(mOldInfoDetail.contactInfo);
+			
+			if(mOldInfoDetail.imagesUrl.length <= 1) {
+				leftBtn.setVisibility(View.GONE);
+				rightBtn.setVisibility(View.GONE);
+			}
 			showContent();
 		} else {
 			showLoadError(this);
@@ -318,7 +325,8 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	private Map<String, String> getCommentListRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
-		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");	
+		params.put("id", id);
 		return params;
 	}
 	
@@ -361,9 +369,10 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	 */
 	private Map<String, String> getCommentRequestParams(String comment) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("userId", "");
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
 		params.put("comment", comment);
+		params.put("type", ChannelType.CHANNEL_TYPE_OLD_MARKET+"");
 		return params;
 	}
 	

@@ -7,6 +7,9 @@ package com.wb.citylife.config;
  */
 public interface IntentExtraConfig {
 	
+	/***************************** 主页  **********************************************/
+	public static final String WELCOME_IMG = "img";
+	
 	/***************************** 详情页  **********************************************/
 	public static final String DETAIL_ID = "id";
 	public static final String DETAIL_TYPE = "type";

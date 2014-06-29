@@ -51,18 +51,17 @@ import com.common.widget.hzlib.HorizontalListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
-import com.wb.citylife.bean.BaseBean;
-import com.wb.citylife.bean.PublishOldInfo;
+import com.wb.citylife.bean.Publish;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
-import com.wb.citylife.task.PublishOldInfoRequest;
+import com.wb.citylife.task.PublishRequest;
 
 public class PublishOldInfoActivity extends BaseActivity implements OnItemClickListener, OnClickListener,
-	Listener<PublishOldInfo>, ErrorListener{
+	Listener<Publish>, ErrorListener{
 		
 	public int maxNum = 6;
 	public int itemWidth = 96;
@@ -90,8 +89,8 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	private Button submitBtn;
 	
 	//发布二手信息
-	private PublishOldInfoRequest mPublishOldInfoRequest;
-	private PublishOldInfo mPublishOldInfo;
+	private PublishRequest mPublishOldInfoRequest;
+	private Publish mPublishOldInfo;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -310,6 +309,13 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			return;
 		}
 		
+		try{
+			float priceValue = Float.parseFloat(price);			
+		} catch (Exception e) {
+			ToastHelper.showToastInBottom(this, R.string.price_error_toast);
+			return;
+		}
+		
 		String address = addressEt.getText().toString();
 		if(TextUtils.isEmpty(address)) {
 			ToastHelper.showToastInBottom(this, R.string.address_empty_toast);
@@ -343,7 +349,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		params.put("phone", phone);
 		params.put("identity", type+"");
 		
-		requestPublishOldInfo(Method.POST, NetInterface.METHOD_PUBLISH_OLD_INFO, params, this, this);
+		requestPublish(Method.POST, NetInterface.METHOD_PUBLISH_OLD_INFO, params, this, this);
 		showDialog("正在发布...");
 	}
 	
@@ -459,13 +465,13 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	 * @param listenre
 	 * @param errorListener
 	 */	
-	private void requestPublishOldInfo(int method, String methodUrl, Map<String, String> params,	 
-			Listener<PublishOldInfo> listenre, ErrorListener errorListener) {			
+	private void requestPublish(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Publish> listenre, ErrorListener errorListener) {			
 		if(mPublishOldInfoRequest != null) {
 			mPublishOldInfoRequest.cancel();
 		}	
 		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
-		mPublishOldInfoRequest = new PublishOldInfoRequest(method, url, params, listenre, errorListener);
+		mPublishOldInfoRequest = new PublishRequest(method, url, params, listenre, errorListener);
 		startRequest(mPublishOldInfoRequest);		
 	}
 	
@@ -484,14 +490,19 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(PublishOldInfo response) {
+	public void onResponse(Publish response) {
 		mPublishOldInfo = response;
 		setIndeterminateBarVisibility(false);
 		
 		if(response.respCode == RespCode.SUCCESS) {
-			if(fileList.size() > 0) {
-				currentFileIndex = 0;
-				upLoadPhoto(fileList.get(0), mPublishOldInfo.id);
+			if(fileList.size() > 1) {
+				if(fileList.get(0) != null) {
+					currentFileIndex = 0;
+					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+				} else {
+					currentFileIndex = 1;
+					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+				}
 			}
 		} else {
 			dismissDialog();
@@ -507,6 +518,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		String  BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
 		String PREFIX = "--" , LINE_END = "\r\n"; 
 		String CONTENT_TYPE = "multipart/form-data";   //内容类型
+		String suffixName = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")+1);
 
 		try {
 			AjaxParams params = new AjaxParams();
@@ -514,15 +526,16 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			params.put("id", id);
 			params.put("type", ChannelType.CHANNEL_TYPE_OLD_MARKET+"");
 			params.put("photo", file);
+			params.put("suffixName", suffixName);
 			FinalHttp fh = new FinalHttp(); 
 			fh.addHeader("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");;
 			fh.addHeader("connection", "keep-alive");
 			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
-			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_MODIFY_AVATAR;
-			fh.post(url, params, new AjaxCallBack<BaseBean>(){
+			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_PHOTO_UPLOAD;
+			fh.post(url, params, new AjaxCallBack<String>(){
 				
 						@Override
-						public void onSuccess(BaseBean baseBean) {
+						public void onSuccess(String result) {
 							currentFileIndex++;
 							if(currentFileIndex < fileList.size()) {
 								upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
@@ -530,7 +543,16 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 								dismissDialog();
 								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
 							}
-						}				
+						}
+
+						@Override
+						public void onFailure(Throwable t, int errorNo,
+								String strMsg) {
+							super.onFailure(t, errorNo, strMsg);
+							dismissDialog();
+						}
+						
+						
 			});
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

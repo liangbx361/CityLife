@@ -32,6 +32,7 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	
 	private EditText nicknameEt;
 	private Button submitBtn;
+	private String nickName;
 	
 	private BaseRequest mBaseRequest;
 	
@@ -67,7 +68,7 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	
 	@Override
 	public void onClick(View v) {
-		String nickName = nicknameEt.getText().toString();		
+		nickName = nicknameEt.getText().toString();		
 		Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
 		
 		if(nickName.equals("")) {
@@ -126,6 +127,7 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	public void onResponse(BaseBean response) {
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {
+			CityLifeApp.getInstance().getUser().nickname = nickName;
 			ToastHelper.showToastInBottom(this, R.string.nickname_modify_success);
 			finish();
 		}

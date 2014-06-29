@@ -62,6 +62,7 @@ public class ShootListAdapter extends BaseAdapter {
 		holder.titleTv.setText(shootItem.title);
 		holder.commentTv.setText("评论" + shootItem.commentNum + "");
 		holder.clickTv.setText("点击" + shootItem.clickNum + "");
+		holder.userNameTv.setText(shootItem.name);
 		return view;
 	}
 	

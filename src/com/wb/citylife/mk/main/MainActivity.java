@@ -10,6 +10,7 @@ import net.tsz.afinal.FinalDb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.android.volley.Request.Method;
 import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
 import com.common.date.FormatDateTime;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
@@ -33,6 +36,7 @@ import com.wb.citylife.bean.Channel.ChannelItem;
 import com.wb.citylife.bean.ScrollNews.NewsItem;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -71,6 +75,10 @@ public class MainActivity extends BaseActivity implements MainListener,
 	private HomeListener mHomeListener;
 	private MyCenterListener mCenterListener;
 	
+	private View welcomeView;
+	private NetworkImageView welcomeIv;
+	private String welcomeImgUrl;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
@@ -83,7 +91,7 @@ public class MainActivity extends BaseActivity implements MainListener,
 	
 	@Override
 	public void getIntentData() {
-		
+		welcomeImgUrl = getIntent().getStringExtra(IntentExtraConfig.WELCOME_IMG);
 	}
 	
 	@Override
@@ -97,6 +105,13 @@ public class MainActivity extends BaseActivity implements MainListener,
 			TabSpec tabSpec = fTabHost.newTabSpec(tabTags[i]); 
 			tabSpec.setIndicator(getTabItemView(tabIconIds[i], tabNameIds[i]));
 			fTabHost.addTab(tabSpec, fragments[i], null);						
+		}
+		
+		welcomeView = findViewById(R.id.welcome_layou);
+		welcomeIv = (NetworkImageView) findViewById(R.id.welcome);
+		welcomeIv.setDefaultImageResId(R.drawable.test_welcome);
+		if(!TextUtils.isEmpty(welcomeImgUrl)) {
+			welcomeIv.setImageUrl(welcomeImgUrl, CityLifeApp.getInstance().getImageLoader());			
 		}
 	}
 	

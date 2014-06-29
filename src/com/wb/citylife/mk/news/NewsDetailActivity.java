@@ -45,6 +45,7 @@ import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.NewsDetail;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -165,9 +166,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		setOverflowMenu(R.menu.browse_content_menu, R.drawable.actionbar_overflow_icon, this);		
 		
 		//网络请求
-		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
+		requestNewsDetail(Method.POST, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -223,7 +224,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		case R.id.comment_btn:{
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -288,9 +289,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 */
 	@Override
 	public void onReload() {
-		requestNewsDetail(Method.GET, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
+		requestNewsDetail(Method.POST, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
 	}
 	
 	/**
@@ -338,6 +339,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		params.put("id", id);
 		return params;
 	}
 	
@@ -387,9 +389,10 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 */
 	private Map<String, String> getCommentRequestParams(String comment) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("userId", "");
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
 		params.put("comment", comment);
+		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
 		return params;
 	}
 	
@@ -439,7 +442,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		params.put("option", option+"");			
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 		params.put("id", id);
-		params.put("type", type+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
 		return params;
 	}
 	
@@ -497,7 +500,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
-		params.put("type", "1");
+		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
 		params.put("option", option + "");
 		return params;
 	}

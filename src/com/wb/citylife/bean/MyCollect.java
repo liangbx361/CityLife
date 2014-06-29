@@ -2,19 +2,20 @@ package com.wb.citylife.bean;
 
 import java.util.List;
 
-public class OldInfoList extends BaseBean{
+public class MyCollect extends BaseBean{
 
     public boolean hasNextPage;
     public int totalNum;
-    public List<OldInfoItem> datas;
+    public List<CollectItem> datas;
     		
-    public class OldInfoItem { 
+    public class CollectItem { 
     	public String id;
-    	public String title;
+    	public int type;
     	public String time;
-    	public String summary;
-    	public String price;
+    	public String title;
+    	public String desc;
     	public String thumbnailUrl;
+    	public boolean isVideo;
     }
 	
 }

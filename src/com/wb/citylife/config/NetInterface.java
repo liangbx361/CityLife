@@ -27,9 +27,11 @@ public interface NetInterface {
 	
 	/***************************** 广告  **********************************************/
 	public static final String METHOD_SCROLL_NEWS = "scrollNews.do";
+	public static final String METHOD_WELCOME_ADV = "advertisement.do";
 	
 	/***************************** 收藏  **********************************************/
 	public static final String METHOD_COLLECT = "collect.do";
+	public static final String METHOD_MY_COLLECT = "myCollected.do";
 	
 	/***************************** 点赞  **********************************************/
 	public static final String METHOD_FAVOUR = "favour.do";
@@ -47,6 +49,9 @@ public interface NetInterface {
 	/***************************** 随手拍  **********************************************/
 	public static final String METHOD_SHOOT_LIST = "shootList.do";
 	public static final String METHOD_SHOOT_DETAIL = "shootDetail.do";
+	public static final String METHOD_PUBLISH_SHOOT = "publishShootInfo.do";
+	
+	public static final String METHOD_PHOTO_UPLOAD = "photoUploading.do";
 	
 	/***************************** 房地产  **********************************************/
 	public static final String METHOD_ESTATE_LIST = "estateList.do";

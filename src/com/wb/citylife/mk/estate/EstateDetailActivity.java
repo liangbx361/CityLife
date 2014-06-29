@@ -32,6 +32,7 @@ import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.EstateDetail;
 import com.wb.citylife.bean.PageInfo;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -123,7 +124,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -149,18 +150,20 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		case R.id.comment_btn:{
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.GET, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
 		}break;		
-		
+	
 		case R.id.click:{
 			Intent intent = new Intent(this, CommentListActivity.class);
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, estateId);
 			startActivity(intent);
 		}break;
 		}
+		
+		super.onClick(v);
 	}
 		
 	/**
@@ -170,6 +173,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	private Map<String, String> getEstateDetailRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", estateId);		
+		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
 		return params;
 	}
 	
@@ -207,7 +211,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
 		commentPageInfo.pageNo = 1;
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, 
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
 				getCommentListRequestParams(), new CommentListListener(), this);
 		showLoading();
 	}
@@ -247,7 +251,8 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	private Map<String, String> getCommentListRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, commentPageInfo.pageSize+"");
-		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");		
+		params.put(RespParams.PAGE_NO, commentPageInfo.pageNo+"");	
+		params.put("id", estateId);
 		return params;
 	}
 	
@@ -290,9 +295,10 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	 */
 	private Map<String, String> getCommentRequestParams(String comment) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("userId", "");
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", estateId);
 		params.put("comment", comment);
+		params.put("type", ChannelType.CHANNEL_TYPE_HOUSE+"");
 		return params;
 	}
 	

@@ -9,7 +9,7 @@ public class OldInfoDetail extends BaseBean{
     public String userName;
     public String time;
     public String avatarUrl;
-    public int price;
+    public String price;
     public int commentNum;
     public int clickNum;
     public String content;

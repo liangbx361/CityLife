@@ -16,17 +16,18 @@ import com.wb.citylife.config.NetConfig;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 
-import com.wb.citylife.bean.Publish;
-import com.wb.citylife.task.PublishRequest;
+import com.wb.citylife.bean.WelcomeAdv;
+import com.wb.citylife.task.WelcomeAdvRequest;
 
-public class PublishOldInfoActivity extends BaseActivity implements Listener<Publish>, ErrorListener{
+public class WelcomeActivity extends BaseActivity implements Listener<WelcomeAdv>, ErrorListener{
 		
-	private PublishRequest mPublishOldInfoRequest;
-	private Publish mPublishOldInfo;
+	private WelcomeAdvRequest mWelcomeAdvRequest;
+	private WelcomeAdv mWelcomeAdv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_welcome);
 		
 		getIntentData();
 		initView();				
@@ -48,7 +49,7 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		//requestPublishOldInfo(Method.GET, "请求方法", getPublishOldInfoRequestParams(), this, this);
+		//requestWelcomeAdv(Method.GET, "请求方法", getWelcomeAdvRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -65,7 +66,7 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * 获取请求参数
 	 * @return
 	 */
-	private Map<String, String> getPublishOldInfoRequestParams() {
+	private Map<String, String> getWelcomeAdvRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 				
 		return params;
@@ -79,14 +80,14 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * @param listenre
 	 * @param errorListener
 	 */	
-	private void requestPublishOldInfo(int method, String methodUrl, Map<String, String> params,	 
-			Listener<Publish> listenre, ErrorListener errorListener) {			
-		if(mPublishOldInfoRequest != null) {
-			mPublishOldInfoRequest.cancel();
+	private void requestWelcomeAdv(int method, String methodUrl, Map<String, String> params,	 
+			Listener<WelcomeAdv> listenre, ErrorListener errorListener) {			
+		if(mWelcomeAdvRequest != null) {
+			mWelcomeAdvRequest.cancel();
 		}	
 		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
-		mPublishOldInfoRequest = new PublishRequest(method, url, params, listenre, errorListener);
-		startRequest(mPublishOldInfoRequest);		
+		mWelcomeAdvRequest = new WelcomeAdvRequest(method, url, params, listenre, errorListener);
+		startRequest(mWelcomeAdvRequest);		
 	}
 	
 	/**
@@ -103,8 +104,8 @@ public class PublishOldInfoActivity extends BaseActivity implements Listener<Pub
 	 * 请求完成，处理UI更新
 	 */
 	@Override
-	public void onResponse(Publish response) {
-		mPublishOldInfo = response;
+	public void onResponse(WelcomeAdv response) {
+		mWelcomeAdv = response;
 		setIndeterminateBarVisibility(false);
 	}
 }

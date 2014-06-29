@@ -232,7 +232,7 @@ public class EstateListFragment extends BaseExtraLayoutFragment implements Liste
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		String estateId = mEstateList.datas.get(position).id;
+		String estateId = mEstateList.datas.get(position-1).id;
 		Intent intent = new Intent(mActivity, EstateDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, estateId);
 		startActivity(intent);

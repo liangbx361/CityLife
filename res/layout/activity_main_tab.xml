@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:background="@color/common_bg_color">
-        
-    <FrameLayout
-        android:id="@+id/realtabcontent"
-        android:layout_width="fill_parent"
-        android:layout_height="0.0dip"
-        android:layout_weight="1.0" />
+    android:background="@color/common_bg_color" >
 
-    <android.support.v4.app.FragmentTabHost
-        android:id="@android:id/tabhost"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="54dp" 
-        android:background="@android:color/white">
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
         <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0" />
-    </android.support.v4.app.FragmentTabHost>
+            android:id="@+id/realtabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
 
-</LinearLayout>
+        <android.support.v4.app.FragmentTabHost
+            android:id="@android:id/tabhost"
+            android:layout_width="fill_parent"
+            android:layout_height="54dp"
+            android:background="@android:color/white" >
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0" />
+        </android.support.v4.app.FragmentTabHost>
+    </LinearLayout>
+
+    <com.wb.citylife.widget.PullDoorView
+        android:id="@+id/welcome_layou"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/welcome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" >
+        </com.android.volley.toolbox.NetworkImageView>
+    </com.wb.citylife.widget.PullDoorView>
+
+</RelativeLayout>

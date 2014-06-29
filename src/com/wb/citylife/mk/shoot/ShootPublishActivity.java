@@ -1,10 +1,17 @@
 package com.wb.citylife.mk.shoot;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -13,11 +20,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.android.volley.Request.Method;
+import com.android.volley.VolleyError;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.common.media.CarameHelper;
+import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.common.widget.hzlib.HorizontalAdapterView;
 import com.common.widget.hzlib.HorizontalAdapterView.OnItemClickListener;
@@ -25,11 +40,21 @@ import com.common.widget.hzlib.HorizontalListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.adapter.PhotoAdapter;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.BaseBean;
+import com.wb.citylife.bean.Publish;
+import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
+import com.wb.citylife.mk.old.PublishOldInfoActivity;
+import com.wb.citylife.parser.BaseParser;
+import com.wb.citylife.task.PublishRequest;
 
 public class ShootPublishActivity extends BaseActivity implements OnItemClickListener,
-	OnClickListener{
+	OnClickListener, Listener<Publish>, ErrorListener{
 	
 	public int maxNum = 6;
 	public int itemWidth = 96;
@@ -40,11 +65,20 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 	private PhotoAdapter photoAdapter;
 	private List<File> fileList = new ArrayList<File>();
 	private List<SoftReference<Bitmap>> photoList = new ArrayList<SoftReference<Bitmap>>();
+	private int currentFileIndex;
 	
 	private File photoFile;
 	private Uri photoUri;
 	
 	private AddPhotoDialog optDialog;
+	
+	private EditText titleEt;
+	private EditText contentEt;
+	private Button submitBtn;
+	
+	//发布二手信息
+	private PublishRequest mPublishOldInfoRequest;
+	private Publish mPublishOldInfo;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +102,11 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 		photoAdapter = new PhotoAdapter(this, fileList);
 		listView.setAdapter(photoAdapter);		
 		listView.setOnItemClickListener(this);
+		
+		titleEt = (EditText) findViewById(R.id.title);
+		contentEt = (EditText) findViewById(R.id.content);
+		submitBtn = (Button) findViewById(R.id.submit);
+		submitBtn.setOnClickListener(this);
 	}
 	
 	@Override
@@ -131,7 +170,38 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 			}
 			photoAdapter.notifyDataSetChanged();
 			break;
+			
+		case R.id.submit:
+			submit();
+			break;
 		}
+	}
+	
+	private void submit() {
+		if(!CityLifeApp.getInstance().checkLogin()) {
+			ToastHelper.showToastInBottom(this, R.string.login_toast);
+			return;
+		}
+		
+		String title = titleEt.getText().toString();		
+		if(TextUtils.isEmpty(title)) {
+			ToastHelper.showToastInBottom(this, R.string.title_empty_toast);
+			return;
+		}
+						
+		String desc = contentEt.getText().toString();
+		if(TextUtils.isEmpty(desc)) {
+			ToastHelper.showToastInBottom(this, R.string.title_empty_toast);
+			return;
+		}
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
+		params.put("title", title);
+		params.put("desc", desc);
+		requestPublish(Method.POST, NetInterface.METHOD_PUBLISH_SHOOT, params, this, this);		
+		
+		showDialog("发布中。。。");
 	}
 	
 	/**
@@ -233,5 +303,108 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 			photoAdapter.recycleBmp();
 		}
 		super.onDestroy();
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestPublish(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Publish> listenre, ErrorListener errorListener) {			
+		if(mPublishOldInfoRequest != null) {
+			mPublishOldInfoRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mPublishOldInfoRequest = new PublishRequest(method, url, params, listenre, errorListener);
+		startRequest(mPublishOldInfoRequest);		
+	}
+	
+	/**
+	 * 网络请求错误处理
+	 *
+	 */
+	@Override
+	public void onErrorResponse(VolleyError error) {	
+		dismissDialog();
+		setIndeterminateBarVisibility(false);
+		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
+	}
+	
+	/**
+	 * 请求完成，处理UI更新
+	 */
+	@Override
+	public void onResponse(Publish response) {
+		mPublishOldInfo = response;
+		setIndeterminateBarVisibility(false);
+		
+		if(response.respCode == RespCode.SUCCESS) {
+			if(fileList.size() > 1) {
+				if(fileList.get(0) != null) {
+					currentFileIndex = 0;
+					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+				} else {
+					currentFileIndex = 1;
+					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+				}
+			}
+		} else {
+			dismissDialog();
+			ToastHelper.showToastInBottom(this, R.string.publish_fail);
+		}			
+	}
+	
+	/**
+	 * 上传照片
+	 * @param file
+	 */
+	private void upLoadPhoto(File file, String id) {		
+		String  BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
+		String PREFIX = "--" , LINE_END = "\r\n"; 
+		String CONTENT_TYPE = "multipart/form-data";   //内容类型
+		String suffixName = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".")+1);		
+
+		try {
+			AjaxParams params = new AjaxParams();
+			params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
+			params.put("id", id);
+			params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
+			params.put("photo", file);			
+			params.put("suffixName", suffixName);
+			FinalHttp fh = new FinalHttp(); 
+			fh.addHeader("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");;
+			fh.addHeader("connection", "keep-alive");
+			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_PHOTO_UPLOAD;
+			fh.post(url, params, new AjaxCallBack<String>(){
+				
+						@Override
+						public void onSuccess(String result) {
+							BaseParser baseParser = new BaseParser();
+							BaseBean baseBean = baseParser.parse(result);
+							currentFileIndex++;
+							if(currentFileIndex < fileList.size()) {
+								upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+							} else {
+								dismissDialog();
+								ToastHelper.showToastInBottom(ShootPublishActivity.this, R.string.publish_shoot_success);
+							}
+						}
+						
+						@Override
+						public void onFailure(Throwable t, int errorNo,
+								String strMsg) {
+							super.onFailure(t, errorNo, strMsg);
+							dismissDialog();
+						}
+			});
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

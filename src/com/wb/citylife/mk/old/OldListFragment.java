@@ -157,9 +157,7 @@ public class OldListFragment extends BaseExtraLayoutFragment implements Listener
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.PAGE_SIZE, oldPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, oldPageInfo.pageNo+"");	
-		if(mType.equals(TAG_MY_OLD_INFO)) {
-			params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
-		}
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
 		params.put("type", mType);
 		return params;
 	}
@@ -205,6 +203,16 @@ public class OldListFragment extends BaseExtraLayoutFragment implements Listener
 		mPullListView.onRefreshComplete();
 		
 		if(response.respCode == RespCode.SUCCESS) {
+			if(response.totalNum == 0) {
+				if(mType.equals("1")) {
+					setEmptyToastText(R.string.old_info_empty_toast);
+				} else {
+					setEmptyToastText(R.string.my_old_info_empty_toast);
+				}
+				showEmpty();
+				return;
+			}
+			
 			if(oldPageInfo.pageNo == 1) {
 				mOldInfoList = response;
 				mOldAdapter = new OldInfoListAdapter(mActivity, mOldInfoList);
@@ -228,7 +236,7 @@ public class OldListFragment extends BaseExtraLayoutFragment implements Listener
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		OldInfoItem item = mOldInfoList.datas.get(position);
+		OldInfoItem item = mOldInfoList.datas.get(position-1);
 		Intent intent = new Intent(mActivity, OldInfoDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, item.id);
 		startActivity(intent);

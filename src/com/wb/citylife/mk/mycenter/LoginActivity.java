@@ -133,10 +133,10 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode == ResultCode.AUTO_LOGIN) {
 			ToastHelper.showToastInBottom(this, R.string.auto_login);
-			String userPhone = data.getStringExtra("userPhone");
+			this.userphone = data.getStringExtra("userPhone");
 			String password = data.getStringExtra("password");
 			
-			requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(userPhone, password), this, this);		
+			requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(this.userphone, password), this, this);		
 		}
 	}
 	
@@ -203,7 +203,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			user.isLogin = 1;
 			DbHelper.saveUser(user);
 			CityLifeApp.getInstance().setUser(user);
-			setResult(ResultCode.RESULT_LOGIN);
+//			setResult(ResultCode.RESULT_LOGIN);
 			finish();
 		} else {
 			ToastHelper.showToastInBottom(this, mLogin.respMsg);

@@ -131,7 +131,7 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		setDisplayShowHomeEnabled(false);
 		
 		commentPageInfo = new PageInfo();
-		requestCommentList(Method.GET, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), this, this);
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), this, this);
 		setIndeterminateBarVisibility(true);		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -182,7 +182,13 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 	public void onErrorResponse(VolleyError error) {		
 		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
-		showLoadError(this);
+		
+		if(commentPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, commentPageInfo.pageSize);
+		}
 	}
 	
 	/**
@@ -221,6 +227,8 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 
 	@Override
 	public void onReload() {
-		
+		commentPageInfo.pageNo = 1;
+		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+				CommentListActivity.this, CommentListActivity.this);
 	}
 }

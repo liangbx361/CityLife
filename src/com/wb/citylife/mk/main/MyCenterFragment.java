@@ -10,6 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Debug;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.support.v4.preference.PreferenceFragment;
@@ -24,8 +25,10 @@ import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.User;
+import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.mk.mycenter.AccountManagerActivity;
+import com.wb.citylife.mk.mycenter.CollectActivity;
 import com.wb.citylife.mk.mycenter.LoginActivity;
 
 public class MyCenterFragment extends PreferenceFragment implements OnPreferenceClickListener,
@@ -34,6 +37,9 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 	private Activity mActivity;
 	private MainListener mainListener;
 	private View accountView;
+	
+	private Preference myCollectPf;
+	private Preference myMsgPf;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -72,7 +78,10 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 	}
 	
 	private void initPf() {
-		
+		myCollectPf = (Preference) findPreference(getResources().getString(R.string.pf_collect));
+		myCollectPf.setOnPreferenceClickListener(this);
+		myMsgPf = (Preference) findPreference(getResources().getString(R.string.pf_msg));
+		myMsgPf.setOnPreferenceClickListener(this);
 	}
 	
 	private void initUser() {
@@ -87,7 +96,12 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 	
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-
+		if(preference.getKey().equals(getResources().getString(R.string.pf_collect))) {
+			Intent intent = new Intent(mActivity, CollectActivity.class);
+			startActivity(intent);
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_msg))) {
+			
+		}
 		return false;
 	}
 	
@@ -100,6 +114,7 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 		} else {
 			holder.nameTv.setText(user.nickname);
 		}		
+		DebugConfig.showLog("avatarUrl", NetConfig.getPictureUrl(user.getAvatarUrl()));
 		holder.avatarIv.setImageUrl(NetConfig.getPictureUrl(user.getAvatarUrl()), 
 				CityLifeApp.getInstance().getImageLoader());		
 	}
