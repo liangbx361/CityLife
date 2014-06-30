@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -76,7 +77,8 @@ public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAd
 	 *
 	 */
 	@Override
-	public void onErrorResponse(VolleyError error) {		
+	public void onErrorResponse(VolleyError error) {
+		isLoad = true;
 	}
 	
 	/**
@@ -117,7 +119,9 @@ public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAd
 	
 	private void nextPage() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra(IntentExtraConfig.WELCOME_IMG, mWelcomeAdv.imageUrl);
+		if(mWelcomeAdv != null && !TextUtils.isEmpty(mWelcomeAdv.imageUrl)) {
+			intent.putExtra(IntentExtraConfig.WELCOME_IMG, mWelcomeAdv.imageUrl);
+		}
 		startActivity(intent);
 		finish();
 		overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);		

@@ -350,9 +350,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="yongan" />
-
-        
-        
+                                      
 		<!-- ###################百度云推送相关设置###################### -->
 		<receiver android:name="com.wb.citylife.mk.push.CityLifePushReceiver">
 		    <intent-filter>
