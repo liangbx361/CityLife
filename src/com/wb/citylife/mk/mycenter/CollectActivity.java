@@ -20,12 +20,14 @@ import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CollectListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.MyCollect;
+import com.wb.citylife.bean.MyCollect.CollectItem;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.task.MyCollectRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
@@ -34,6 +36,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 /**
@@ -42,7 +46,7 @@ import android.widget.ListView;
  *
  */
 public class CollectActivity extends BaseActivity implements Listener<MyCollect>, 
-	ErrorListener, ReloadListener{
+	ErrorListener, ReloadListener, OnItemClickListener{
 	
 	private PullToRefreshListView mPullListView;
 	private PullListViewHelper pullHelper;
@@ -58,7 +62,7 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
-		setContentView(R.layout.activity_commentlist);
+		setContentView(R.layout.activity_collect_list);
 		
 		getIntentData();
 		initView();
@@ -106,6 +110,7 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 		mPullListView.setMode(Mode.PULL_FROM_START);
 						
 		mCollectLv = mPullListView.getRefreshableView();
+		mCollectLv.setOnItemClickListener(this);
 		
 		//底部添加正在加载视图
 		pullHelper = new PullListViewHelper(this, mCollectLv);
@@ -226,6 +231,13 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, collectPageInfo.pageSize);
 			}
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		CollectItem cItem = mMyCollect.datas.get(position-1);
+		CommIntent.startDetailPage(this, cItem.id, cItem.type);
 	}
 	
 }

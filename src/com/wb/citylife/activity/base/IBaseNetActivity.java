@@ -2,6 +2,7 @@ package com.wb.citylife.activity.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -12,7 +13,7 @@ import com.wb.citylife.app.CityLifeApp;
  * @author liangbx
  *
  */
-public class IBaseNetActivity extends Activity{
+public class IBaseNetActivity extends FragmentActivity{
 	
 	public RequestQueue mQueue;
 	private String requestTag;

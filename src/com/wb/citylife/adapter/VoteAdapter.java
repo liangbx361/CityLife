@@ -140,6 +140,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				viewHolder.answerTv.setVisibility(View.VISIBLE);
 				viewHolder.answerTv.setText(qItem.result[0]);
 			}
+			mAdapterList.add(null);
 		} else {
 			view = LayoutInflater.from(mContext).inflate(R.layout.vote_type_select_layout, null);
 			TextView titleTv = (TextView) view.findViewById(R.id.title);
@@ -336,6 +337,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			answer = position + "";
 			answerId = qItem.questionOptionIds[position];
+			answer = answerId;
 		} else if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
 			List<Int> checkList = mCheckList.get(page);
 			for(int i=0; i<checkList.size(); i++) {
@@ -348,6 +350,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			if(!answer.equals("")) {				
 				answer = answer.substring(0, answer.length()-1);
 				answerId = answerId.substring(0, answerId.length()-1);
+				answer = answerId;
 			} else {
 				ToastHelper.showToastInBottom(mContext, "请至少选择一项");
 				return;			
@@ -362,9 +365,9 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				return;
 			} 						
 		}
-		
+				
 		submitQItem = qItem;
-		submitIndex = position;
+		submitIndex = mViewPager.getCurrentItem();
 		submited = true;
 		voteDetailActivity.setIndeterminateBarVisibility(true);
 		requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
@@ -383,7 +386,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		params.put("questionType", qItem.questionType+"");
 		params.put("answer", answer);
 		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
-		params.put("answerId", answerId);
+//		params.put("answerId", answerId);
 		return params;
 	}
 	
@@ -439,9 +442,8 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 						submitQItem.rate[i] = submitQItem.rate[i] * 100 / total;
 					}
 					
-					int page = mViewPager.getCurrentItem();
-					animList.get(page).value = true;
-					mAdapterList.get(page).notifyDataSetChanged();
+					animList.get(submitIndex).value = true;
+					mAdapterList.get(submitIndex).notifyDataSetChanged();
 					mSubmitBtn.setVisibility(View.GONE);						
 				} else {
 					mSubmitBtn.setVisibility(View.GONE);

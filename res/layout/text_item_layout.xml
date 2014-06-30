@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_item"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="3.0dip"
+        android:layout_toRightOf="@id/img_layout"
+        android:gravity="top|left|center"
+        android:lineSpacingExtra="3.0dip"
+        android:singleLine="true"
+        android:textAppearance="@style/news_list_title_style" />
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/title"
+        android:layout_below="@id/title"
+        android:lineSpacingExtra="2.0dip"
+        android:maxLines="2"
+        android:minLines="2"
+        android:textAppearance="@style/news_list_desc_style" />
+
+    <TextView
+        android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/desc"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="2.0dip"
+        android:paddingRight="2.0dip"
+        android:singleLine="true"
+        android:textAppearance="@style/news_list_tag_style" />
+
+    <TextView
+        android:id="@+id/tag2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/desc"
+        android:layout_toLeftOf="@id/tag"
+        android:paddingLeft="4.0dip"
+        android:paddingRight="2.0dip"
+        android:singleLine="true"
+        android:textAppearance="@style/news_list_tag_style" />
+
+</RelativeLayout>

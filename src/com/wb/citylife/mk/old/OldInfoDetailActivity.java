@@ -255,6 +255,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", id);		
 		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}
 	

@@ -24,11 +24,14 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.common.date.FormatDateTime;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.activity.base.IBaseNetActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Channel;
 import com.wb.citylife.bean.ScrollNews;
@@ -41,10 +44,11 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.mk.push.Utils;
 import com.wb.citylife.task.ChannelRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
 
-public class MainActivity extends BaseActivity implements MainListener,
+public class MainActivity extends IBaseNetActivity implements MainListener,
 	Listener<Channel>, ErrorListener{
 	
 	private static final String TAG_HOME = "home";
@@ -86,15 +90,30 @@ public class MainActivity extends BaseActivity implements MainListener,
 		
 		getIntentData();
 		initView();
-		loadDbData();		
+		loadDbData();	
+		
+		// Push: 以apikey的方式登录，一般放在主Activity的onCreate中。
+        // 这里把apikey存放于manifest文件中，只是一种存放方式，
+        // 您可以用自定义常量等其它方式实现，来替换参数中的Utils.getMetaValue(PushDemoActivity.this,
+        // "api_key")
+        // 通过share preference实现的绑定标志开关，如果已经成功绑定，就取消这次绑定
+        if (!Utils.hasBind(getApplicationContext())) {
+            PushManager.startWork(getApplicationContext(),
+                    PushConstants.LOGIN_TYPE_API_KEY,
+                    Utils.getMetaValue(this, "api_key"));
+            // Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
+            // PushManager.enableLbs(getApplicationContext());
+        }
+        
+        requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
+		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
+				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
 	}
 	
-	@Override
 	public void getIntentData() {
 		welcomeImgUrl = getIntent().getStringExtra(IntentExtraConfig.WELCOME_IMG);
 	}
 	
-	@Override
 	public void initView() {		
 		fTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
 		fTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
@@ -122,19 +141,6 @@ public class MainActivity extends BaseActivity implements MainListener,
 		FinalDb finalDb = CityLifeApp.getInstance().getDb();
 		mChannelList = finalDb.findAll(DbChannel.class, "weight asc");
 		mScrollNewsList = finalDb.findAll(DbScrollNews.class);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		//此处设置菜单		
-		setDisplayHomeAsUpEnabled(false);
-		setDisplayShowHomeEnabled(true);
-		
-		requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
-		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
-				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
-		setIndeterminateBarVisibility(true);	
-		return super.onCreateOptionsMenu(menu);
 	}
 	
 	/**
@@ -217,7 +223,6 @@ public class MainActivity extends BaseActivity implements MainListener,
 	 */
 	@Override
 	public void onErrorResponse(VolleyError error) {		
-		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 	}
 	
@@ -226,7 +231,6 @@ public class MainActivity extends BaseActivity implements MainListener,
 	 */
 	@Override
 	public void onResponse(Channel response) {
-		setIndeterminateBarVisibility(false);
 		mChannel = response;
 		//更新数据库中的数据	
 		if(mChannel.respCode == RespCode.SUCCESS) {
@@ -360,5 +364,15 @@ public class MainActivity extends BaseActivity implements MainListener,
 			//登录成功后的处理 显示用户名称、用户头像
 			mCenterListener.onLogin();
 		}
+	}
+
+	@Override
+	public void hideActionBar() {
+		
+	}
+
+	@Override
+	public void showActionBar() {
+		
 	}	
 }

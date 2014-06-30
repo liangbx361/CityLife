@@ -8,6 +8,7 @@ import net.tsz.afinal.utils.Utils;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.baidu.frontia.FrontiaApplication;
 import com.common.device.DeviceUuidFactory;
 import com.common.net.volley.cache.VolleyImageCache;
 import com.wb.citylife.bean.db.DbChannel;
@@ -18,7 +19,7 @@ import com.wb.citylife.db.DbUpdateHandler;
 
 import android.app.Application;
 
-public class CityLifeApp extends Application {
+public class CityLifeApp extends FrontiaApplication {
 	
 	//APP实例
 	private static CityLifeApp mApp;

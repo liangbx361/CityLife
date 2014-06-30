@@ -84,8 +84,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, getVoteDetailRequestParams(), this, this);
-		setIndeterminateBarVisibility(true);		
+		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, getVoteDetailRequestParams(), this, this);		
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -135,7 +134,6 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	@Override
 	public void onErrorResponse(VolleyError error) {	
 		showLoadError(this);
-		setIndeterminateBarVisibility(false);
 		ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 	}
 	
@@ -152,7 +150,6 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	 */
 	@Override
 	public void onResponse(VoteDetail response) {		
-		setIndeterminateBarVisibility(false);
 		mVoteDetail = response;
 		if(mVoteDetail.respCode == RespCode.SUCCESS) {			
 			voteTitleTv.setText(mVoteDetail.title);

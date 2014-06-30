@@ -12,4 +12,6 @@ public interface RespParams {
 	
 	public static final String PHONE_ID = "phoneId";
 	
+	public static final String TYPE = "type";
+	
 }

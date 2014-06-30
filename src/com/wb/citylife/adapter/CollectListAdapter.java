@@ -46,10 +46,8 @@ public class CollectListAdapter extends BaseAdapter {
 		View view;
 		ViewHolder holder;
 		if(convertView == null) {
-			view = LayoutInflater.from(mContext).inflate(R.layout.news_item_layout, null);
+			view = LayoutInflater.from(mContext).inflate(R.layout.text_item_layout, null);
 			holder = new ViewHolder();
-			holder.thumbIv = (NetworkImageView) view.findViewById(R.id.img);
-			holder.videoIv = (ImageView) view.findViewById(R.id.video);
 			holder.titleTv = (TextView) view.findViewById(R.id.title);
 			holder.descTv = (TextView) view.findViewById(R.id.desc);
 			holder.tagTv = (TextView) view.findViewById(R.id.tag);
@@ -58,25 +56,15 @@ public class CollectListAdapter extends BaseAdapter {
 			
 			holder.tagTv.setVisibility(View.GONE);
 			holder.tag2Tv.setVisibility(View.GONE);
-			holder.thumbIv.setVisibility(View.GONE);
-			holder.videoIv.setVisibility(View.GONE);
 		} else {
 			view = convertView;
 			holder = (ViewHolder) view.getTag();
 		}
 		
-		CollectItem cItem = mCollect.datas.get(position);
-		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
-		holder.thumbIv.setImageUrl(cItem.thumbnailUrl, CityLifeApp.getInstance().getImageLoader());		
+		CollectItem cItem = mCollect.datas.get(position);	
 		holder.titleTv.setText(cItem.title);
 		holder.descTv.setText(cItem.desc);
-		
-		if(cItem.isVideo) {
-			holder.videoIv.setVisibility(View.VISIBLE);
-		} else {
-			holder.videoIv.setVisibility(View.GONE);
-		}
-		
+				
 		if(position % 2 == 0) {
 			view.setBackgroundColor(0xfffafafa);
 		} else {

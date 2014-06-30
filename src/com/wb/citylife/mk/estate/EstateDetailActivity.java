@@ -121,7 +121,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
+		requestEstateDetail(Method.POST, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
 		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
@@ -139,6 +139,8 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	
 	@Override
 	public void onClick(View v) {
+		super.onClick(v);
+		
 		switch(v.getId()) {
 		case R.id.images:{
 			Intent intent = new Intent(this, ImageBrowseActivity.class);
@@ -161,9 +163,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, estateId);
 			startActivity(intent);
 		}break;
-		}
-		
-		super.onClick(v);
+		}				
 	}
 		
 	/**
@@ -174,6 +174,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", estateId);		
 		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}
 	
@@ -208,7 +209,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	
 	@Override
 	public void onReload() {
-		requestEstateDetail(Method.GET, NetInterface.METHOD_ESTATE_DETAIL, 
+		requestEstateDetail(Method.POST, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
 		commentPageInfo.pageNo = 1;
 		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
@@ -283,9 +284,13 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 
 		@Override
 		public void onResponse(CommentList commentList) {
-			mCommentList = commentList;
-			mCommentAdapter = new CommentAdapter(EstateDetailActivity.this, mCommentList);
-			commentLv.setAdapter(mCommentAdapter);
+			if(commentList.respCode == RespCode.SUCCESS) {
+				mCommentList = commentList;
+				mCommentAdapter = new CommentAdapter(EstateDetailActivity.this, mCommentList);
+				commentLv.setAdapter(mCommentAdapter);
+			} else {
+				ToastHelper.showToastInBottom(EstateDetailActivity.this, commentList.respMsg);
+			}
 		}		
 	}
 		

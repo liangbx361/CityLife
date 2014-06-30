@@ -63,8 +63,8 @@ public class NewsAdapter extends BaseAdapter {
 		holder.thumbIv.setImageUrl(newsItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());		
 		holder.titleTv.setText(newsItem.title);
 		holder.descTv.setText(newsItem.summary);
-		holder.tagTv.setText("点击" + newsItem.commentNum);
-		holder.tag2Tv.setText("评论" + newsItem.clickNum);
+		holder.tagTv.setText("点击" + newsItem.clickNum);
+		holder.tag2Tv.setText("评论" + newsItem.commentNum);
 		
 		if(newsItem.type == 0) {
 			holder.videoIv.setVisibility(View.GONE);

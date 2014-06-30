@@ -115,7 +115,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//处理下拉刷新
 				newsPageInfo.pageNo = 1;
-				requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
+				requestNewsList(Method.POST, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
 						NewsListActivity.this, NewsListActivity.this);
 			}
 
@@ -132,7 +132,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 				if(loadState == BOTTOM_STATE_LOAD_IDLE && mNewsList.hasNextPage) {
 					loadState = BOTTOM_STATE_LOADING;
 					newsPageInfo.pageNo++;
-					requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
+					requestNewsList(Method.POST, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
 							NewsListActivity.this, NewsListActivity.this);					
 				}
 			}
@@ -184,7 +184,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 					//加载失败，点击重试
 					loadState = BOTTOM_STATE_LOADING;
 					setBottomState(loadState);
-					requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
+					requestNewsList(Method.POST, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), 
 							NewsListActivity.this, NewsListActivity.this);					
 				}
 			}
@@ -201,7 +201,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 				R.drawable.actionbar_search_icon);
 		
 		newsPageInfo = new PageInfo();
-		requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);
+		requestNewsList(Method.POST, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, getScrollNewsRequestParams(), scrollNewsListener, scrollNewsListener);
 	
 		return super.onCreateOptionsMenu(menu);
@@ -433,7 +433,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	@Override
 	public void onReload() {
 		newsPageInfo.pageNo = 1;
-		requestNewsList(Method.GET, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);		
+		requestNewsList(Method.POST, NetInterface.METHOD_NEWS_LIST, getNewsListRequestParams(), this, this);		
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, getScrollNewsRequestParams(), scrollNewsListener, scrollNewsListener);
 		showLoading();
 	}	

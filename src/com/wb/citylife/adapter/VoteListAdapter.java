@@ -61,8 +61,8 @@ public class VoteListAdapter extends BaseAdapter {
 		holder.thumbIv.setImageUrl(voteItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());
 		holder.titleTv.setText(voteItem.title);
 		holder.descTv.setText(voteItem.summary);
-		holder.tagTv.setText("点击" + voteItem.commentNum);
-		holder.tag2Tv.setText("评论" + voteItem.clickNum);
+		holder.tagTv.setText("点击" + voteItem.clickNum);
+		holder.tag2Tv.setText("评论" + voteItem.commentNum);
 		
 		return view;
 	}

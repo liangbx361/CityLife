@@ -33,6 +33,9 @@ public interface NetInterface {
 	public static final String METHOD_COLLECT = "collect.do";
 	public static final String METHOD_MY_COLLECT = "myCollected.do";
 	
+	/***************************** 搜索 **********************************************/
+	public static final String METHOD_SEARCH = "search.do";
+	
 	/***************************** 点赞  **********************************************/
 	public static final String METHOD_FAVOUR = "favour.do";
 	

@@ -9,6 +9,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <LinearLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/actionbar_bg"
+            android:gravity="center_vertical|right"
+            android:orientation="horizontal" >
+			
+            <TextView 
+                android:id="@+id/city_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/city_name"
+                android:layout_marginRight="34dp"
+                android:textSize="17sp"
+                android:textColor="#818181"/>
+            
+        </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="180dp" >
@@ -24,19 +44,19 @@
                 android:layout_height="14.67dp"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/adv_bar_bg"
+                app:gapWidth="5dp"
                 app:lineWidth="15dp"
                 app:selectedColor="#ffffffff"
                 app:strokeWidth="2dp"
-                app:gapWidth="5dp"
                 app:unselectedColor="#60ffffff" />
-            
-            <TextView 
+
+            <TextView
                 android:id="@+id/title"
                 style="@style/sidebar_title_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/adv_indicator"
-                android:gravity="left"/>
+                android:gravity="left" />
         </RelativeLayout>
 
         <com.wb.citylife.widget.GrideViewForScrollView

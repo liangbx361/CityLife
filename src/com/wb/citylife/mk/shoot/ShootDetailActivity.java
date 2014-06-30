@@ -251,6 +251,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		params.put("id", id);		
 		params.put("phoneId", CityLifeApp.getInstance().getPhoneId());		
 		params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}
 	

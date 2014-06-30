@@ -219,6 +219,8 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	
 	@Override
 	public void onClick(View v) {
+		super.onClick(v);
+		
 		switch(v.getId()) {
 		//点击提交评论
 		case R.id.comment_btn:{
@@ -240,8 +242,8 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			Intent intent = new Intent(this, VideoActivity.class);
 			intent.putExtra(IntentExtraConfig.VIDEO_PATH, NetConfig.getPictureUrl(mNewsDetail.imagesUrl[1]));
 			startActivity(intent);
-		}
-		}
+		}break;
+		}				
 	}
 	
 	/**
@@ -252,6 +254,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(RespParams.ID, id);		
 		params.put(RespParams.PHONE_ID, CityLifeApp.getInstance().getPhoneId());
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
 		return params;
 	}
 	
