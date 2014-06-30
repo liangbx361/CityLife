@@ -27,6 +27,9 @@
     <string name="action_post">发布</string>
     <string name="action_search">搜索</string>
     
+    <!-- 欢迎页 -->
+    <string name="tips_pull_door">向上滑动进入首页</string>
+    
     <!-- 栏目  -->
     <string name="add">添加</string>
     
@@ -39,6 +42,7 @@
     <!-- 搜索  -->
     <string name="hint_search">请输入关键字...</string>
     <string name="search">搜索</string>
+    <string name="search_no_result">抱歉，未搜索到关于\"%s\"的结果</string>
     
     <!-- 退出提示 -->
     <string name="exit_toast">再按一次退出程序</string>

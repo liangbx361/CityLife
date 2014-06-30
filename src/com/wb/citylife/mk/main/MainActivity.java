@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
@@ -47,9 +49,11 @@ import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.push.Utils;
 import com.wb.citylife.task.ChannelRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
+import com.wb.citylife.widget.PullDoorView;
+import com.wb.citylife.widget.PullDoorView.PullDoorViewListener;
 
 public class MainActivity extends IBaseNetActivity implements MainListener,
-	Listener<Channel>, ErrorListener{
+	Listener<Channel>, ErrorListener, PullDoorViewListener{
 	
 	private static final String TAG_HOME = "home";
 	private static final String TAG_SEARCH = "search";
@@ -79,9 +83,12 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 	private HomeListener mHomeListener;
 	private MyCenterListener mCenterListener;
 	
-	private View welcomeView;
+	private PullDoorView welcomeView;
 	private NetworkImageView welcomeIv;
 	private String welcomeImgUrl;
+	private TextView mTipsTextView;
+	private Animation mTipsAnimation;
+	private boolean disWelcomeView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +117,9 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
 	}
 	
-	public void getIntentData() {
+	public void getIntentData() {		
 		welcomeImgUrl = getIntent().getStringExtra(IntentExtraConfig.WELCOME_IMG);
+		disWelcomeView = getIntent().getBooleanExtra(IntentExtraConfig.DIS_WELCOME, false);
 	}
 	
 	public void initView() {		
@@ -126,11 +134,24 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 			fTabHost.addTab(tabSpec, fragments[i], null);						
 		}
 		
-		welcomeView = findViewById(R.id.welcome_layou);
+		welcomeView = (PullDoorView) findViewById(R.id.welcome_layou);
+		welcomeView.setListener(this);
 		welcomeIv = (NetworkImageView) findViewById(R.id.welcome);
 		welcomeIv.setDefaultImageResId(R.drawable.test_welcome);
 		if(!TextUtils.isEmpty(welcomeImgUrl)) {
 			welcomeIv.setImageUrl(welcomeImgUrl, CityLifeApp.getInstance().getImageLoader());			
+		}
+		
+		mTipsTextView = (TextView) findViewById(R.id.pulldoor_close_tips);
+		mTipsAnimation = AnimationUtils.loadAnimation(this, R.anim.connection);
+		
+		if(disWelcomeView) {
+			welcomeView.setVisibility(View.VISIBLE);
+			//默认启动提示上拉文字动画
+			if (mTipsTextView != null && mTipsAnimation != null)
+				mTipsTextView.startAnimation(mTipsAnimation);
+		} else {
+			welcomeView.setVisibility(View.GONE);
 		}
 	}
 	
@@ -374,5 +395,12 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 	@Override
 	public void showActionBar() {
 		
+	}
+
+	@Override
+	public void onClosed() {
+		welcomeView.setVisibility(View.GONE);
+		if (mTipsTextView != null && mTipsAnimation != null)
+			mTipsTextView.clearAnimation();
 	}	
 }

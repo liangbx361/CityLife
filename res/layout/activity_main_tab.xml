@@ -32,7 +32,8 @@
     <com.wb.citylife.widget.PullDoorView
         android:id="@+id/welcome_layou"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent" 
+        android:visibility="gone">
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/welcome"
@@ -40,6 +41,17 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY" >
         </com.android.volley.toolbox.NetworkImageView>
+
+        <TextView
+            android:id="@+id/pulldoor_close_tips"
+            style="@style/sidebar_title_style"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8.0dip"
+            android:gravity="center"
+            android:text="@string/tips_pull_door"
+            android:textSize="15sp"/>
     </com.wb.citylife.widget.PullDoorView>
 
 </RelativeLayout>

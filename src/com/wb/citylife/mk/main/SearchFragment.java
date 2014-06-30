@@ -5,14 +5,16 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -20,22 +22,44 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.IBaseNetActivity;
+import com.wb.citylife.adapter.SearchListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.Search;
+import com.wb.citylife.bean.MyCollect.CollectItem;
+import com.wb.citylife.bean.Search.SearchItem;
+import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.common.CommIntent;
+import com.wb.citylife.mk.mycenter.CollectActivity;
 import com.wb.citylife.task.SearchRequest;
+import com.wb.citylife.widget.PullListViewHelper;
 
-public class SearchFragment extends Fragment implements Listener<Search>, ErrorListener{
+public class SearchFragment extends BaseExtraLayoutFragment implements Listener<Search>, ErrorListener,
+	OnItemClickListener{
 	
 	private IBaseNetActivity mActivity;
 	
 	private EditText searchEt;
 	private Button searchBtn;
+	private int searchType;
+	private String keyword;
+	
+	private PullToRefreshListView mPullListView;
+	private PullListViewHelper pullHelper;
+	private int loadState;
+	
+	private ListView mSearchResultLv;
+	private SearchListAdapter mSearchAdapter;
 	
 	private SearchRequest mSearchRequest;
 	private Search mSearch;
@@ -45,6 +69,7 @@ public class SearchFragment extends Fragment implements Listener<Search>, ErrorL
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity =  (IBaseNetActivity) activity;
+		searchType = getArguments().getInt(IntentExtraConfig.SEARCH_TYPE, 0);				
 	}
 	
 	@Override
@@ -76,16 +101,38 @@ public class SearchFragment extends Fragment implements Listener<Search>, ErrorL
 				search();
 			}
 		});
+		
+		mPullListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
+		mPullListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+
+			@Override
+			public void onLastItemVisible() {
+				//滑动到底部的处理
+				if(loadState == PullListViewHelper.BOTTOM_STATE_LOAD_IDLE && mSearch.hasNextPage) {
+					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
+					searchPageInfo.pageNo++;
+					requestSearch(Method.POST, NetInterface.METHOD_SEARCH, getSearchRequestParams(keyword), 
+							SearchFragment.this, SearchFragment.this);
+				}
+			}
+		});
+		
+		//不允许上拉下拉刷新
+		mPullListView.setMode(Mode.DISABLED);
+		mSearchResultLv = mPullListView.getRefreshableView();
+		mSearchResultLv.setOnItemClickListener(this);
+		
 	}
 	
 	private void search() {
-		String searchStr = searchEt.getText().toString();
-		if(TextUtils.isEmpty(searchStr)) {
+		keyword = searchEt.getText().toString();
+		if(TextUtils.isEmpty(keyword)) {
 			ToastHelper.showToastInBottom(getActivity(), "搜索关键字不能为空");
 			return;
 		}
 		
-		requestSearch(Method.POST, NetInterface.METHOD_SEARCH, getSearchRequestParams(searchStr), this, this);
+		requestSearch(Method.POST, NetInterface.METHOD_SEARCH, getSearchRequestParams(keyword), this, this);
+		showLoading();
 	}
 	
 	/**
@@ -97,7 +144,7 @@ public class SearchFragment extends Fragment implements Listener<Search>, ErrorL
 		params.put(RespParams.PAGE_SIZE, searchPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, searchPageInfo.pageNo+"");
 		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
-		params.put(RespParams.TYPE, "0");
+		params.put(RespParams.TYPE, searchType+"");
 		params.put("keyword", keyword);
 		return params;
 	}
@@ -134,6 +181,25 @@ public class SearchFragment extends Fragment implements Listener<Search>, ErrorL
 	 */
 	@Override
 	public void onResponse(Search response) {
-		mSearch = response;
+		
+		if(response.respCode == RespCode.SUCCESS) {
+			mSearch = response;
+			if(mSearch.totalNum == 0) {
+				setEmptyToastText(getResources().getString(R.string.search_no_result, keyword));
+				showEmpty();
+				return;
+			}
+			
+			
+		} else {
+			ToastHelper.showToastInBottom(getActivity(), response.respMsg);
+		}
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		SearchItem sItem = mSearch.datas.get(position-1);
+		CommIntent.startDetailPage(getActivity(), sItem.id, sItem.type);
 	}
 }

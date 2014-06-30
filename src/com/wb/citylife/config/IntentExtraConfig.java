@@ -33,4 +33,10 @@ public interface IntentExtraConfig {
 	
 	/***************************** 视频  **********************************************/
 	public static final String VIDEO_PATH = "video_path";
+	
+	/***************************** 欢迎页  **********************************************/
+	public static final String DIS_WELCOME = "dis_welcome";
+	
+	/***************************** 搜索  **********************************************/
+	public static final String SEARCH_TYPE = "search_type";
 }

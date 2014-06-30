@@ -1,13 +1,5 @@
 package com.wb.citylife.adapter;
 
-import com.android.volley.toolbox.NetworkImageView;
-import com.wb.citylife.R;
-import com.wb.citylife.app.CityLifeApp;
-import com.wb.citylife.bean.MyCollect;
-import com.wb.citylife.bean.MyCollect.CollectItem;
-import com.wb.citylife.bean.NewsList;
-import com.wb.citylife.bean.NewsList.NewsItem;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,24 +8,29 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CollectListAdapter extends BaseAdapter {
+import com.android.volley.toolbox.NetworkImageView;
+import com.wb.citylife.R;
+import com.wb.citylife.bean.Search;
+import com.wb.citylife.bean.Search.SearchItem;
+
+public class SearchListAdapter extends BaseAdapter {
 	
 	private Context mContext;
-	private MyCollect mCollect;
+	private Search mSearch;
 	
-	public CollectListAdapter(Context context, MyCollect mCollect) {
+	public SearchListAdapter(Context context, Search search) {
 		mContext = context;
-		this.mCollect = mCollect;
+		mSearch = search;		
 	}
 
 	@Override
 	public int getCount() {
-		return mCollect.datas.size();
+		return mSearch.datas.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mCollect.datas.get(position);
+		return mSearch.datas.get(position);
 	}
 
 	@Override
@@ -61,9 +58,9 @@ public class CollectListAdapter extends BaseAdapter {
 			holder = (ViewHolder) view.getTag();
 		}
 		
-		CollectItem cItem = mCollect.datas.get(position);	
-		holder.titleTv.setText(cItem.title);
-		holder.descTv.setText(cItem.desc);
+		SearchItem sItem = mSearch.datas.get(position);
+		holder.titleTv.setText(sItem.title);
+		holder.descTv.setText(sItem.desc);
 				
 		if(position % 2 == 0) {
 			view.setBackgroundColor(0xfffafafa);
@@ -73,7 +70,7 @@ public class CollectListAdapter extends BaseAdapter {
 		
 		return view;
 	}
-		
+	
 	public class ViewHolder {
 		NetworkImageView thumbIv;
 		ImageView videoIv;

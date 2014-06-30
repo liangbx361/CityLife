@@ -40,10 +40,12 @@ public class PullDoorView extends RelativeLayout implements OnGestureListener{
 
 	private int mDelY;
 
-	private boolean mCloseFlag = false;
+	private boolean mCloseFlag = false;	
 	
 	// 手势解析类用于 移动、加速、单击、双击
 	private GestureDetector mDetector;
+	
+	private PullDoorViewListener mListener;
 
 	public PullDoorView(Context context) {
 		super(context);
@@ -118,7 +120,6 @@ public class PullDoorView extends RelativeLayout implements OnGestureListener{
 			if (mDelY < 0) {
 
 				if (Math.abs(mDelY) > mScreenHeigh / 2) {
-
 					// 向上滑动超过半个屏幕高的时候 开启向上消失动画
 					startBounceAnim(this.getScrollY(), mScreenHeigh);					
 				} else {
@@ -148,7 +149,9 @@ public class PullDoorView extends RelativeLayout implements OnGestureListener{
 				postInvalidate();
 			} else {
 				if(mCloseFlag) {
-//					scrollTo(0, 0);
+					if(mListener != null) {
+						mListener.onClosed();
+					}
 					mCloseFlag = false;
 				}
 			}
@@ -192,6 +195,14 @@ public class PullDoorView extends RelativeLayout implements OnGestureListener{
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
 		return false;
+	}
+	
+	public interface PullDoorViewListener {
+		public void onClosed();			
+	}
+	
+	public void setListener(PullDoorViewListener listener) {
+		mListener = listener;
 	}
 
 }

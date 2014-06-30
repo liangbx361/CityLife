@@ -122,6 +122,7 @@ public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAd
 		if(mWelcomeAdv != null && !TextUtils.isEmpty(mWelcomeAdv.imageUrl)) {
 			intent.putExtra(IntentExtraConfig.WELCOME_IMG, mWelcomeAdv.imageUrl);
 		}
+		intent.putExtra(IntentExtraConfig.DIS_WELCOME, true);
 		startActivity(intent);
 		finish();
 		overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);		
