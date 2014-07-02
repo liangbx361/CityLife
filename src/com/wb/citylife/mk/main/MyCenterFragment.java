@@ -30,6 +30,7 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.mk.mycenter.AccountManagerActivity;
 import com.wb.citylife.mk.mycenter.CollectActivity;
 import com.wb.citylife.mk.mycenter.LoginActivity;
+import com.wb.citylife.mk.mycenter.MsgHistroyActivity;
 
 public class MyCenterFragment extends PreferenceFragment implements OnPreferenceClickListener,
 	MyCenterListener, OnClickListener, NetworkImageListener{
@@ -100,7 +101,8 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 			Intent intent = new Intent(mActivity, CollectActivity.class);
 			startActivity(intent);
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_msg))) {
-			
+			Intent intent = new Intent(mActivity, MsgHistroyActivity.class);
+			startActivity(intent);
 		}
 		return false;
 	}

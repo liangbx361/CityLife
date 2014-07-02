@@ -11,7 +11,7 @@ public class User {
 	@Id(column="id")
 	public int id;
 	
-	public String userId;
+	public String userId = "";
 	
 	public String avatarUrl;
 	

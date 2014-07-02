@@ -10,6 +10,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -42,6 +43,27 @@ public class BaseExtraLayoutFragment extends Fragment implements OnClickListener
 		contentLayout.addView(contentView);	
 		
 		return rootLayout;
+	}
+	
+	protected View setConViewInLayout(LayoutInflater inflater, int layoutResId) {
+		View rootView = inflater.inflate(layoutResId, null);
+		
+		rootLayout = (FrameLayout) rootView.findViewById(R.id.root);
+		
+		emptyContentLayout = (ViewGroup) rootLayout.findViewById(R.id.empty_content_layout);
+		emptyToastTv = (TextView) emptyContentLayout.findViewById(R.id.toast);
+		emptyContentLayout.setVisibility(View.GONE);
+		
+		loadingLayout = (ViewGroup) rootLayout.findViewById(R.id.loading_layout);
+		loadingLayout.setVisibility(View.GONE);
+		
+		loadErrorLayout = (ViewGroup) rootLayout.findViewById(R.id.load_error_layout);
+		loadErrorLayout.setVisibility(View.GONE);
+		loadErrorLayout.setOnClickListener(this);
+		
+		contentLayout = (ViewGroup) rootLayout.findViewById(R.id.content_layout);
+		
+		return rootView;
 	}
 	
 	/**

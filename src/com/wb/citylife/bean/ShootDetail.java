@@ -2,8 +2,10 @@ package com.wb.citylife.bean;
 
 
 public class ShootDetail extends BaseBean{
-
+	
+	public int favourState;
     public int favourNum;
+    public int collectState;
     public String[] imagesUrl;
     public String title;
     public String userName;

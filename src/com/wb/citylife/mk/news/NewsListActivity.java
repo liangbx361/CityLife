@@ -44,11 +44,13 @@ import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.main.SearchActivity;
 import com.wb.citylife.task.NewsListRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
 
@@ -211,7 +213,14 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 * 菜单点击处理
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {			
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		switch(item.getItemId()) {
+		case R.id.action_search:
+			Intent intent = new Intent(this, SearchActivity.class);
+			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_NEWS);
+			startActivity(intent);
+			break;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 		

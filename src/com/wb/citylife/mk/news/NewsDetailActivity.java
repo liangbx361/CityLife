@@ -52,6 +52,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.video.VideoActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
@@ -99,7 +100,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	private MenuItem mFavourMenuItem;
 	
 	private Handler mHandler = new Handler();
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -295,6 +296,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		requestNewsDetail(Method.POST, NetInterface.METHOD_NEWS_DETAIL, getNewsDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
 		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), new CommentListListener(), this);
+		showLoading();
 	}
 	
 	/**
@@ -319,9 +321,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		contentWv.loadDataWithBaseURL(NetConfig.getServerBaseUrl(), mNewsDetail.content, null, "utf-8", null);
 		
 		if(mNewsDetail.favourState == 0) {
-			mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favour));
+			mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(NewsDetailActivity.this, R.drawable.favour, mNewsDetail.favourNum));
 		} else {
-			mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favoured));
+			mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(NewsDetailActivity.this, R.drawable.favoured, mNewsDetail.favourNum));
 		}		
 		
 		mColletcMenuItem = getOverflowMenuItem(1);
@@ -535,13 +537,13 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 				if(mNewsDetail.favourState == 0) {
 					mNewsDetail.favourState = 1;
 					mNewsDetail.favourNum++;
-					mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favoured));
-					ToastHelper.showToastInBottom(NewsDetailActivity.this, "感谢您的赞赏");
+					mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(NewsDetailActivity.this, R.drawable.favoured, mNewsDetail.favourNum));
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.favour_toast);
 				} else {
 					mNewsDetail.favourState = 0;
 					mNewsDetail.favourNum--;
-					mFavourMenuItem.setIcon(getFavDrawable(R.drawable.favour));
-					ToastHelper.showToastInBottom(NewsDetailActivity.this, "您取消了赞赏");
+					mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(NewsDetailActivity.this, R.drawable.favour, mNewsDetail.favourNum));
+					ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.favour_cancle_toast);
 				}
 				
 			} else {
@@ -549,21 +551,5 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			}
 		}
 		
-	}
-	
-	private Drawable getFavDrawable(int resId) {
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
-		Bitmap newBmp = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-		Canvas canvas = new Canvas(newBmp);
-		Paint textPaint = new Paint();
-		textPaint.setTypeface(Typeface.MONOSPACE);
-		textPaint.setAntiAlias(true);
-		textPaint.setTextSize(30);
-		textPaint.setColor(0xff5c5c5c);
-		canvas.drawText(mNewsDetail.favourNum+"", 70.0f, 32.0f, textPaint);
-		Drawable drawable = new BitmapDrawable(getResources(), newBmp);
-		//mFavourMenuItem.set
-		
-		return drawable;
 	}	
 }

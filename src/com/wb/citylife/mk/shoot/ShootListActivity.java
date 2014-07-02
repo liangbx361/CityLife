@@ -14,7 +14,9 @@ import com.viewpagerindicator.TabPageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.mk.main.SearchActivity;
 
 public class ShootListActivity extends BaseActivity {
 	
@@ -65,6 +67,9 @@ public class ShootListActivity extends BaseActivity {
 		
 		switch(item.getItemId()) {
 		case R.id.action_search:
+			Intent intent = new Intent(this, SearchActivity.class);
+			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_SHOOT);
+			startActivity(intent);
 			return true;
 		
 		case R.id.action_publish_shoot:{

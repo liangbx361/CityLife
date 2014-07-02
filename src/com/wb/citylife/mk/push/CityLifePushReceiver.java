@@ -2,6 +2,7 @@ package com.wb.citylife.mk.push;
 
 import java.util.List;
 
+import net.tsz.afinal.FinalDb;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,10 +10,12 @@ import android.text.TextUtils;
 
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.google.gson.Gson;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.OldInfoDetail;
 import com.wb.citylife.bean.PushType;
 import com.wb.citylife.bean.ShootDetail;
 import com.wb.citylife.bean.VoteDetail;
+import com.wb.citylife.bean.db.DBMsg;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.config.IntentExtraConfig;
@@ -31,7 +34,7 @@ public class CityLifePushReceiver extends FrontiaPushMessageReceiver {
 		
 		// 绑定成功，设置已绑定flag，可以有效的减少不必要的绑定请求
         if (errorCode == 0) {
-            Utils.setBind(context, true);
+            PushUtils.setBind(context, true);
         }
 	}
 
@@ -84,6 +87,15 @@ public class CityLifePushReceiver extends FrontiaPushMessageReceiver {
 			Gson gson = new Gson();
 			PushType pushType = gson.fromJson(customContentString, PushType.class);
 			CommIntent.startDetailPage(context, pushType.id, pushType.type);
+			
+			//存储在数据库中
+			FinalDb fDb = CityLifeApp.getInstance().getDb();
+			DBMsg msg = new DBMsg();
+			msg.setMsgId(pushType.id);
+			msg.setType(pushType.type);
+			msg.setTitle(title);
+			msg.setDesc(description);
+			fDb.save(msg);
 		}
 	}
 
@@ -98,7 +110,7 @@ public class CityLifePushReceiver extends FrontiaPushMessageReceiver {
 	public void onUnbind(Context context, int errorCode, String requestId) {
 		// 解绑定成功，设置未绑定flag，
         if (errorCode == 0) {
-            Utils.setBind(context, false);
+            PushUtils.setBind(context, false);
         }
 	}
 

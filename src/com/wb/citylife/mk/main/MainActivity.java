@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.tsz.afinal.FinalDb;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -46,7 +49,7 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
-import com.wb.citylife.mk.push.Utils;
+import com.wb.citylife.mk.push.PushUtils;
 import com.wb.citylife.task.ChannelRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
 import com.wb.citylife.widget.PullDoorView;
@@ -99,22 +102,14 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 		initView();
 		loadDbData();	
 		
-		// Push: 以apikey的方式登录，一般放在主Activity的onCreate中。
-        // 这里把apikey存放于manifest文件中，只是一种存放方式，
-        // 您可以用自定义常量等其它方式实现，来替换参数中的Utils.getMetaValue(PushDemoActivity.this,
-        // "api_key")
-        // 通过share preference实现的绑定标志开关，如果已经成功绑定，就取消这次绑定
-        if (!Utils.hasBind(getApplicationContext())) {
-            PushManager.startWork(getApplicationContext(),
-                    PushConstants.LOGIN_TYPE_API_KEY,
-                    Utils.getMetaValue(this, "api_key"));
-            // Push: 如果想基于地理位置推送，可以打开支持地理位置的推送的开关
-            // PushManager.enableLbs(getApplicationContext());
-        }
-        
+		//打开推送
+		if (!PushUtils.getPushFlag(this)) {
+			PushUtils.openPush(this);
+		}
+                
         requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
-				getScrollNewsRequestParams(), new ScrollNewsListener(), this);
+				getScrollNewsRequestParams(), new ScrollNewsListener(), this);				
 	}
 	
 	public void getIntentData() {		
@@ -137,7 +132,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 		welcomeView = (PullDoorView) findViewById(R.id.welcome_layou);
 		welcomeView.setListener(this);
 		welcomeIv = (NetworkImageView) findViewById(R.id.welcome);
-		welcomeIv.setDefaultImageResId(R.drawable.test_welcome);
+		welcomeIv.setDefaultImageResId(R.drawable.default_welcome);
 		if(!TextUtils.isEmpty(welcomeImgUrl)) {
 			welcomeIv.setImageUrl(welcomeImgUrl, CityLifeApp.getInstance().getImageLoader());			
 		}

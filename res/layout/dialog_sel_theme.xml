@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/setting_dialog_title_bg"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:text="@string/pf_select_theme"
+        android:textColor="#fff"
+        android:textSize="17dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="-1dp"
+        android:background="@drawable/setting_dialog_content_bg"
+        android:orientation="vertical"
+        android:paddingTop="1dp" >
+
+        <RadioGroup
+            android:id="@+id/theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/dialog_divider_line"
+            android:orientation="vertical"
+            android:showDividers="middle" >
+
+            <RadioButton
+                android:id="@+id/default_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="24dp"
+                android:button="@null"
+                android:checked="true"
+                android:drawableRight="@drawable/check_box_selector"
+                android:text="默认" 
+                android:textColor="@color/common_concle_text_color"
+                android:textSize="16sp"/>
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/dialog_divider_line" >
+        </View>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="24dp" 
+            android:textSize="16sp"
+            android:textColor="#c0c0c0"
+            android:gravity="center"
+            android:text="@string/theme_more_toast"/>
+    </LinearLayout>
+
+</RelativeLayout>

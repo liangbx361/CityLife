@@ -1,5 +1,6 @@
 package com.wb.citylife.mk.estate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +13,9 @@ import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.mk.main.SearchActivity;
 
 public class EstateListActivity extends BaseActivity {
 	
@@ -61,6 +64,9 @@ public class EstateListActivity extends BaseActivity {
 		
 		switch(item.getItemId()) {
 		case R.id.action_search:
+			Intent intent = new Intent(this, SearchActivity.class);
+			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_HOUSE);
+			startActivity(intent);
 			return true;		
 		}
 				

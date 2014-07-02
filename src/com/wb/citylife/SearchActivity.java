@@ -27,7 +27,7 @@ public class SearchActivity extends BaseActivity implements Listener<Search>, Er
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_search);
+		setContentView(R.layout.fg_search);
 		
 		getIntentData();
 		initView();				

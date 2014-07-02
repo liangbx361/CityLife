@@ -153,7 +153,7 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
             
             @Override
             public int rowCount() {
-                return AUTOMATIC;
+                return 4;
             }
             
             @Override

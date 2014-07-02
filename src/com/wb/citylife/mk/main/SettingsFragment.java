@@ -2,6 +2,7 @@ package com.wb.citylife.mk.main;
 
 import net.tsz.afinal.FinalDb;
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.common.file.DataCleanManager;
 import com.common.widget.ToastHelper;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.socialize.controller.RequestType;
@@ -24,6 +26,8 @@ import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.dialog.PushDialog;
+import com.wb.citylife.dialog.ThemeDialog;
 import com.wb.citylife.util.share.ShareHelper;
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceClickListener,
@@ -33,9 +37,12 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             RequestType.SOCIAL);
 	
 	private Activity mActivity;
+	private Preference themePf;
+	private Preference pushPf;
 	private Preference feedbackPf;
 	private Preference sharePf;
 	private Preference updatePf;	
+	private Preference cleanPf;
 	private View exitView;
 	
 	@Override
@@ -66,6 +73,12 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 	}
 	
 	private void initPf() {		
+		themePf = (Preference) findPreference(getResources().getString(R.string.pf_select_theme));
+		themePf.setOnPreferenceClickListener(this);
+		
+		pushPf = (Preference) findPreference(getResources().getString(R.string.pf_push_settings));
+		pushPf.setOnPreferenceClickListener(this);
+		
 		feedbackPf = (Preference) findPreference(getResources().getString(R.string.pf_feedbak));
 		feedbackPf.setOnPreferenceClickListener(this);
 		
@@ -73,13 +86,25 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		sharePf.setOnPreferenceClickListener(this);
 		
 		updatePf = (Preference) findPreference(getResources().getString(R.string.pf_update));
-		updatePf.setOnPreferenceClickListener(this);		
+		updatePf.setOnPreferenceClickListener(this);	
+		
+		cleanPf = (Preference) findPreference(getResources().getString(R.string.pf_clean_cache));
+		cleanPf.setOnPreferenceClickListener(this);
 	}
 	
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
-		
-		if(preference.getKey().equals(getResources().getString(R.string.pf_feedbak))) {
+		if(preference.getKey().equals(getResources().getString(R.string.pf_select_theme))) {
+			
+			Dialog dialog = new ThemeDialog(getActivity(), R.style.popupStyle);
+			dialog.show();
+			
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_push_settings))) {
+			
+			Dialog dialog = new PushDialog(getActivity(), R.style.popupStyle);
+			dialog.show();
+			
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_feedbak))) {
 			
 			FeedbackAgent agent = new FeedbackAgent(getActivity());
 		    agent.startFeedbackActivity();
@@ -94,7 +119,11 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 			UmengUpdateAgent.update(mActivity);		
 			ToastHelper.showToastInBottom(mActivity, "版本检测中");
 			
-		} 
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_clean_cache))) {
+			
+			DataCleanManager.cleanExternalAllCache(getActivity());
+			ToastHelper.showToastInBottom(getActivity(), R.string.clean_success_toast);
+		}
 		
 		return false;
 	}	

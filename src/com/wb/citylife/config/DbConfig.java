@@ -39,4 +39,9 @@ public interface DbConfig {
 	 * 滚动新闻
 	 */
 	public static final String TN_SCROLL_NEWS = "scroll_news";
+	
+	/**
+	 * 我的消息
+	 */
+	public static final String TN_MSG = "msg";
 }

@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,16 +23,16 @@ import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.IBaseNetActivity;
+import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.SearchListAdapter;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.Search;
-import com.wb.citylife.bean.MyCollect.CollectItem;
 import com.wb.citylife.bean.Search.SearchItem;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
@@ -40,18 +40,17 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.common.CommIntent;
-import com.wb.citylife.mk.mycenter.CollectActivity;
 import com.wb.citylife.task.SearchRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
 public class SearchFragment extends BaseExtraLayoutFragment implements Listener<Search>, ErrorListener,
-	OnItemClickListener{
+	OnItemClickListener, ReloadListener, OnClickListener{
 	
 	private IBaseNetActivity mActivity;
 	
 	private EditText searchEt;
 	private Button searchBtn;
-	private int searchType;
+	private int searchType = 0;
 	private String keyword;
 	
 	private PullToRefreshListView mPullListView;
@@ -69,7 +68,9 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity =  (IBaseNetActivity) activity;
-		searchType = getArguments().getInt(IntentExtraConfig.SEARCH_TYPE, 0);				
+		if(getArguments() != null) {
+			searchType = getArguments().getInt(IntentExtraConfig.SEARCH_TYPE, 0);
+		}
 	}
 	
 	@Override
@@ -80,7 +81,7 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.activity_search, container, false);		
+		return setConViewInLayout(inflater, R.layout.fg_search);
 	}
 	
 	@Override
@@ -98,7 +99,7 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 			
 			@Override
 			public void onClick(View view) {
-				search();
+				search();				
 			}
 		});
 		
@@ -122,6 +123,21 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 		mSearchResultLv = mPullListView.getRefreshableView();
 		mSearchResultLv.setOnItemClickListener(this);
 		
+		//底部添加正在加载视图
+		pullHelper = new PullListViewHelper(getActivity(), mSearchResultLv);
+		pullHelper.setBottomClick(new OnClickListener() {
+					
+			@Override
+			public void onClick(View v) {
+				if(loadState == PullListViewHelper.BOTTOM_STATE_LOAD_FAIL) {
+					//加载失败，点击重试
+					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
+					pullHelper.setBottomState(loadState, searchPageInfo.pageSize);	
+					requestSearch(Method.POST, NetInterface.METHOD_SEARCH, getSearchRequestParams(keyword), 
+							SearchFragment.this, SearchFragment.this);
+				}
+			}
+		});
 	}
 	
 	private void search() {
@@ -174,6 +190,20 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	@Override
 	public void onErrorResponse(VolleyError error) {		
 		ToastHelper.showToastInBottom(getActivity(), VolleyErrorHelper.getErrorMessage(error));
+		
+		if(searchPageInfo.pageNo == 1) {
+			showLoadError(this);
+		} else {
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_FAIL;
+			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOAD_FAIL, searchPageInfo.pageSize);
+		}
+	}
+	
+	@Override
+	public void onReload() {
+		searchPageInfo.pageNo = 1;
+		requestSearch(Method.POST, NetInterface.METHOD_SEARCH, getSearchRequestParams(keyword), this, this);
+		showLoading();
 	}
 	
 	/**
@@ -182,16 +212,32 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	@Override
 	public void onResponse(Search response) {
 		
-		if(response.respCode == RespCode.SUCCESS) {
-			mSearch = response;
+		if(response.respCode == RespCode.SUCCESS) {		
 			if(mSearch.totalNum == 0) {
 				setEmptyToastText(getResources().getString(R.string.search_no_result, keyword));
 				showEmpty();
 				return;
 			}
 			
+			showContent();
+			if(searchPageInfo.pageNo == 1) {
+				mSearch = response;
+				mSearchAdapter = new SearchListAdapter(getActivity(), mSearch);
+				mSearchResultLv.setAdapter(mSearchAdapter);
+			} else {
+				mSearch.hasNextPage = response.hasNextPage;
+				mSearch.datas.addAll(response.datas);
+				mSearchAdapter.notifyDataSetChanged();
+			}
 			
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
+			if(mSearch.hasNextPage) {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, searchPageInfo.pageSize);
+			} else {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, searchPageInfo.pageSize);
+			}			
 		} else {
+			showLoadError(this);
 			ToastHelper.showToastInBottom(getActivity(), response.respMsg);
 		}
 	}
@@ -201,5 +247,5 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 			long id) {
 		SearchItem sItem = mSearch.datas.get(position-1);
 		CommIntent.startDetailPage(getActivity(), sItem.id, sItem.type);
-	}
+	}	
 }

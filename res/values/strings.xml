@@ -4,7 +4,7 @@
     <string name="city_name">永安</string>
     
     <!-- 应用名称  -->
-    <string name="app_name">CityDemo</string>
+    <string name="app_name">城市生活</string>
     <string name="ac_name_news">最新资讯</string>		
     <string name="ac_name_detail">详情</string>
     <string name="ac_name_comment">评论</string>
@@ -22,6 +22,7 @@
     <string name="ac_name_estate">房地产</string>
     <string name="ac_name_image_browse">图片浏览</string>
     <string name="ac_name_my_collect">我的收藏</string>        
+    <string name="ac_name_my_msg">我的消息</string>
     
     <!-- ActionBar -->
     <string name="action_post">发布</string>
@@ -43,6 +44,13 @@
     <string name="hint_search">请输入关键字...</string>
     <string name="search">搜索</string>
     <string name="search_no_result">抱歉，未搜索到关于\"%s\"的结果</string>
+    
+    <!-- 消息 -->
+    <string name="msg_empty_toast">您还未收到过消息</string>
+    
+    <!-- 设置 -->
+    <string name="theme_more_toast">敬请请期待更多主题...</string>
+    <string name="clean_success_toast">清除成功</string>
     
     <!-- 退出提示 -->
     <string name="exit_toast">再按一次退出程序</string>
@@ -86,13 +94,15 @@
     <string name="box_option_setlauncher">发送至桌面</string>
     <string name="box_option_delete_item">删除栏目</string>
     
-    <!-- 分享、收藏 -->
+    <!-- 分享、收藏、点赞 -->
     <string name="share">分享</string>
     <string name="collect">收藏</string>
     <string name="collect_cancle">取消收藏</string>
     <string name="collect_success">收藏成功</string>
     <string name="colletc_cancle_success">已取消收藏</string>    
     <string name="collect_empty_toast">您还未收藏过信息</string>
+    <string name="favour_toast">感谢您的赞赏</string>
+    <string name="favour_cancle_toast">您取消了赞赏</string>
     
     <!-- 照片上传  -->
     <string name="take_picture">拍照</string>

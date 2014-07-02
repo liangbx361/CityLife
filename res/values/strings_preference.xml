@@ -8,13 +8,14 @@
     
     <!-- 设置模块 -->
     <string name="pf_account_manager">账号管理</string>
-    <string name="pf_home_background">自定义背景</string>
+    <string name="pf_select_theme">主题切换</string>
     <string name="pf_push_settings">推送设置</string>       
     <string name="pf_feedbak">用户反馈</string>
     <string name="pf_apk_share">推荐好友</string>    
     <string name="pf_update">检测更新</string>
     <string name="pf_about">关于我们</string>
     <string name="pf_exit">退出</string>
+    <string name="pf_clean_cache">清除缓存</string>
     
     <!-- 账号管理  -->
     <string name="pf_modify_avatar">修改头像</string>

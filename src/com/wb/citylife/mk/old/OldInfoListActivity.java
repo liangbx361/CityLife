@@ -14,7 +14,9 @@ import com.viewpagerindicator.TabPageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.mk.main.SearchActivity;
 
 public class OldInfoListActivity extends BaseActivity {
 	
@@ -67,6 +69,12 @@ public class OldInfoListActivity extends BaseActivity {
 		case R.id.action_publish_oldinfo:
 			startActivity(new Intent(this, PublishOldInfoActivity.class));
 			return true;
+			
+		case R.id.action_search:
+			Intent intent = new Intent(this, SearchActivity.class);
+			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_OLD_MARKET);
+			startActivity(intent);
+			break;
 		}
 		
 		return super.onOptionsItemSelected(item);

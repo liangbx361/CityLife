@@ -230,5 +230,6 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		commentPageInfo.pageNo = 1;
 		requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
 				CommentListActivity.this, CommentListActivity.this);
+		showLoading();
 	}
 }

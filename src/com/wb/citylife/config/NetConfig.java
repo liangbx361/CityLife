@@ -9,7 +9,7 @@ public class NetConfig implements NetInterface {
 			
 	/*************************************测试环境配置************************************/
 	//接口地址
-	public static final String DEBUG_BASE_URL = "http://192.168.1.107:8081/";
+	public static final String DEBUG_BASE_URL = "http://218.106.153.197:8080/";
 //	public static final String DEBUG_BASE_URL = "http://192.168.1.111:8080/";
 	public static final String DEBUG_INTRANET_BASE_URL = "http://192.168.10.109:8081/"; 
 		
@@ -19,7 +19,7 @@ public class NetConfig implements NetInterface {
 	public static final String RELEASE_INTRANET_BASE_URL = "";
 	
 	/*************************************项目扩展地址************************************/
-	public static final String EXTEND_URL = "citylive/client/";
+	public static final String EXTEND_URL = "client/";
 //	public static final String EXTEND_URL = "CityLife/";
 	
 	/*************************************应用下载地址************************************/

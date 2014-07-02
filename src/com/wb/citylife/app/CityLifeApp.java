@@ -60,6 +60,8 @@ public class CityLifeApp extends FrontiaApplication {
 		List<User> userList = mFinalDb.findAllByWhere(User.class, "isLogin=1");
 		if(userList != null && userList.size() > 0) {
 			mUser = userList.get(0);			
+		} else {
+			mUser = new User();
 		}
 		
 		//获取手机唯一标识符

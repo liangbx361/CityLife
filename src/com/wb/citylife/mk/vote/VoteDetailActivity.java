@@ -143,6 +143,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	@Override
 	public void onReload() {
 		requestVoteDetail(Method.POST, NetInterface.METHOD_VOTE_DETAIL, getVoteDetailRequestParams(), this, this);
+		showLoading();
 	}
 	
 	/**

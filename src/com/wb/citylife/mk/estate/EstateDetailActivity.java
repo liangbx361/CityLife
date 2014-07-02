@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +29,8 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.BaseBean;
+import com.wb.citylife.bean.Collect;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.EstateDetail;
@@ -39,14 +42,18 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.comment.CommentListActivity;
+import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.img.ImageBrowseActivity;
+import com.wb.citylife.mk.news.NewsDetailActivity;
+import com.wb.citylife.task.BaseRequest;
+import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
 import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.task.EstateDetailRequest;
 import com.wb.citylife.widget.ListViewForScrollView;
 
 public class EstateDetailActivity extends BaseActivity implements Listener<EstateDetail>, ErrorListener,
-	OnClickListener, ReloadListener{
+	OnClickListener, ReloadListener, OnMenuItemClickListener{
 	
 	private TextView titleTv;
 	private TextView priceTv;
@@ -75,6 +82,15 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	private Button commentBtn;
 	private CommentRequest mCommentRequest;
 	private Comment mComment;
+	
+	//收藏
+	private CollectRequest mCollectRequest;
+	private Collect mCollect;
+	private MenuItem mColletcMenuItem;
+	
+	//点赞
+	private BaseRequest mBaseRequest;
+	private MenuItem mFavourMenuItem;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +137,10 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
+		mFavourMenuItem = setActionBarItem(menu, R.id.action_favour, R.string.action_favour, R.drawable.favour);
+		//此处设置ActionBar的菜单按钮
+		setOverflowMenu(R.menu.browse_content_menu, R.drawable.actionbar_overflow_icon, this);	
+		
 		requestEstateDetail(Method.POST, NetInterface.METHOD_ESTATE_DETAIL, 
 				getEstateDetailRequestParams(), this, this);
 		commentPageInfo = new PageInfo(5, 1);
@@ -133,8 +153,44 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	 * 菜单点击处理
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {			
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		
+		switch(item.getItemId()) {
+		case R.id.action_favour:
+			if(CityLifeApp.getInstance().checkLogin()) {
+				if(mEstateDetail.favourState == 0) {
+					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(1), new FavourListener(), this);
+				} else {
+					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(0), new FavourListener(), this);
+				}
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+			}
+			break;
+		}
+		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onMenuItemClick(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.share:
+			break;
+			
+		case R.id.collect:
+			if(CityLifeApp.getInstance().checkLogin()) {
+				if(mEstateDetail.collectState == 0) {
+					requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(0), new CollectListener(), this);
+				} else {
+					requestCollect(Method.POST, NetInterface.METHOD_COLLECT, getCollectRequestParams(1), new CollectListener(), this);
+				}
+			} else {
+				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+			}
+			break;
+		}
+		return false;
 	}
 	
 	@Override
@@ -236,6 +292,25 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			imgIv.setImageUrl(NetConfig.getPictureUrl(mEstateDetail.imagesUrl.get(0).images[0]), 
 					CityLifeApp.getInstance().getImageLoader());
 			showContent();
+			
+			//设置当前的点赞状态
+			if(mEstateDetail.favourState == 0) {
+				mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(EstateDetailActivity.this, R.drawable.favour, mEstateDetail.favourNum));
+			} else {
+				mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(EstateDetailActivity.this, R.drawable.favoured, mEstateDetail.favourNum));
+			}
+			
+			//设置当前的收藏状态
+			mColletcMenuItem = getOverflowMenuItem(1);
+			if(mEstateDetail.collectState == 0) {
+				mColletcMenuItem.setIcon(R.drawable.un_collect_icon);
+				mColletcMenuItem.setTitle(R.string.collect);
+			} else {
+				mColletcMenuItem.setIcon(R.drawable.collect_icon);
+				mColletcMenuItem.setTitle(R.string.collect_cancle);
+			}
+		} else {
+			showLoadError(this);
 		}
 	}
 	
@@ -339,6 +414,121 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 				ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.comment_success);
 			} else {
 				ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.comment_fail);
+			}
+		}
+		
+	}	
+	
+	/**
+	 * 获取收藏请求参数
+	 * @return
+	 */
+	private Map<String, String> getCollectRequestParams(int option) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("option", option+"");			
+		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
+		params.put("id", estateId);
+		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		return params;
+	}
+	
+	/**
+	 * 执行收藏任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestCollect(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Collect> listenre, ErrorListener errorListener) {			
+		if(mCollectRequest != null) {
+			mCollectRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mCollectRequest = new CollectRequest(method, url, params, listenre, errorListener);
+		startRequest(mCollectRequest);		
+	}
+	
+	/**
+	 * 收藏的请求处理
+	 * @author liangbx
+	 *
+	 */
+	class CollectListener implements Listener<Collect> {
+
+		@Override
+		public void onResponse(Collect collect) {
+			if(collect.respCode == RespCode.SUCCESS) {
+				if(mEstateDetail.collectState == 0) {
+					mEstateDetail.collectState = 1;
+					mColletcMenuItem.setIcon(R.drawable.collect_icon);
+					mColletcMenuItem.setTitle(R.string.collect_cancle);
+					ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.collect_success);
+				} else {
+					mEstateDetail.collectState = 0;
+					mColletcMenuItem.setIcon(R.drawable.un_collect_icon);
+					mColletcMenuItem.setTitle(R.string.collect);
+					ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.colletc_cancle_success);
+				}
+			} else {
+				ToastHelper.showToastInBottom(EstateDetailActivity.this, collect.respMsg);
+			}
+		}
+		
+	}
+	
+	/**
+	 * 获取请求参数
+	 * @return
+	 */
+	private Map<String, String> getFavourRequestParams(int option) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
+		params.put("id", estateId);
+		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("option", option + "");
+		return params;
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestFavour(int method, String methodUrl, Map<String, String> params,	 
+			Listener<BaseBean> listenre, ErrorListener errorListener) {			
+		if(mBaseRequest != null) {
+			mBaseRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mBaseRequest = new BaseRequest(method, url, params, listenre, errorListener);
+		startRequest(mBaseRequest);		
+	}
+	
+	class FavourListener implements Listener<BaseBean> {
+
+		@Override
+		public void onResponse(BaseBean baseBean) {
+			
+			if(baseBean.respCode == RespCode.SUCCESS) {
+				if(mEstateDetail.favourState == 0) {
+					mEstateDetail.favourState = 1;
+					mEstateDetail.favourNum++;
+					mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(EstateDetailActivity.this, R.drawable.favoured, mEstateDetail.favourNum));
+					ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.favour_toast);
+				} else {
+					mEstateDetail.favourState = 0;
+					mEstateDetail.favourNum--;
+					mFavourMenuItem.setIcon(CommDrawable.getFavDrawable(EstateDetailActivity.this, R.drawable.favour, mEstateDetail.favourNum));
+					ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.favour_cancle_toast);
+				}
+				
+			} else {
+				ToastHelper.showToastInBottom(EstateDetailActivity.this, baseBean.respMsg);
 			}
 		}
 		

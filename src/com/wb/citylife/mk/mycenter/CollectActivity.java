@@ -3,17 +3,26 @@ package com.wb.citylife.mk.mycenter;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
 import com.android.volley.Request.Method;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
@@ -26,19 +35,9 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
-import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.task.MyCollectRequest;
 import com.wb.citylife.widget.PullListViewHelper;
-
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 /**
  * 收藏模块
@@ -122,7 +121,7 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 					//加载失败，点击重试
 					loadState = PullListViewHelper.BOTTOM_STATE_LOADING;
 					pullHelper.setBottomState(loadState, collectPageInfo.pageSize);	
-					requestMyCollect(Method.POST, NetInterface.METHOD_COMMENT_LIST, getMyCollectRequestParams(), 
+					requestMyCollect(Method.POST, NetInterface.METHOD_MY_COLLECT, getMyCollectRequestParams(), 
 							CollectActivity.this, CollectActivity.this);
 				}
 			}
@@ -198,6 +197,7 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 	public void onReload() {
 		collectPageInfo.pageNo = 1;
 		requestMyCollect(Method.POST, NetInterface.METHOD_MY_COLLECT, getMyCollectRequestParams(), CollectActivity.this, CollectActivity.this);
+		showLoading();
 	}
 	
 	/**
@@ -230,6 +230,8 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 			} else {
 				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, collectPageInfo.pageSize);
 			}
+		} else {
+			ToastHelper.showToastInBottom(this, response.respMsg);
 		}
 	}
 
