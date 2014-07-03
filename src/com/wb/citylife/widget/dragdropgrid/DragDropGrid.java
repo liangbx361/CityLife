@@ -133,7 +133,7 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
 	    if (isInEditMode() && adapter == null) {
 	        useEditModeAdapter();
 	    }
-	    
+	    	    
 		setOnTouchListener(this);
 		setOnLongClickListener(this);
 	}
@@ -153,7 +153,7 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
             
             @Override
             public int rowCount() {
-                return 4;
+                return AUTOMATIC;
             }
             
             @Override
@@ -188,7 +188,7 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
             
             @Override
             public int columnCount() {
-                return 0;
+                return 4;
             }
 
             @Override
@@ -949,6 +949,9 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
 			int desiredGridItemWidth = widthSize / adapter.columnCount();
 			int desiredGridItemHeight = heightSize / adapter.rowCount();
 			measureChildren(MeasureSpec.makeMeasureSpec(desiredGridItemWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(desiredGridItemHeight, MeasureSpec.AT_MOST));
+		} else if(adapter.columnCount() != PagedDragDropGridAdapter.AUTOMATIC) {
+			int desiredGridItemWidth = widthSize / adapter.columnCount();
+			measureChildren(MeasureSpec.makeMeasureSpec(desiredGridItemWidth, MeasureSpec.AT_MOST), MeasureSpec.UNSPECIFIED);
 		} else {
 			measureChildren(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 		}
@@ -1056,7 +1059,7 @@ public class DragDropGrid extends ViewGroup implements OnTouchListener, OnLongCl
     			animateMoveAllItems();    
     			animateDragged();    		    		
     			ViewHolder holder = item.getHolder();
-    			holder.delBtn.setVisibility(View.VISIBLE);
+    			holder.delBtn.setVisibility(View.GONE);
     		}
     		    		
     		return true;

@@ -11,6 +11,7 @@
     <string name="ac_name_login">登录</string>
     <string name="ac_name_register">注册</string>
     <string name="ac_name_order_channel">栏目排序</string>
+    <string name="ac_name_add_channel">添加栏目</string>
     <string name="ac_name_account_manager">账号管理</string>
     <string name="ac_name_modify_nickname">修改昵称</string>
     <string name="ac_name_modify_password">修改密码</string>

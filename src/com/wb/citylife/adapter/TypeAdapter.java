@@ -62,7 +62,7 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 		
 		Item item = getItem(page, index);
 		item.setHolder(holder);
-		holder.icon.setImageUrl(NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + item.getImageUrl(), 
+		holder.icon.setImageUrl(NetConfig.getPictureUrl(item.getImageUrl()), 
 				CityLifeApp.getInstance().getImageLoader());
 		holder.name.setText(item.getName());
 		
@@ -82,12 +82,12 @@ public class TypeAdapter implements PagedDragDropGridAdapter {
 
 	@Override
 	public int rowCount() {
-		return AUTOMATIC;
+		return 4;
 	}
 
 	@Override
 	public int columnCount() {
-		return AUTOMATIC;
+		return 4;
 	}
 	
 	@Override

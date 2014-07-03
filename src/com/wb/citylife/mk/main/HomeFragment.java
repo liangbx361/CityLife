@@ -39,6 +39,7 @@ import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.dialog.ChannelDialog;
+import com.wb.citylife.mk.channel.AddChannelActivity;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.estate.EstateListActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
@@ -165,16 +166,18 @@ public class HomeFragment extends Fragment implements HomeListener,
 	
 	@Override
 	public void onScrollNewsCommplete(List<DbScrollNews> scrollNews) {
-		if(scrollNewsList == null) {
-			scrollNewsList = scrollNews;
-			mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
-			mAdvViewPager.setAdapter(mAdvAdapter);
-			mAdvIndicator.setViewPager(mAdvViewPager);
-			advTitleTv.setText(scrollNews.get(0).title);
-		} else {
-			mAdvAdapter.notifyDataSetChanged();
-			advTitleTv.setText(scrollNews.get(mAdvViewPager.getCurrentItem()).title);
-		}		
+		if(scrollNews.size() > 0) {
+			if(scrollNewsList == null) {
+				scrollNewsList = scrollNews;
+				mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
+				mAdvViewPager.setAdapter(mAdvAdapter);
+				mAdvIndicator.setViewPager(mAdvViewPager);
+				advTitleTv.setText(scrollNews.get(0).title);
+			} else {
+				mAdvAdapter.notifyDataSetChanged();
+				advTitleTv.setText(scrollNews.get(mAdvViewPager.getCurrentItem()).title);
+			}		
+		}
 	}
 	
 	@Override
@@ -199,6 +202,12 @@ public class HomeFragment extends Fragment implements HomeListener,
 			
 		case ChannelType.CHANNEL_TYPE_HOUSE:
 			startActivity(new Intent(getActivity(), EstateListActivity.class));
+			break;
+			
+		case ChannelType.CHANNEL_TYPE_ADD:
+			Intent intent = new Intent(mActivity, AddChannelActivity.class);
+			CityLifeApp.getInstance().setChannels(mChannelList);
+			mActivity.startActivity(intent);
 			break;
 		}		
 

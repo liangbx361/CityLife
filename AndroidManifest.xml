@@ -83,6 +83,14 @@
             android:label="@string/ac_name_order_channel"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        
+        <!-- 添加栏目  -->
+        <activity
+            android:name="com.wb.citylife.mk.channel.AddChannelActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_add_channel"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <!-- 资讯列表 -->
         <activity
