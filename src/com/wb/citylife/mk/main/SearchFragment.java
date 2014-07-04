@@ -212,7 +212,8 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	@Override
 	public void onResponse(Search response) {
 		
-		if(response.respCode == RespCode.SUCCESS) {		
+		if(response.respCode == RespCode.SUCCESS) {	
+			mSearch = response;
 			if(mSearch.totalNum == 0) {
 				setEmptyToastText(getResources().getString(R.string.search_no_result, keyword));
 				showEmpty();

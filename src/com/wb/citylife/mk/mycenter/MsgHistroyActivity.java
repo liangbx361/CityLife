@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.wb.citylife.R;
@@ -52,7 +53,7 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 		getIntentData();
 		initView();
 		
-		msgPageInfo = new PageInfo();
+		msgPageInfo = new PageInfo(20, 1);
 		finalDb = CityLifeApp.getInstance().getDb();
 		msgList = new ArrayList<DBMsg>();
 		loadData();
@@ -79,6 +80,8 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 			}
 			
 		});
+		
+		mPullListView.setMode(Mode.DISABLED);
 		
 		mMsgLv = mPullListView.getRefreshableView();
 		mMsgLv.setOnItemClickListener(this);
@@ -135,6 +138,10 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 		if(msgPageInfo.pageNo == 1) {
 			msgAdapter = new MsgListAdapter(this, msgList);
 			mMsgLv.setAdapter(msgAdapter);
+			if(msgList.size() < msgPageInfo.pageSize) {
+				loadState = PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE;
+				pullHelper.setBottomState(loadState, msgPageInfo.pageSize);
+			}
 		} else {
 			msgAdapter.notifyDataSetChanged();
 		}
@@ -143,7 +150,7 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		DBMsg msg = msgList.get(position);
+		DBMsg msg = msgList.get(position-1);
 		CommIntent.startDetailPage(this, msg.msgId, msg.type);
 	}
 

@@ -119,7 +119,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_cancle_selector"
                 android:text="@string/submit"
-                android:textColor="@color/common_concle_text_color"
+                android:textColor="@color/common_cancle_text_color"
                 android:visibility="gone" />
 
             <com.viewpagerindicator.CirclePageIndicator

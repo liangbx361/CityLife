@@ -40,6 +40,7 @@ import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.VoteList;
 import com.wb.citylife.bean.VoteList.VoteItem;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -307,7 +308,7 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	 */
 	private Map<String, String> getScrollNewsRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("type", "0");		
+		params.put("type", "2");		
 		return params;
 	}
 	

@@ -291,6 +291,14 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_my_msg"
             android:screenOrientation="portrait" />
+        
+        <!-- 搜索  -->
+        <activity
+            android:name="com.wb.citylife.mk.main.SearchActivity"
+            android:theme="@style/CLTheme.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_my_msg"
+            android:screenOrientation="portrait" />
 
         <!-- ###################注册友盟SDK使用的Activity###################### -->
         <activity

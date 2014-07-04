@@ -18,7 +18,7 @@
     
     <!-- 通用按钮上的字体颜色  -->
     <color name="common_confirm_text_color">#ffffffff</color>
-    <color name="common_concle_text_color">#ffff732e</color> 
+    <color name="common_cancle_text_color">#ffff732e</color> 
     
     <!-- 提示类型字体颜色  -->
     <color name="hint_text_color">#ff999999</color>

@@ -51,7 +51,7 @@
                 android:background="@drawable/btn_cancle_selector"
                 android:gravity="center"
                 android:text="@string/register" 
-                android:textColor="@color/common_concle_text_color"/>
+                android:textColor="@color/common_cancle_text_color"/>
 
             <Button
                 android:id="@+id/login"

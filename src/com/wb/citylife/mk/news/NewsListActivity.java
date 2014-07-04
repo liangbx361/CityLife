@@ -368,6 +368,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 			break;
 
 		case BOTTOM_STATE_NO_MORE_DATE:
+			mNewsListView.removeFooterView(bottomView);
 			holder.progressBar.setVisibility(View.GONE);
 			holder.stateTv.setText("无更多新闻");
 			break;
@@ -380,7 +381,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 */
 	private Map<String, String> getScrollNewsRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("type", "0");		
+		params.put("type", "1");		
 		return params;
 	}
 	
@@ -427,7 +428,9 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 				mAdvAdapter = new ScrollNewsPagerAdapter(NewsListActivity.this, mScrollNewsList);
 				mAdvViewPager.setAdapter(mAdvAdapter);
 				mAdvIndicator.setViewPager(mAdvViewPager);
-				advTitleTv.setText(mScrollNewsList.get(0).title);
+				if(mScrollNewsList.size() > 0) {
+					advTitleTv.setText(mScrollNewsList.get(0).title);
+				}
 			}
 		}
 

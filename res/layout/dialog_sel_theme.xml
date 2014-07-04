@@ -47,7 +47,7 @@
                 android:checked="true"
                 android:drawableRight="@drawable/check_box_selector"
                 android:text="默认" 
-                android:textColor="@color/common_concle_text_color"
+                android:textColor="@color/common_cancle_text_color"
                 android:textSize="16sp"/>
         </RadioGroup>
 

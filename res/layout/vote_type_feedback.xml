@@ -45,7 +45,7 @@
         android:paddingTop="10dp"
         android:textSize="15sp"
         android:layout_marginTop="9.33dp"
-        android:textColor="@color/common_concle_text_color"
+        android:textColor="@color/common_cancle_text_color"
         android:visibility="gone"/>
 
 </LinearLayout>

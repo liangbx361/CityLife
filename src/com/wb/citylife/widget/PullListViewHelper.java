@@ -21,6 +21,7 @@ public class PullListViewHelper implements OnClickListener{
 	//加载空闲
 	public static final int BOTTOM_STATE_LOAD_IDLE = 3;
 	
+	private ListView listView;
 	private View bottomView;
 	private int loadState = BOTTOM_STATE_LOAD_IDLE;
 		
@@ -31,6 +32,7 @@ public class PullListViewHelper implements OnClickListener{
 		holder.stateTv = (TextView) bottomView.findViewById(R.id.state);
 		bottomView.setTag(holder);
 		listView.addFooterView(bottomView);
+		this.listView = listView;
 	}
 	
 	/**
@@ -52,8 +54,10 @@ public class PullListViewHelper implements OnClickListener{
 			break;
 
 		case BOTTOM_STATE_NO_MORE_DATE:
+			listView.removeFooterView(bottomView);
+			bottomView.setVisibility(View.GONE);
 			holder.progressBar.setVisibility(View.GONE);
-			holder.stateTv.setText("没有更多啦~");
+			holder.stateTv.setText("");
 			break;
 		}
 	}

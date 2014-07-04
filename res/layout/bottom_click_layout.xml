@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:background="@drawable/btn_cancle_selector"
+        android:textColor="@color/common_cancle_text_color"
         android:text="点击查看更多评论"/>
 
 </LinearLayout>

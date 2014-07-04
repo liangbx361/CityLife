@@ -2,6 +2,7 @@ package com.wb.citylife.mk.channel;
 
 import java.util.List;
 
+import net.tsz.afinal.FinalDb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -81,6 +82,11 @@ public class AddChannelActivity extends BaseActivity{
 	}
 	
 	private void saveChannel() {
+		FinalDb finalDb = CityLifeApp.getInstance().getDb();
+		for(int i=0; i<mChannels.size(); i++) {
+			DbChannel channel = mChannels.get(i);
+			finalDb.update(channel, "channelId='" + channel.channelId + "'" );
+		}
 		sendBroadcast(new Intent(ActionConfig.ACTION_UPDATE_CHANNEL));
 	}
 }
