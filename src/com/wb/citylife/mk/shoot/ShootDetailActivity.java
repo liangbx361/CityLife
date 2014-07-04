@@ -205,7 +205,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(0), new FavourListener(), this);
 				}
 			} else {
-				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+				ToastHelper.showToastInBottom(this, R.string.favour_login_toast);
 			}
 			break;
 		}

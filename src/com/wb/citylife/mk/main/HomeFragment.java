@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 	OnItemClickListener, OnItemLongClickListener, OnClickListener{
 	
 	//广告自动播放的时间间隔
-	public static final int ADV_AUTO_MOVE_TIME = 1 * 10 * 1000;
+	public static final int ADV_AUTO_MOVE_TIME = 1 * 3 * 1000;
 	
 	private Activity mActivity;
 	private MainListener mainListener;
@@ -117,11 +117,14 @@ public class HomeFragment extends Fragment implements HomeListener,
 		optionDialog = new ChannelDialog(mActivity, R.style.popupStyle);
 		optionDialog.setListener(this);
 		
+		advAdvTimeCount = new AdvTimeCount(ADV_AUTO_MOVE_TIME, ADV_AUTO_MOVE_TIME);
 		mAdvIndicator.setOnPageChangeListener(new OnPageChangeListener() {
 			
 			@Override
 			public void onPageSelected(int position) {
 				advTitleTv.setText(scrollNewsList.get(position).title);
+				advAdvTimeCount.cancel();
+				advAdvTimeCount.start();
 			}
 			
 			@Override
@@ -166,18 +169,20 @@ public class HomeFragment extends Fragment implements HomeListener,
 	
 	@Override
 	public void onScrollNewsCommplete(List<DbScrollNews> scrollNews) {
-		if(scrollNews.size() > 0) {
-			if(scrollNewsList == null) {
-				scrollNewsList = scrollNews;
-				mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
-				mAdvViewPager.setAdapter(mAdvAdapter);
-				mAdvIndicator.setViewPager(mAdvViewPager);
+		if(scrollNewsList == null) {
+			scrollNewsList = scrollNews;
+			mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);
+			mAdvViewPager.setAdapter(mAdvAdapter);
+			mAdvIndicator.setViewPager(mAdvViewPager);
+			if(scrollNews.size() > 0) {
 				advTitleTv.setText(scrollNews.get(0).title);
-			} else {
-				mAdvAdapter.notifyDataSetChanged();
-				advTitleTv.setText(scrollNews.get(mAdvViewPager.getCurrentItem()).title);
-			}		
-		}
+				advAdvTimeCount.cancel();
+				advAdvTimeCount.start();
+			}
+		} else {
+			mAdvAdapter.notifyDataSetChanged();
+			advTitleTv.setText(scrollNews.get(mAdvViewPager.getCurrentItem()).title);
+		}		
 	}
 	
 	@Override

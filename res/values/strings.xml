@@ -24,29 +24,23 @@
     <string name="ac_name_image_browse">图片浏览</string>
     <string name="ac_name_my_collect">我的收藏</string>        
     <string name="ac_name_my_msg">我的消息</string>
-    
-    <!-- ActionBar -->
-    <string name="action_post">发布</string>
-    <string name="action_search">搜索</string>
-    
+        
     <!-- 欢迎页 -->
     <string name="tips_pull_door">向上滑动进入首页</string>
-    
-    <!-- 栏目  -->
-    <string name="add">添加</string>
-    
+        
     <!-- 主页面相关  -->
     <string name="tab_name_home">主页</string>
     <string name="tab_name_search">搜索</string>
     <string name="tab_name_account">我的</string>
     <string name="tab_name_settings">设置</string>
+    <string name="add">添加</string>
     
     <!-- 搜索  -->
     <string name="hint_search">请输入关键字...</string>
     <string name="search">搜索</string>
     <string name="search_no_result">抱歉，未搜索到关于\"%s\"的结果</string>
     
-    <!-- 消息 -->
+    <!-- 我的消息  -->
     <string name="msg_empty_toast">您还未收到过消息</string>
     
     <!-- 设置 -->
@@ -104,6 +98,7 @@
     <string name="collect_empty_toast">您还未收藏过信息</string>
     <string name="favour_toast">感谢您的赞赏</string>
     <string name="favour_cancle_toast">您取消了赞赏</string>
+    <string name="favour_login_toast">您需要请先登录，才能为它点赞</string>
     
     <!-- 照片上传  -->
     <string name="take_picture">拍照</string>

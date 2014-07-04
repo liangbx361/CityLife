@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -28,11 +30,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
-import com.wb.citylife.adapter.AdvPagerAdapter;
+import com.wb.citylife.adapter.ScrollNewsPagerAdapter;
 import com.wb.citylife.adapter.VoteListAdapter;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.PageInfo;
@@ -40,11 +42,11 @@ import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.VoteList;
 import com.wb.citylife.bean.VoteList.VoteItem;
 import com.wb.citylife.bean.db.DbScrollNews;
-import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.main.HomeFragment;
 import com.wb.citylife.task.ScrollNewsRequest;
 import com.wb.citylife.task.VoteListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
@@ -63,12 +65,12 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	private PageInfo votePageInfo;
 	private int loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
 	
-	//广告
+	//滚动新闻
 	private ViewPager mAdvViewPager;
-	private AdvPagerAdapter mAdvAdapter;
-	private CirclePageIndicator mAdvIndicator;
+	private ScrollNewsPagerAdapter mAdvAdapter;
+	private LinePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
-	private Advertisement mAdv;
+	private TextView advTitleTv;
 		
 	//滚动新闻
 	private ScrollNewsRequest mScrollNewsRequest;
@@ -132,10 +134,31 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		mVoteListView.setOnItemClickListener(this);
 		
 		//广告视图添加到List头部
-		View advView = LayoutInflater.from(this).inflate(R.layout.adv_layout, null);
+		View advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
 		mAdvViewPager = (ViewPager) advView.findViewById(R.id.adv_pager);
-		mAdvIndicator = (CirclePageIndicator) advView.findViewById(R.id.adv_indicator);
-		mVoteListView.addHeaderView(advView, null, false);		
+		mAdvIndicator = (LinePageIndicator) advView.findViewById(R.id.adv_indicator);
+		advTitleTv = (TextView) advView.findViewById(R.id.title);
+		mVoteListView.addHeaderView(advView, null, false);	
+		advAdvTimeCount = new AdvTimeCount(HomeFragment.ADV_AUTO_MOVE_TIME, HomeFragment.ADV_AUTO_MOVE_TIME);
+		mAdvIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				advTitleTv.setText(mScrollNewsList.get(position).title);
+				advAdvTimeCount.cancel();
+				advAdvTimeCount.start();
+			}
+			
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				
+			}
+		});	
 		
 		//底部添加正在加载视图
 		pullHelper = new PullListViewHelper(this, mVoteListView);
@@ -351,9 +374,14 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 				dbScrollNews.type = newsItem.type;
 				scrollNewsList.add(dbScrollNews);
 			}
-			mAdvAdapter = new AdvPagerAdapter(VoteListActivity.this, scrollNewsList);
+			mAdvAdapter = new ScrollNewsPagerAdapter(VoteListActivity.this, scrollNewsList);
 			mAdvViewPager.setAdapter(mAdvAdapter);
 			mAdvIndicator.setViewPager(mAdvViewPager);
+			if(mScrollNewsList.size() > 0) {
+				advTitleTv.setText(mScrollNewsList.get(0).title);
+				advAdvTimeCount.cancel();
+				advAdvTimeCount.start();
+			}
 		}
 
 		@Override

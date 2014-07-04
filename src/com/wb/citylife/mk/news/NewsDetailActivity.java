@@ -4,13 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
@@ -189,7 +182,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 					requestFavour(Method.POST, NetInterface.METHOD_FAVOUR, getFavourRequestParams(0), new FavourListener(), this);
 				}
 			} else {
-				ToastHelper.showToastInBottom(this, R.string.need_login_toast);
+				ToastHelper.showToastInBottom(this, R.string.favour_login_toast);
 			}
 			break;
 		}

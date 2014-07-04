@@ -38,7 +38,6 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.NewsAdapter;
 import com.wb.citylife.adapter.ScrollNewsPagerAdapter;
-import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.NewsList;
 import com.wb.citylife.bean.NewsList.NewsItem;
 import com.wb.citylife.bean.PageInfo;
@@ -50,6 +49,7 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.mk.main.HomeFragment;
 import com.wb.citylife.mk.main.SearchActivity;
 import com.wb.citylife.task.NewsListRequest;
 import com.wb.citylife.task.ScrollNewsRequest;
@@ -77,12 +77,11 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private PageInfo newsPageInfo;
 	private int loadState = BOTTOM_STATE_LOAD_IDLE;
 	
-	//广告
+	//滚动新闻
 	private ViewPager mAdvViewPager;
 	private ScrollNewsPagerAdapter mAdvAdapter;
 	private LinePageIndicator mAdvIndicator;
 	private AdvTimeCount advAdvTimeCount;
-	private Advertisement mAdv;
 	private TextView advTitleTv;
 	
 	//滚动新闻
@@ -152,11 +151,14 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		mAdvIndicator = (LinePageIndicator) advView.findViewById(R.id.adv_indicator);
 		advTitleTv = (TextView) advView.findViewById(R.id.title);
 		mNewsListView.addHeaderView(advView, null, false);	
+		advAdvTimeCount = new AdvTimeCount(HomeFragment.ADV_AUTO_MOVE_TIME, HomeFragment.ADV_AUTO_MOVE_TIME);
 		mAdvIndicator.setOnPageChangeListener(new OnPageChangeListener() {
 			
 			@Override
 			public void onPageSelected(int position) {
 				advTitleTv.setText(mScrollNewsList.get(position).title);
+				advAdvTimeCount.cancel();
+				advAdvTimeCount.start();
 			}
 			
 			@Override
@@ -430,6 +432,8 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 				mAdvIndicator.setViewPager(mAdvViewPager);
 				if(mScrollNewsList.size() > 0) {
 					advTitleTv.setText(mScrollNewsList.get(0).title);
+					advAdvTimeCount.cancel();
+					advAdvTimeCount.start();
 				}
 			}
 		}
