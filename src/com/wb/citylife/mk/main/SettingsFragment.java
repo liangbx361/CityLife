@@ -14,10 +14,6 @@ import android.view.View.OnClickListener;
 import com.common.file.DataCleanManager;
 import com.common.widget.ToastHelper;
 import com.umeng.fb.FeedbackAgent;
-import com.umeng.socialize.controller.RequestType;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.media.UMImage;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -28,14 +24,11 @@ import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.dialog.PushDialog;
 import com.wb.citylife.dialog.ThemeDialog;
-import com.wb.citylife.util.share.ShareHelper;
+import com.wb.citylife.mk.common.CommShare;
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceClickListener,
 	UmengUpdateListener, OnClickListener{
-	
-	final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
-            RequestType.SOCIAL);
-	
+		
 	private Activity mActivity;
 	private Preference themePf;
 	private Preference pushPf;
@@ -111,12 +104,14 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		    
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_apk_share))) {	
 			
-			share();
+			String share = "永安城市生活，开启你的本地生活，赶紧来下载吧~\n应用下载:" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(mActivity, share, true);
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_update))) {
 			
 			UmengUpdateAgent.setUpdateListener(this);
-			UmengUpdateAgent.update(mActivity);		
+			UmengUpdateAgent.update(mActivity);	
+			UmengUpdateAgent.forceUpdate(mActivity);
 			ToastHelper.showToastInBottom(mActivity, "版本检测中");
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_clean_cache))) {
@@ -138,20 +133,6 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		exitView.setVisibility(View.GONE);
 	}
 	
-	/**
-	 * 分享应用下载地址
-	 */
-	private void share() {
-		ShareHelper shareHelper = new ShareHelper();
-		shareHelper.addWXPlatform(mActivity, mController);
-		// 设置分享内容
-		mController.setShareContent("应用下载" + NetConfig.APK_DOWNLOAD_URL);
-		// 设置分享图片, 参数2为图片的url地址
-		mController.setShareMedia(new UMImage(getActivity(), R.drawable.ic_launcher));
-
-		mController.openShare(mActivity, false);
-	}
-
 	@Override
 	public void onUpdateReturned(int updateStatus, UpdateResponse response) {
 		if(updateStatus == UpdateStatus.No) {

@@ -31,6 +31,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.common.media.BitmapHelper;
 import com.common.media.CarameHelper;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
@@ -44,6 +45,7 @@ import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.BaseBean;
 import com.wb.citylife.bean.Publish;
 import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.ImageConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -201,7 +203,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 		params.put("desc", desc);
 		requestPublish(Method.POST, NetInterface.METHOD_PUBLISH_SHOOT, params, this, this);		
 		
-		showDialog("发布中。。。");
+		showDialog("正在发布...");
 	}
 	
 	/**
@@ -247,7 +249,8 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 		if (requestCode == ResultCode.REQUEST_CODE_CAPTURE_CAMEIA ) {		
 			if(photoFile.exists()) {
 				if(state == 0) {
-					fileList.add(photoFile);
+					File file = BitmapHelper.getScaleBitmapFile(this, photoFile.getAbsolutePath(), ImageConfig.MAX_WIDTH);
+					fileList.add(file);
 					if(fileList.size() > maxNum) {
 						fileList.remove(0);
 						photoList.remove(0);
@@ -274,7 +277,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			
-			File file = new File(picturePath);
+			File file = BitmapHelper.getScaleBitmapFile(this, picturePath, ImageConfig.MAX_WIDTH);
 			if(file.exists()) {
 				if(state == 0) {
 					fileList.add(file);

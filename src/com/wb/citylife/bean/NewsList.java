@@ -13,7 +13,7 @@ public class NewsList extends BaseBean{
     	public int type;
     	public String title;
     	public String summary;
-    	public String thumbnailurl;
+    	public String thumbnailUrl;
     	public String time;
     	public int commentNum;
     	public int clickNum;

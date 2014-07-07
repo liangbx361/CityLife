@@ -63,7 +63,7 @@ public class ImageAdapter extends PagerAdapter implements OnClickListener{
 		View view = mViewList.get(position);
 		container.addView(view);		
 
-		NetworkImageView imageView = (NetworkImageView) view;
+		NetworkImageView imageView = (NetworkImageView) view.findViewById(R.id.adv_img);
 		imageView.setDefaultImageResId(R.drawable.old_info_default_icon);
 		if(mImages[position] != null && !mImages[position].equals("")) {
 			imageView.setImageUrl(NetConfig.getPictureUrl(mImages[position]), 

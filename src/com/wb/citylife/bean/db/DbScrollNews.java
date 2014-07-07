@@ -15,6 +15,7 @@ public class DbScrollNews {
 	public int type;
 	public String title;
 	public String imageUrl;
+	public boolean isVideo;
 		
 	public int getId() {
 		return id;
@@ -55,4 +56,14 @@ public class DbScrollNews {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+
+	public boolean isVideo() {
+		return isVideo;
+	}
+
+	public void setVideo(boolean isVideo) {
+		this.isVideo = isVideo;
+	}
+	
+	
 }

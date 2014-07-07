@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import net.tsz.afinal.utils.Utils;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
@@ -19,13 +20,13 @@ public class CarameHelper {
 	public CarameHelper (Context context) {
 		mContext = context;
 	}		
-			
+	
 	/**
 	 * 创建图片/视频文件,用于保存图片,并以Uri返回
 	 * @param type
 	 * @return
 	 */
-	public Uri getOutputMediaFileUri(int type) {  
+	public Uri getOutputMediaFileUri(Context context, int type) {  
         return Uri.fromFile(getOutputMediaFile(type));  
     } 
 	
@@ -34,16 +35,12 @@ public class CarameHelper {
 	 * @param type
 	 * @return
 	 */
-    public File getOutputMediaFile(int type) {  
+    public File getOutputMediaFile(int type) {      	
         // To be safe, you should check that the SDCard is mounted  
-        // using Environment.getExternalStorageState() before doing this.  
-        File mediaStorageDir = null;  
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {  
-            mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "image");  
-        } else {  
-            mediaStorageDir = new File(mContext.getFilesDir(), "image");  
-        }
-        
+        // using Environment.getExternalStorageState() before doing this.      	
+    	String cachePath = Utils.getDiskCacheDir(mContext, "imgCache").getAbsolutePath();
+        File mediaStorageDir = new File(cachePath); 
+    	        
         // File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(  
         // Environment.DIRECTORY_PICTURES), "tfm");  
         // This location works best if you want the created images to be shared  

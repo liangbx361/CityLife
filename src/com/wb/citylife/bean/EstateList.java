@@ -12,7 +12,7 @@ public class EstateList extends BaseBean{
     	public String id;
     	public String name;
     	public String address;
-    	public int averagePrice;
+    	public String averagePrice;
     	public String thumbnailUrl;
     }
 	

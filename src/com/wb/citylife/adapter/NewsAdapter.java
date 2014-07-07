@@ -60,7 +60,7 @@ public class NewsAdapter extends BaseAdapter {
 		
 		NewsItem newsItem = mNewsList.datas.get(position);
 		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
-		holder.thumbIv.setImageUrl(newsItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());		
+		holder.thumbIv.setImageUrl(newsItem.thumbnailUrl, CityLifeApp.getInstance().getImageLoader());		
 		holder.titleTv.setText(newsItem.title);
 		holder.descTv.setText(newsItem.summary);
 		holder.tagTv.setText("点击" + newsItem.clickNum);

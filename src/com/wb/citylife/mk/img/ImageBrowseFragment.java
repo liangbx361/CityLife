@@ -15,6 +15,7 @@ import com.wb.citylife.config.NetConfig;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,13 @@ public class ImageBrowseFragment extends Fragment {
 	private GalleryViewPager gViewPager;
 	private UrlPagerAdapter mAdapter;
 	private ImagesItem imagesItem;
+	private ImageBrowseListener imgListener;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity = activity;
+		imgListener = (ImageBrowseListener) mActivity;
 		imagesItem = getArguments().getParcelable(IntentExtraConfig.ESTATE_IMAGE_DATA);
 		DebugConfig.showLog("image_browse", "onAttach");
 	}
@@ -61,5 +64,24 @@ public class ImageBrowseFragment extends Fragment {
 		mAdapter = new UrlPagerAdapter(mActivity, imagesList);
 		gViewPager.setOffscreenPageLimit(3);
 		gViewPager.setAdapter(mAdapter);
+		
+		gViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				int index = position + 1;
+				imgListener.setMenuItem(index + "/" + imagesItem.imageNum);
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				
+			}
+		});
 	}
 }

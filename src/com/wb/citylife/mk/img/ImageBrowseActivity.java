@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -15,11 +17,12 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.bean.ImagesItem;
 import com.wb.citylife.config.IntentExtraConfig;
 
-public class ImageBrowseActivity extends BaseActivity {
+public class ImageBrowseActivity extends BaseActivity implements ImageBrowseListener{
 	
 	private FragmentTabHost fTabHost;
 	private ArrayList<ImagesItem> imageList;
 	private boolean disTab;
+	private MenuItem numItem;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,16 @@ public class ImageBrowseActivity extends BaseActivity {
 		if(!disTab) {
 			fTabHost.setVisibility(View.GONE);
 		}
+		
+		fTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+
+			@Override
+			public void onTabChanged(String tabId) {
+				int index = Integer.parseInt(tabId.substring(tabId.length()-1, tabId.length()));
+				int num = imageList.get(index).imageNum;
+				numItem.setTitle("1/" + num);
+			}			
+		});
 	}
 	
 	private View getTabItemView(ImagesItem imagesItem) {
@@ -71,6 +84,14 @@ public class ImageBrowseActivity extends BaseActivity {
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
+		numItem = setActionBarItem(menu, R.id.action_bar_title, R.string.action_null);
+		numItem.setTitle("1/" + imageList.get(0).imageNum);
+		
 		return super.onCreateOptionsMenu(menu);		
+	}
+
+	@Override
+	public void setMenuItem(String content) {
+		numItem.setTitle(content);
 	}
 }

@@ -36,12 +36,12 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.ScrollNewsPagerAdapter;
 import com.wb.citylife.adapter.VoteListAdapter;
-import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.VoteList;
 import com.wb.citylife.bean.VoteList.VoteItem;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
@@ -183,8 +183,7 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		//此处设置菜单		
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
-		
-		setIndeterminateBarVisibility(true);				
+						
 		votePageInfo = new PageInfo();
 		requestVoteList(Method.POST, NetInterface.METHOD_VOTE_LIST, getVoteListRequestParams(), 
 				VoteListActivity.this, VoteListActivity.this);
@@ -362,9 +361,9 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 
 		@Override
 		public void onResponse(ScrollNews scrollNews) {
-			setIndeterminateBarVisibility(false);
+
 			mScrollNews = scrollNews;
-			List<DbScrollNews> scrollNewsList = new ArrayList<DbScrollNews>();
+			mScrollNewsList = new ArrayList<DbScrollNews>();
 			for(int i=0; i<mScrollNews.datas.size(); i++) {
 				ScrollNews.NewsItem newsItem = mScrollNews.datas.get(i);
 				DbScrollNews dbScrollNews = new DbScrollNews();
@@ -372,9 +371,9 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 				dbScrollNews.imageUrl = newsItem.imageUrl;
 				dbScrollNews.title = newsItem.title;
 				dbScrollNews.type = newsItem.type;
-				scrollNewsList.add(dbScrollNews);
+				mScrollNewsList.add(dbScrollNews);
 			}
-			mAdvAdapter = new ScrollNewsPagerAdapter(VoteListActivity.this, scrollNewsList);
+			mAdvAdapter = new ScrollNewsPagerAdapter(VoteListActivity.this, mScrollNewsList, ChannelType.CHANNEL_TYPE_VOTE);
 			mAdvViewPager.setAdapter(mAdvAdapter);
 			mAdvIndicator.setViewPager(mAdvViewPager);
 			if(mScrollNewsList.size() > 0) {
@@ -386,7 +385,6 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 
 		@Override
 		public void onErrorResponse(VolleyError error) {
-			setIndeterminateBarVisibility(false);
 			ToastHelper.showToastInBottom(getApplicationContext(), VolleyErrorHelper.getErrorMessage(error));
 		}
 	}	

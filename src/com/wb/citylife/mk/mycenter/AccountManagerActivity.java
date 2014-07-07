@@ -121,6 +121,7 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			user.isLogin = 0;
 			FinalDb finalDb = CityLifeApp.getInstance().getDb();
 			finalDb.update(user, "userId='" + user.userId + "'");
+			user = new User();
 			finish();
 			break;
 		}
@@ -229,7 +230,16 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 							} else {
 								ToastHelper.showToastInBottom(AccountManagerActivity.this, "头像上传失败");
 							}
-						}				
+						}
+
+						@Override
+						public void onFailure(Throwable t, int errorNo,
+								String strMsg) {
+							super.onFailure(t, errorNo, strMsg);
+							ToastHelper.showToastInBottom(AccountManagerActivity.this, "头像上传失败");
+						}
+						
+						
 			});
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

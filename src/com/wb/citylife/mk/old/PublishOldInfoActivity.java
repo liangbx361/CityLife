@@ -53,6 +53,7 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Publish;
 import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.ImageConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -186,7 +187,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 				if(position >= photoList.size()) {
 					Bitmap bitmap = BitmapHelper.getScaleBitmap(picFile.getAbsolutePath(), itemWidth);
 					int degree = BitmapHelper.readPictureDegree(picFile.getAbsolutePath());
-					roateBmp = BitmapHelper.rotaingImageView(degree, bitmap);
+					roateBmp = BitmapHelper.rotaingImageView(degree, 1.0f, bitmap);
 					photoList.add(new SoftReference<Bitmap>(roateBmp));
 //					bitmap.recycle();
 				} else {
@@ -194,7 +195,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 					if(roateBmp == null) {
 						Bitmap bitmap = BitmapHelper.getScaleBitmap(picFile.getAbsolutePath(), itemWidth);
 						int degree = BitmapHelper.readPictureDegree(picFile.getAbsolutePath());
-						roateBmp = BitmapHelper.rotaingImageView(degree, bitmap);
+						roateBmp = BitmapHelper.rotaingImageView(degree, 1.0f, bitmap);
 						photoList.set(position, new SoftReference<Bitmap>(roateBmp));
 						Log.d("reload_bmp", "reload bitmap");
 					}
@@ -209,7 +210,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		}
 
 		public class ViewHoler {
-			ImageView photoIv;;
+			ImageView photoIv;
 		}
 
 	}
@@ -396,7 +397,8 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		if (requestCode == ResultCode.REQUEST_CODE_CAPTURE_CAMEIA ) {		
 			if(photoFile.exists()) {
 				if(state == 0) {
-					fileList.add(photoFile);
+					File file = BitmapHelper.getScaleBitmapFile(this, photoFile.getAbsolutePath(), ImageConfig.MAX_WIDTH);
+					fileList.add(file);
 					if(fileList.size() > maxNum) {
 						fileList.remove(0);
 						photoList.remove(0);
@@ -423,7 +425,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			
-			File file = new File(picturePath);
+			File file = BitmapHelper.getScaleBitmapFile(this, picturePath, ImageConfig.MAX_WIDTH);
 			if(file.exists()) {
 				if(state == 0) {
 					fileList.add(file);
@@ -514,7 +516,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	 * 上传照片
 	 * @param file
 	 */
-	private void upLoadPhoto(File file, String id) {		
+	private void upLoadPhoto(File file, String id) {							
 		String  BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
 		String PREFIX = "--" , LINE_END = "\r\n"; 
 		String CONTENT_TYPE = "multipart/form-data";   //内容类型
@@ -550,9 +552,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 								String strMsg) {
 							super.onFailure(t, errorNo, strMsg);
 							dismissDialog();
-						}
-						
-						
+						}												
 			});
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

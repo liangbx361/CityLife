@@ -73,7 +73,7 @@ public class PhotoAdapter extends BaseAdapter {
 			if(position >= photoList.size()) {
 				Bitmap bitmap = BitmapHelper.getScaleBitmap(picFile.getAbsolutePath(), itemWidth);
 				int degree = BitmapHelper.readPictureDegree(picFile.getAbsolutePath());
-				roateBmp = BitmapHelper.rotaingImageView(degree, bitmap);
+				roateBmp = BitmapHelper.rotaingImageView(degree, 1.0f, bitmap);
 				photoList.add(new SoftReference<Bitmap>(roateBmp));
 //				bitmap.recycle();
 			} else {
@@ -81,7 +81,7 @@ public class PhotoAdapter extends BaseAdapter {
 				if(roateBmp == null) {
 					Bitmap bitmap = BitmapHelper.getScaleBitmap(picFile.getAbsolutePath(), itemWidth);
 					int degree = BitmapHelper.readPictureDegree(picFile.getAbsolutePath());
-					roateBmp = BitmapHelper.rotaingImageView(degree, bitmap);
+					roateBmp = BitmapHelper.rotaingImageView(degree, 1.0f, bitmap);
 					photoList.set(position, new SoftReference<Bitmap>(roateBmp));
 					Log.d("reload_bmp", "reload bitmap");
 				}

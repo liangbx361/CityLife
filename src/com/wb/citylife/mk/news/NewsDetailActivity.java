@@ -3,6 +3,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,12 +20,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.NetworkImageView;
+import com.common.net.HttpHelper;
+import com.common.net.check.CheckNetwork;
+import com.common.net.volley.VolleyErrorCode;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
@@ -44,8 +49,10 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
+import com.wb.citylife.mk.common.CommShare;
 import com.wb.citylife.mk.video.VideoActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
@@ -194,6 +201,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.share:
+			CommShare.share(this, mNewsDetail.content, false);
 			break;
 			
 		case R.id.collect:
@@ -218,6 +226,11 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		switch(v.getId()) {
 		//点击提交评论
 		case R.id.comment_btn:{
+			if(!CityLifeApp.getInstance().checkLogin()) {
+				ToastHelper.showToastInBottom(this, R.string.comment_login_toast);
+				return;
+			}
+			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
 				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
@@ -233,9 +246,29 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		}break;
 		
 		case R.id.img_layout:{
-			Intent intent = new Intent(this, VideoActivity.class);
-			intent.putExtra(IntentExtraConfig.VIDEO_PATH, NetConfig.getPictureUrl(mNewsDetail.imagesUrl[1]));
-			startActivity(intent);
+			if(!HttpHelper.netwokAvaiable(this)) {
+				ToastHelper.showToastInBottom(this, VolleyErrorCode.NO_NETWORK_ERROR);
+				return;
+			}
+			
+			if(CheckNetwork.checkWifi(this)) {
+				Intent intent = new Intent(this, VideoActivity.class);
+				intent.putExtra(IntentExtraConfig.VIDEO_PATH, NetConfig.getPictureUrl(mNewsDetail.imagesUrl[1]));
+				startActivity(intent);
+			} else {
+				//非Wifi状态下提示用户流量问题
+				ConfirmDialog dialog = new ConfirmDialog();
+				DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						Intent intent = new Intent(NewsDetailActivity.this, VideoActivity.class);
+						intent.putExtra(IntentExtraConfig.VIDEO_PATH, NetConfig.getPictureUrl(mNewsDetail.imagesUrl[1]));
+						startActivity(intent);
+					}
+				};
+				dialog.getDialog(this, R.string.toast, R.string.network_toast, listener).show();
+			}
 		}break;
 		}				
 	}

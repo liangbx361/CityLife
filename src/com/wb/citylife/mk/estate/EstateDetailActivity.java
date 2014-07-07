@@ -44,7 +44,6 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.img.ImageBrowseActivity;
-import com.wb.citylife.mk.news.NewsDetailActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -62,7 +61,8 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	private TextView saleAddressTv;
 	private TextView detailTv;
 	private NetworkImageView imgIv;
-	private ViewGroup imagesVp;
+	private ViewGroup imagesVg;
+	private ViewGroup videoVg;
 	
 	private String estateId;
 	
@@ -71,6 +71,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	private EstateDetail mEstateDetail;	
 	
 	//最新评论
+	private ViewGroup commentListVg;
 	private ListViewForScrollView commentLv;
 	private CommentListRequest mCommentListRequest;
 	private CommentList mCommentList;
@@ -117,9 +118,14 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		saleAddressTv = (TextView) findViewById(R.id.saleAddress);
 		detailTv = (TextView) findViewById(R.id.detail);
 		imgIv = (NetworkImageView) findViewById(R.id.img);
-		imagesVp = (ViewGroup) findViewById(R.id.images);		
-		imagesVp.setOnClickListener(this);
+		imgIv.setOnClickListener(this);
+		imagesVg = (ViewGroup) findViewById(R.id.images);		
+		imagesVg.setOnClickListener(this);
+		videoVg = (ViewGroup) findViewById(R.id.video);
+		videoVg.setOnClickListener(this);
+		videoVg.setVisibility(View.GONE);
 		
+		commentListVg = (ViewGroup) findViewById(R.id.comment_list_layout);
 		commentLv = (ListViewForScrollView) findViewById(R.id.comment_list);
 		commentEt = (EditText) findViewById(R.id.comment_et);
 		commentBtn = (Button) findViewById(R.id.comment_btn);
@@ -204,8 +210,23 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			startActivity(intent);
 		}break;
 		
+		case R.id.image:{
+			Intent intent = new Intent(this, ImageBrowseActivity.class);
+			intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
+			startActivity(intent);
+		}break;
+		
+		case R.id.video:{
+			
+		}
+		
 		//点击提交评论
 		case R.id.comment_btn:{
+			if(!CityLifeApp.getInstance().checkLogin()) {
+				ToastHelper.showToastInBottom(this, R.string.comment_login_toast);
+				return;
+			}
+			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
 				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
@@ -288,9 +309,15 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			setText(saleAddressTv, mEstateDetail.saleAddress);
 			setText(detailTv, mEstateDetail.detail);
 			
-			imgIv.setDefaultImageResId(R.drawable.base_list_adv_default_icon);
-			imgIv.setImageUrl(NetConfig.getPictureUrl(mEstateDetail.imagesUrl.get(0).images[0]), 
-					CityLifeApp.getInstance().getImageLoader());
+			if(response.imagesUrl == null || response.imagesUrl.size() == 0) {
+				imagesVg.setVisibility(View.GONE);
+			}
+			
+			imgIv.setDefaultImageResId(R.drawable.estate_default_img);
+			if(mEstateDetail.imagesUrl.size() > 0) {
+				imgIv.setImageUrl(NetConfig.getPictureUrl(mEstateDetail.imagesUrl.get(0).images[0]), 
+						CityLifeApp.getInstance().getImageLoader());
+			}
 			showContent();
 			
 			//设置当前的点赞状态
@@ -360,9 +387,14 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		@Override
 		public void onResponse(CommentList commentList) {
 			if(commentList.respCode == RespCode.SUCCESS) {
-				mCommentList = commentList;
-				mCommentAdapter = new CommentAdapter(EstateDetailActivity.this, mCommentList);
-				commentLv.setAdapter(mCommentAdapter);
+				if(commentList.totalNum > 0) {
+					commentListVg.setVisibility(View.VISIBLE);
+					mCommentList = commentList;
+					mCommentAdapter = new CommentAdapter(EstateDetailActivity.this, mCommentList);
+					commentLv.setAdapter(mCommentAdapter);
+				} else {
+					commentListVg.setVisibility(View.GONE);
+				}
 			} else {
 				ToastHelper.showToastInBottom(EstateDetailActivity.this, commentList.respMsg);
 			}

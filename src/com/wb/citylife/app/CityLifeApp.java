@@ -27,7 +27,7 @@ public class CityLifeApp extends FrontiaApplication {
 	//网络
 	private RequestQueue mRequestQueue;	
 	private ImageLoader mImageLoader;
-	private final VolleyImageCache mImageCache = new VolleyImageCache(4*1024*1024);
+	private VolleyImageCache mImageCache;
 	private long requestTag = 0;
 	
 	//数据库
@@ -50,6 +50,8 @@ public class CityLifeApp extends FrontiaApplication {
 		//请求队列实例化
 		mRequestQueue = Volley.newRequestQueue(getApplicationContext(), 
 				Utils.getDiskCacheDir(getApplicationContext(), "volley").getAbsolutePath(), null);
+		float density = getResources().getDisplayMetrics().density;
+		mImageCache = new VolleyImageCache((int) (density*4*1024*1024));
 		mImageLoader = new ImageLoader(mRequestQueue, mImageCache);
 		
 		//创建数据库

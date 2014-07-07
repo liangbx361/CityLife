@@ -425,9 +425,10 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 					dbScrollNews.imageUrl = newsItem.imageUrl;
 					dbScrollNews.title = newsItem.title;
 					dbScrollNews.type = newsItem.type;
+					dbScrollNews.isVideo = newsItem.isVideo;
 					mScrollNewsList.add(dbScrollNews);
 				}
-				mAdvAdapter = new ScrollNewsPagerAdapter(NewsListActivity.this, mScrollNewsList);
+				mAdvAdapter = new ScrollNewsPagerAdapter(NewsListActivity.this, mScrollNewsList, ChannelType.CHANNEL_TYPE_NEWS);
 				mAdvViewPager.setAdapter(mAdvAdapter);
 				mAdvIndicator.setViewPager(mAdvViewPager);
 				if(mScrollNewsList.size() > 0) {

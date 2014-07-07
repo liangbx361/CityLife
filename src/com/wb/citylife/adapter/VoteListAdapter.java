@@ -58,7 +58,7 @@ public class VoteListAdapter extends BaseAdapter {
 		
 		VoteItem voteItem = mVoteList.datas.get(position);
 		holder.thumbIv.setDefaultImageResId(R.drawable.base_list_default_icon);
-		holder.thumbIv.setImageUrl(voteItem.thumbnailurl, CityLifeApp.getInstance().getImageLoader());
+		holder.thumbIv.setImageUrl(voteItem.thumbnailUrl, CityLifeApp.getInstance().getImageLoader());
 		holder.titleTv.setText(voteItem.title);
 		holder.descTv.setText(voteItem.summary);
 		holder.tagTv.setText("点击" + voteItem.clickNum);

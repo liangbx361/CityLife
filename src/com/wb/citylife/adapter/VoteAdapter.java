@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -94,6 +95,13 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			}
 		}
 		
+		//判断首次进入时，第一条问题是否已经投过票
+		if(mVoteDetail.datas.size() > 0) {
+			QuestionItem qItem = mVoteDetail.datas.get(0);
+			if(qItem.hasVote) {
+				mSubmitBtn.setVisibility(View.GONE);
+			}
+		}
 		mSubmitBtn.setOnClickListener(this);
 		voteIndicator.setOnPageChangeListener(new OnPageChangeListener() {
 			
@@ -288,7 +296,10 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			long id) {
 		int page = mViewPager.getCurrentItem();
 		QuestionItem qItem = mVoteDetail.datas.get(page);
-		if(qItem.hasVote) return;
+		if(qItem.hasVote) {
+			ToastHelper.showToastInBottom(mContext, R.string.hint_has_voted);
+			return;
+		}
 		
 		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			//单选类型直接提交答案

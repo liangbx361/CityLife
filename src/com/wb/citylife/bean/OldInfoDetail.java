@@ -15,6 +15,7 @@ public class OldInfoDetail extends BaseBean{
     public int commentNum;
     public int clickNum;
     public String content;
+    public String contact;
     public String contactInfo;
 	
 }

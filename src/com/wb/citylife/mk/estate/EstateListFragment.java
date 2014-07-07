@@ -209,6 +209,12 @@ public class EstateListFragment extends BaseExtraLayoutFragment implements Liste
 		mPullListView.onRefreshComplete();
 		
 		if(response.respCode == RespCode.SUCCESS) {
+			if(response.totalNum == 0) {
+				setEmptyToastText(R.string.estate_empty_toast);
+				showEmpty();
+				return;
+			}
+			
 			if(shootPageInfo.pageNo == 1) {
 				mEstateList = response;
 				mEstateAdapter = new EstateListAdapter(mActivity, mEstateList);

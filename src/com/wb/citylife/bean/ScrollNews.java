@@ -12,6 +12,7 @@ public class ScrollNews extends BaseBean{
     	public int type;
     	public String title;
     	public String imageUrl;
+    	public boolean isVideo = false;
     }
 	
 }

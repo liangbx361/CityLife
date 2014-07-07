@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,6 +82,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	private OldInfoDetail mOldInfoDetail;		
 	
 	//最新评论
+	private ViewGroup commentListVg;
 	private ListViewForScrollView commentLv;
 	private CommentListRequest mCommentListRequest;
 	private CommentList mCommentList;
@@ -137,6 +140,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		detailTv = (TextView) findViewById(R.id.detail);
 		contactTv = (TextView) findViewById(R.id.contactInfo);
 		
+		commentListVg = (ViewGroup) findViewById(R.id.comment_list_layout);
 		commentLv = (ListViewForScrollView) findViewById(R.id.comment_list);
 		commentEt = (EditText) findViewById(R.id.comment_et);
 		commentBtn = (Button) findViewById(R.id.comment_btn);
@@ -246,6 +250,11 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		switch(v.getId()) {
 		//点击提交评论
 		case R.id.comment_btn:{
+			if(!CityLifeApp.getInstance().checkLogin()) {
+				ToastHelper.showToastInBottom(this, R.string.comment_login_toast);
+				return;
+			}
+			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
 				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
@@ -363,7 +372,11 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			commentTv.setText("评论 " + mOldInfoDetail.commentNum + "");
 			clickTv.setText("点击 " + mOldInfoDetail.clickNum + "");
 			detailTv.setText(mOldInfoDetail.content);
-			contactTv.setText(mOldInfoDetail.contactInfo);
+			if(!TextUtils.isEmpty(mOldInfoDetail.contact)) {
+				contactTv.setText(mOldInfoDetail.contact + " " + mOldInfoDetail.contactInfo);
+			} else {
+				contactTv.setText(mOldInfoDetail.contactInfo);
+			}			
 			
 			if(mOldInfoDetail.imagesUrl.length <= 1) {
 				leftBtn.setVisibility(View.GONE);
@@ -431,9 +444,18 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 
 		@Override
 		public void onResponse(CommentList commentList) {
-			mCommentList = commentList;
-			mCommentAdapter = new CommentAdapter(OldInfoDetailActivity.this, mCommentList);
-			commentLv.setAdapter(mCommentAdapter);
+			if(commentList.respCode == RespCode.SUCCESS) {
+				if(commentList.totalNum > 0) {
+					commentListVg.setVisibility(View.VISIBLE);
+					mCommentList = commentList;
+					mCommentAdapter = new CommentAdapter(OldInfoDetailActivity.this, mCommentList);
+					commentLv.setAdapter(mCommentAdapter);
+				} else {
+					commentListVg.setVisibility(View.GONE);
+				}
+			} else {
+				ToastHelper.showToastInBottom(OldInfoDetailActivity.this, commentList.respMsg);
+			}
 		}		
 	}
 		

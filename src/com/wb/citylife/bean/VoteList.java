@@ -12,7 +12,7 @@ public class VoteList extends BaseBean{
     	public String id;
     	public String title;
     	public String summary;
-    	public String thumbnailurl;
+    	public String thumbnailUrl;
     	public String time;
     	public int commentNum;
     	public int clickNum;

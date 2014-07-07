@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/common_bg_color" >
-<!--  
+
+    <!--
     <RelativeLayout
         android:id="@+id/comment_layout"
         android:layout_width="match_parent"
@@ -31,11 +32,11 @@
             android:layout_toLeftOf="@id/comment_btn"
             android:hint="我来说两句" />
     </RelativeLayout>
--->
+    -->
 
-	<include 
-	    android:id="@+id/comment_layout"
-	    layout="@layout/publish_comment_layout"/>
+    <include
+        android:id="@+id/comment_layout"
+        layout="@layout/publish_comment_layout" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -273,6 +274,7 @@
                 android:background="@drawable/detail_divider_line" />
 
             <RelativeLayout
+                android:id="@+id/video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/banner_selector"
@@ -281,7 +283,6 @@
                 android:paddingTop="14dp" >
 
                 <TextView
-                    android:id="@+id/name"
                     style="@style/estate_desc_title_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -299,21 +300,33 @@
                     android:src="@drawable/banner_submenu" />
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/detail_tag_bg"
-                android:layout_marginTop="1dp"
-                android:gravity="center"
-                android:text="最新评论"
-                android:textColor="#fefcfb" />
-            
-            <com.wb.citylife.widget.ListViewForScrollView
-                android:id="@+id/comment_list"
+            <LinearLayout
+                android:id="@+id/comment_list_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" 
-                android:divider="@drawable/detail_divider_line"/>
-            
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14.67dp"
+                    android:background="@drawable/detail_tag_bg"
+                    android:gravity="center"
+                    android:text="最新评论"
+                    android:textColor="#fefcfb" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@drawable/detail_divider_line"
+                    android:visibility="gone" />
+
+                <com.wb.citylife.widget.ListViewForScrollView
+                    android:id="@+id/comment_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/detail_divider_line" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

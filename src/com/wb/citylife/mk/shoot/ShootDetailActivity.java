@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +77,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 	private ShootDetail mShootDetail;
 	
 	//最新评论
+	private ViewGroup commentListVg;
 	private ListViewForScrollView commentLv;
 	private CommentListRequest mCommentListRequest;
 	private CommentList mCommentList;
@@ -132,6 +134,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		clickTv = (TextView) findViewById(R.id.click);
 		detailTv = (TextView) findViewById(R.id.detail);
 		
+		commentListVg = (ViewGroup) findViewById(R.id.comment_list_layout);
 		commentLv = (ListViewForScrollView) findViewById(R.id.comment_list);
 		commentEt = (EditText) findViewById(R.id.comment_et);
 		commentBtn = (Button) findViewById(R.id.comment_btn);
@@ -241,6 +244,11 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		switch(v.getId()) {
 		//点击提交评论
 		case R.id.comment_btn:{
+			if(!CityLifeApp.getInstance().checkLogin()) {
+				ToastHelper.showToastInBottom(this, R.string.comment_login_toast);
+				return;
+			}
+			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
 				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
@@ -349,11 +357,18 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		mShootDetail = response;
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {
-			mShootDetail = response;
+			if(response.imagesUrl == null || response.imagesUrl.length == 0) {
+				response.imagesUrl = new String[1];
+			}
 			
+			mShootDetail = response;			
 			mImgAdapter = new ImageAdapter(this, mShootDetail.imagesUrl);
 			imgPager.setAdapter(mImgAdapter);
 			imgNumTv.setText("1/" + mShootDetail.imagesUrl.length);
+			if(mShootDetail.imagesUrl.length == 1) {
+				leftBtn.setVisibility(View.GONE);
+				rightBtn.setVisibility(View.GONE);
+			}
 			
 			titleTv.setText(mShootDetail.title);
 			usernameTv.setText(mShootDetail.userName);
@@ -421,9 +436,14 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 
 		@Override
 		public void onResponse(CommentList commentList) {
-			mCommentList = commentList;
-			mCommentAdapter = new CommentAdapter(ShootDetailActivity.this, mCommentList);
-			commentLv.setAdapter(mCommentAdapter);
+			if(commentList.totalNum > 0) {
+				commentListVg.setVisibility(View.VISIBLE);
+				mCommentList = commentList;
+				mCommentAdapter = new CommentAdapter(ShootDetailActivity.this, mCommentList);
+				commentLv.setAdapter(mCommentAdapter);
+			} else {
+				commentListVg.setVisibility(View.GONE);
+			}
 		}		
 	}
 		

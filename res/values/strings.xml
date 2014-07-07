@@ -24,7 +24,7 @@
     <string name="ac_name_image_browse">图片浏览</string>
     <string name="ac_name_my_collect">我的收藏</string>        
     <string name="ac_name_my_msg">我的消息</string>
-        
+    
     <!-- 欢迎页 -->
     <string name="tips_pull_door">向上滑动进入首页</string>
         
@@ -57,6 +57,7 @@
     <string name="comment_empty_toast">评论内容不能为空</string>
     <string name="comment_success">发表成功</string>
     <string name="comment_fail">发表不成功，请重试</string>
+    <string name="comment_login_toast">您需要先登录，才能评论</string>
     
     <!-- 用户登录注册  -->    
     <string name="hint_username">请输入想修改的昵称</string>
@@ -109,6 +110,7 @@
     
     <!-- 投票  -->
     <string name="hint_feedback">请写下您的意见...</string>
+    <string name="hint_has_voted">您已投过票啦</string>
     
     <!-- 随手拍  -->
     <string name="hint_shoot_title">请填写标题</string>
@@ -132,6 +134,13 @@
     <string name="publish_success">发布成功,您可以在我的二手货中查看</string>
     <string name="old_info_empty_toast">暂无二手信息</string>
     <string name="my_old_info_empty_toast">您还未发布二手信息</string>
+    
+    <!-- 房地产 -->
+    <string name="estate_empty_toast">暂无房地产资讯</string>
+    
+    <!-- 资讯  -->
+    <string name="toast">温馨提示</string>
+    <string name="network_toast">您当前正处于2G/3G/4G状态下,观看视频会产生较多流量，是否继续观看？</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

@@ -34,6 +34,7 @@ import com.baidu.android.pushservice.PushManager;
 import com.common.date.FormatDateTime;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
+import com.umeng.update.UmengUpdateAgent;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.IBaseNetActivity;
@@ -106,6 +107,10 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 		if (!PushUtils.getPushFlag(this)) {
 			PushUtils.openPush(this);
 		}
+		
+		//检测更新
+		UmengUpdateAgent.update(this);	
+		UmengUpdateAgent.forceUpdate(this);
                 
         requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
 		requestScrollNews(Method.POST, NetInterface.METHOD_SCROLL_NEWS, 
@@ -343,6 +348,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 					scrolllNews.type = newsItem.type;
 					scrolllNews.title = newsItem.title;
 					scrolllNews.imageUrl = newsItem.imageUrl;
+					scrolllNews.isVideo = newsItem.isVideo;
 					mScrollNewsList.add(scrolllNews);
 					finalDb.save(scrolllNews);
 				}

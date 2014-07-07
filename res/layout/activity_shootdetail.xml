@@ -142,26 +142,34 @@
                 android:layout_marginTop="14.67dp"
                 android:text="详细信息"
                 android:textColor="@color/old_info_desc_text_color" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14.67dp"
-                android:background="@drawable/detail_tag_bg"
-                android:gravity="center"
-                android:text="最新评论"
-                android:textColor="#fefcfb" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@drawable/detail_divider_line" />
-
-            <com.wb.citylife.widget.ListViewForScrollView
-                android:id="@+id/comment_list"
+            
+            <LinearLayout 
+                android:id="@+id/comment_list_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/detail_divider_line" />
+                android:orientation="vertical">
+                
+            	<TextView
+                	android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_marginTop="14.67dp"
+                	android:background="@drawable/detail_tag_bg"
+                	android:gravity="center"
+                	android:text="最新评论"
+                	android:textColor="#fefcfb" />
+
+            	<View
+               		android:layout_width="match_parent"
+                	android:layout_height="1px"
+                	android:background="@drawable/detail_divider_line"
+                	android:visibility="gone" />
+
+            	<com.wb.citylife.widget.ListViewForScrollView
+                	android:id="@+id/comment_list"
+                	android:layout_width="match_parent"
+                	android:layout_height="wrap_content" 
+                	android:divider="@drawable/detail_divider_line"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

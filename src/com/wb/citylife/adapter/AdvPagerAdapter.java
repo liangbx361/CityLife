@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.wb.citylife.R;
@@ -28,7 +29,14 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 		this.scrollNewsList = scrollNewsList;
 		mCount = scrollNewsList.size();
 		for(int i=0; i<mCount; i++) {
+			DbScrollNews dbScrollNews = scrollNewsList.get(i);
 			View view = mActivity.getLayoutInflater().inflate(R.layout.adv_item, null);
+			ImageView videoIv = (ImageView) view.findViewById(R.id.vidoe_flag);
+			if(dbScrollNews.isVideo) {
+				videoIv.setVisibility(View.VISIBLE);
+			} else {
+				videoIv.setVisibility(View.GONE);
+			}
 			view.setTag(i+"");
 			view.setOnClickListener(this);
 			mViewList.add(view);
@@ -62,8 +70,8 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 		View view = mViewList.get(position);
 		container.addView(view);		
 		DbScrollNews item = scrollNewsList.get(position);
-		NetworkImageView imageView = (NetworkImageView) view;
-		imageView.setDefaultImageResId(R.drawable.base_list_adv_default_icon);
+		NetworkImageView imageView = (NetworkImageView) view.findViewById(R.id.adv_img);
+		imageView.setDefaultImageResId(R.drawable.scroll_news_default_icon);
 		if(item.imageUrl != null && !item.imageUrl.equals("")) {
 			imageView.setImageUrl(item.imageUrl, 
 					CityLifeApp.getInstance().getImageLoader());			

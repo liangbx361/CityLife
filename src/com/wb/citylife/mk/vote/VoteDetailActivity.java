@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,12 +31,14 @@ import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
+import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.task.VoteDetailRequest;
 
 public class VoteDetailActivity extends BaseActivity implements Listener<VoteDetail>, 
-	ErrorListener, ReloadListener{
+	ErrorListener, ReloadListener, OnClickListener{
 	
 	private TextView voteTitleTv;
+	private ViewGroup itemVg;
 	private NetworkImageView imgIv;
 	private TextView descTv;
 	private TextView timeTv;
@@ -69,6 +73,8 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	@Override
 	public void initView() {
 		voteTitleTv = (TextView) findViewById(R.id.vote_title);
+		itemVg = (ViewGroup) findViewById(R.id.news_item);
+		itemVg.setOnClickListener(this);
 		imgIv = (NetworkImageView) findViewById(R.id.img);
 		descTv = (TextView) findViewById(R.id.desc);
 		timeTv = (TextView) findViewById(R.id.time);
@@ -94,6 +100,17 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {			
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		super.onClick(v);
+		
+		switch(v.getId()) {
+		case R.id.news_item:
+			CommIntent.startDetailPage(this, mVoteDetail.id, mVoteDetail.type);
+			break;
+		}
 	}
 		
 	/**
