@@ -194,6 +194,9 @@ public class BaseActionBarActivity extends ActionBarActivity implements MenuBuil
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {						
 		
+		setDisplayShowHomeEnabled(true);
+		setLogo(R.drawable.ic_launcher);
+		
 		if(mShowOverflowMenu) {
 			MenuItem moreItem = menu.add(0, ID_ACTION_OVERFLOW, 0, R.string.action_more);         
 	        moreItem.setIcon(mOverflowMenuIconId);

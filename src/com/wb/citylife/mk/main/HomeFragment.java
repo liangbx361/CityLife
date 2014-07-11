@@ -205,7 +205,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 			startActivity(new Intent(getActivity(), ShootListActivity.class));
 			break;
 			
-		case ChannelType.CHANNEL_TYPE_HOUSE:
+		case ChannelType.CHANNEL_TYPE_ESTATE:
 			startActivity(new Intent(getActivity(), EstateListActivity.class));
 			break;
 			
@@ -394,7 +394,7 @@ public class HomeFragment extends Fragment implements HomeListener,
 		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.shoot.ShootListActivity");
 		        	break;
 		        	
-		        case ChannelType.CHANNEL_TYPE_HOUSE:
+		        case ChannelType.CHANNEL_TYPE_ESTATE:
 		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.estate.EstateListActivity");
 		        	break;
 		        }

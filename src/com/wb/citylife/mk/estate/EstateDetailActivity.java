@@ -41,9 +41,11 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.img.ImageBrowseActivity;
+import com.wb.citylife.mk.old.OldInfoDetailActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -238,7 +240,8 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		case R.id.click:{
 			Intent intent = new Intent(this, CommentListActivity.class);
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, estateId);
-			startActivity(intent);
+			intent.putExtra(IntentExtraConfig.COMMENT_TYPE, ChannelType.CHANNEL_TYPE_ESTATE);
+			startActivityForResult(intent, 0);
 		}break;
 		}				
 	}
@@ -410,7 +413,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", estateId);
 		params.put("comment", comment);
-		params.put("type", ChannelType.CHANNEL_TYPE_HOUSE+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_ESTATE+"");
 		return params;
 	}
 	
@@ -444,6 +447,11 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			if(comment.respCode == RespCode.SUCCESS) {
 				commentEt.setText("");
 				ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.comment_success);
+				
+				//最新评论
+				commentPageInfo.pageNo = 1;
+				requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, 
+						getCommentListRequestParams(), new CommentListListener(), EstateDetailActivity.this);
 			} else {
 				ToastHelper.showToastInBottom(EstateDetailActivity.this, R.string.comment_fail);
 			}
@@ -460,7 +468,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		params.put("option", option+"");			
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 		params.put("id", estateId);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_ESTATE+"");
 		return params;
 	}
 	
@@ -518,7 +526,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", estateId);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_ESTATE+"");
 		params.put("option", option + "");
 		return params;
 	}
@@ -565,4 +573,15 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		}
 		
 	}	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(resultCode == ResultCode.REFRESH_COMMENT_LIST) {
+			//刷新评论列表
+			commentPageInfo = new PageInfo(5, 1);
+			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+					new CommentListListener(), EstateDetailActivity.this);
+		}
+	}
 }

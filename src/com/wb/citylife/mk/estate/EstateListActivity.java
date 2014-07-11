@@ -65,7 +65,7 @@ public class EstateListActivity extends BaseActivity {
 		switch(item.getItemId()) {
 		case R.id.action_search:
 			Intent intent = new Intent(this, SearchActivity.class);
-			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_HOUSE);
+			intent.putExtra(IntentExtraConfig.SEARCH_TYPE, ChannelType.CHANNEL_TYPE_ESTATE);
 			startActivity(intent);
 			return true;		
 		}

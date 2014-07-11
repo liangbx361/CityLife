@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,9 +43,10 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
-import com.wb.citylife.mk.old.OldInfoDetailActivity;
+import com.wb.citylife.mk.news.NewsDetailActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -260,7 +261,8 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		case R.id.click:{
 			Intent intent = new Intent(this, CommentListActivity.class);
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, id);
-			startActivity(intent);
+			intent.putExtra(IntentExtraConfig.COMMENT_TYPE, ChannelType.CHANNEL_TYPE_SHOOT);
+			startActivityForResult(intent, 0);
 		}break;
 		
 		case R.id.leftBtn:{
@@ -490,6 +492,11 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 			if(comment.respCode == RespCode.SUCCESS) {
 				commentEt.setText("");
 				ToastHelper.showToastInBottom(ShootDetailActivity.this, R.string.comment_success);
+				
+				//刷新评论列表
+				commentPageInfo = new PageInfo(5, 1);
+				requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+						new CommentListListener(), ShootDetailActivity.this);
 			} else {
 				ToastHelper.showToastInBottom(ShootDetailActivity.this, R.string.comment_fail);
 			}
@@ -506,7 +513,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		params.put("option", option+"");			
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 		params.put("id", id);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
 		return params;
 	}
 	
@@ -564,7 +571,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_SHOOT+"");
 		params.put("option", option + "");
 		return params;
 	}
@@ -608,7 +615,17 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 			} else {
 				ToastHelper.showToastInBottom(ShootDetailActivity.this, baseBean.respMsg);
 			}
-		}
+		}		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
+		if(resultCode == ResultCode.REFRESH_COMMENT_LIST) {
+			//刷新评论列表
+			commentPageInfo = new PageInfo(5, 1);
+			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+					new CommentListListener(), ShootDetailActivity.this);
+		}
 	}
 }

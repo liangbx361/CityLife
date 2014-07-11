@@ -33,7 +33,7 @@ public class CommIntent {
 			intent.setClass(context, ShootDetailActivity.class);
 			break;
 			
-		case ChannelType.CHANNEL_TYPE_HOUSE:
+		case ChannelType.CHANNEL_TYPE_ESTATE:
 			intent.setClass(context, EstateDetailActivity.class);
 			break;
 		}

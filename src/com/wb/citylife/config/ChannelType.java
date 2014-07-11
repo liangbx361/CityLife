@@ -15,7 +15,7 @@ public interface ChannelType {
 	/**
 	 * 房地产
 	 */
-	public static final int CHANNEL_TYPE_HOUSE = 2;
+	public static final int CHANNEL_TYPE_ESTATE = 2;
 	
 	/**
 	 * 二手市场

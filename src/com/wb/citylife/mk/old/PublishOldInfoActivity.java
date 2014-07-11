@@ -12,7 +12,9 @@ import java.util.UUID;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -59,6 +61,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.task.PublishRequest;
 
 public class PublishOldInfoActivity extends BaseActivity implements OnItemClickListener, OnClickListener,
@@ -362,10 +365,12 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 	    if (state.equals(Environment.MEDIA_MOUNTED)) {  
 	    	CarameHelper helper = new CarameHelper(this);
 	    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    	photoFile = helper.getOutputMediaFile(CarameHelper.MEDIA_TYPE_IMAGE);   
-	    	photoUri = Uri.fromFile(photoFile);
-	        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri); 
-			startActivityForResult(intent, ResultCode.REQUEST_CODE_CAPTURE_CAMEIA);
+	    	photoFile = helper.getOutputMediaFile(this, CarameHelper.MEDIA_TYPE_IMAGE);
+	    	if(photoFile != null) {
+	    		photoUri = Uri.fromFile(photoFile);
+	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri); 
+	    		startActivityForResult(intent, ResultCode.REQUEST_CODE_CAPTURE_CAMEIA);
+	    	}
 	    } 
 	}
 	
@@ -398,10 +403,12 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			if(photoFile.exists()) {
 				if(state == 0) {
 					File file = BitmapHelper.getScaleBitmapFile(this, photoFile.getAbsolutePath(), ImageConfig.MAX_WIDTH);
-					fileList.add(file);
-					if(fileList.size() > maxNum) {
-						fileList.remove(0);
-						photoList.remove(0);
+					if(file != null) {
+						fileList.add(file);
+						if(fileList.size() > maxNum) {
+							fileList.remove(0);
+							photoList.remove(0);
+						}
 					}
 				} else {
 					fileList.set(selPos, photoFile);
@@ -426,7 +433,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			cursor.close();
 			
 			File file = BitmapHelper.getScaleBitmapFile(this, picturePath, ImageConfig.MAX_WIDTH);
-			if(file.exists()) {
+			if(file != null && file.exists()) {
 				if(state == 0) {
 					fileList.add(file);
 					if(fileList.size() > maxNum) {
@@ -530,9 +537,10 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			params.put("photo", file);
 			params.put("suffixName", suffixName);
 			FinalHttp fh = new FinalHttp(); 
+			fh.configTimeout(NetConfig.UPLOAD_IMG_TIMEOUT);
 			fh.addHeader("accessToken", "A0BAA87FCF5D187EC9582866B9AE1A3B");;
 			fh.addHeader("connection", "keep-alive");
-			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+			fh.addHeader("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);			
 			String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + NetInterface.METHOD_PHOTO_UPLOAD;
 			fh.post(url, params, new AjaxCallBack<String>(){
 				
@@ -544,6 +552,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 							} else {
 								dismissDialog();
 								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
+								finish();
 							}
 						}
 
@@ -552,6 +561,21 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 								String strMsg) {
 							super.onFailure(t, errorNo, strMsg);
 							dismissDialog();
+							
+							ConfirmDialog dialog = new ConfirmDialog();
+							dialog.getDialog(PublishOldInfoActivity.this, "提示", "照片上传失败，是否重试?", 
+									new DialogInterface.OnClickListener(){
+
+										@Override
+										public void onClick(
+												DialogInterface arg0, int arg1) {											
+											upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
+											showDialog("照片上传中...");
+											arg0.dismiss();
+										}
+								
+							}).show();
+							
 						}												
 			});
 		} catch (FileNotFoundException e) {

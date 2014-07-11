@@ -26,6 +26,9 @@ public class NetConfig implements NetInterface {
 	/*************************************应用下载地址************************************/
 	public static final String APK_DOWNLOAD_URL = "http://www.189data.com/tss/d/city/0.do";
 	
+	/*************************************图片上传的超时时间************************************/
+	public static final int UPLOAD_IMG_TIMEOUT = 20 * 1000;
+	
 	/**
 	 * 获取服务器前缀地址+项目扩展地址
 	 * @return

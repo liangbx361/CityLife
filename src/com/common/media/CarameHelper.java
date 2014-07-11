@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.common.widget.ToastHelper;
+
 import net.tsz.afinal.utils.Utils;
 import android.content.Context;
 import android.net.Uri;
@@ -27,7 +29,7 @@ public class CarameHelper {
 	 * @return
 	 */
 	public Uri getOutputMediaFileUri(Context context, int type) {  
-        return Uri.fromFile(getOutputMediaFile(type));  
+        return Uri.fromFile(getOutputMediaFile(context, type));  
     } 
 	
 	/**
@@ -35,7 +37,7 @@ public class CarameHelper {
 	 * @param type
 	 * @return
 	 */
-    public File getOutputMediaFile(int type) {      	
+    public File getOutputMediaFile(Context context, int type) {      	
         // To be safe, you should check that the SDCard is mounted  
         // using Environment.getExternalStorageState() before doing this.      	
     	String cachePath = Utils.getDiskCacheDir(mContext, "imgCache").getAbsolutePath();
@@ -48,6 +50,7 @@ public class CarameHelper {
         // Create the storage directory if it does not exist  
         if (!mediaStorageDir.exists()) {  
             if (!mediaStorageDir.mkdirs()) {  
+            	ToastHelper.showToastInBottom(context, "创建目录失败：" + cachePath);
                 return null;  
             }  
         }  

@@ -107,10 +107,10 @@ public class BitmapHelper {
 	   options.inJustDecodeBounds = false;
 	   options.inPreferredConfig = Bitmap.Config.RGB_565;	   
 	   Bitmap bitmap = BitmapFactory.decodeFile(picPath, options);
-	   	   
+	   	   	   
 	   int degree = BitmapHelper.readPictureDegree(picPath);	
 	   Bitmap roateBmp = BitmapHelper.rotaingImageView(degree, scale, bitmap);
-
+	   
 	   return saveBitmap(context, roateBmp);
    }
    

@@ -1,8 +1,6 @@
 package com.wb.citylife.mk.old;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import android.content.Intent;
@@ -15,8 +13,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -38,7 +36,6 @@ import com.wb.citylife.bean.BaseBean;
 import com.wb.citylife.bean.Collect;
 import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
-import com.wb.citylife.bean.ImagesItem;
 import com.wb.citylife.bean.OldInfoDetail;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.config.ChannelType;
@@ -47,9 +44,9 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
-import com.wb.citylife.mk.news.NewsDetailActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -266,7 +263,8 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		case R.id.click:{
 			Intent intent = new Intent(this, CommentListActivity.class);
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, id);
-			startActivity(intent);
+			intent.putExtra(IntentExtraConfig.COMMENT_TYPE, ChannelType.CHANNEL_TYPE_OLD_MARKET);
+			startActivityForResult(intent, 0);
 		}break;
 		
 		case R.id.leftBtn:{
@@ -502,6 +500,11 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			if(comment.respCode == RespCode.SUCCESS) {
 				commentEt.setText("");
 				ToastHelper.showToastInBottom(OldInfoDetailActivity.this, R.string.comment_success);
+				
+				//刷新评论列表
+				commentPageInfo = new PageInfo(5, 1);
+				requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+						new CommentListListener(), OldInfoDetailActivity.this);
 			} else {
 				ToastHelper.showToastInBottom(OldInfoDetailActivity.this, R.string.comment_fail);
 			}
@@ -518,7 +521,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		params.put("option", option+"");			
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
 		params.put("id", id);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_OLD_MARKET+"");
 		return params;
 	}
 	
@@ -576,7 +579,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().userId);
 		params.put("id", id);
-		params.put("type", ChannelType.CHANNEL_TYPE_NEWS+"");
+		params.put("type", ChannelType.CHANNEL_TYPE_OLD_MARKET+"");
 		params.put("option", option + "");
 		return params;
 	}
@@ -622,5 +625,16 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			}
 		}
 		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(resultCode == ResultCode.REFRESH_COMMENT_LIST) {
+			//刷新评论列表
+			commentPageInfo = new PageInfo(5, 1);
+			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+					new CommentListListener(), OldInfoDetailActivity.this);
+		}
 	}
 }

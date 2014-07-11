@@ -3,11 +3,15 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -25,6 +29,8 @@ import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.CommentAdapter;
+import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.Comment;
 import com.wb.citylife.bean.CommentList;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.config.IntentExtraConfig;
@@ -32,7 +38,9 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.task.CommentListRequest;
+import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
 public class CommentListActivity extends BaseActivity implements Listener<CommentList>, ErrorListener,
@@ -46,11 +54,17 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 	private CommentAdapter mCommentAdapter;
 	
 	public String commentId;
+	public int commentType;
 	
 	//评论数据
 	private CommentListRequest mCommentListRequest;
 	private CommentList mCommentList;
 	private PageInfo commentPageInfo;
+	
+	//发表评论
+	private EditText commentEt;
+	private Button sendBtn;
+	private CommentRequest mCommentRequest;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +80,7 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 	@Override
 	public void getIntentData() {
 		commentId = getIntent().getStringExtra(IntentExtraConfig.COMMENT_ID);
+		commentType = getIntent().getIntExtra(IntentExtraConfig.COMMENT_TYPE, 0);
 	}
 	
 	@Override
@@ -122,6 +137,27 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 			}
 		});
 		
+		commentEt = (EditText) findViewById(R.id.comment_et);
+		sendBtn = (Button) findViewById(R.id.comment_btn);
+		sendBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {				 
+				//点击提交评论
+				if(!CityLifeApp.getInstance().checkLogin()) {
+					ToastHelper.showToastInBottom(CommentListActivity.this, R.string.comment_login_toast);
+					return;
+				}
+				
+				String comment = commentEt.getText().toString();
+				if(comment != null && !comment.equals("")) {
+					requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), 
+							new CommentListener(), CommentListActivity.this);						
+				} else {
+					ToastHelper.showToastInBottom(CommentListActivity.this, R.string.comment_empty_toast);
+				}	
+			}
+		});
 	}
 	
 	@Override
@@ -140,8 +176,30 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 	 * 菜单点击处理
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {			
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		
+		switch(item.getItemId()) {
+		case android.R.id.home:
+			Intent resultIntent = new Intent();
+		    setResult(ResultCode.REFRESH_COMMENT_LIST, resultIntent);
+			break;
+		}
+		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			Intent resultIntent = new Intent();
+		    setResult(ResultCode.REFRESH_COMMENT_LIST, resultIntent);
+		    finish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	/**
@@ -232,4 +290,55 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 				CommentListActivity.this, CommentListActivity.this);
 		showLoading();
 	}
+	
+	/**
+	 * 获取评论参数请求参数
+	 * @return
+	 */
+	private Map<String, String> getCommentRequestParams(String comment) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userId", CityLifeApp.getInstance().getUser().userId);
+		params.put("id", commentId);
+		params.put("comment", comment);
+		params.put("type", commentType+"");
+		return params;
+	}
+	
+	/**
+	 * 执行评论任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestComment(int method, String methodUrl, Map<String, String> params,	 
+			Listener<Comment> listenre, ErrorListener errorListener) {			
+		if(mCommentRequest != null) {
+			mCommentRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mCommentRequest = new CommentRequest(method, url, params, listenre, errorListener);
+		startRequest(mCommentRequest);		
+	}
+	
+	/**
+	 * 提交评论结果
+	 * @author liangbx
+	 *
+	 */
+	class CommentListener implements Listener<Comment> {
+
+		@Override
+		public void onResponse(Comment comment) {
+			if(comment.respCode == RespCode.SUCCESS) {
+				commentEt.setText("");
+				onReload();
+				ToastHelper.showToastInBottom(CommentListActivity.this, R.string.comment_success);				
+			} else {
+				ToastHelper.showToastInBottom(CommentListActivity.this, R.string.comment_fail);
+			}
+		}
+		
+	}	
 }

@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -49,6 +48,7 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
@@ -242,7 +242,8 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		case R.id.click:{
 			Intent intent = new Intent(this, CommentListActivity.class);
 			intent.putExtra(IntentExtraConfig.COMMENT_ID, id);
-			startActivity(intent);
+			intent.putExtra(IntentExtraConfig.COMMENT_TYPE, ChannelType.CHANNEL_TYPE_NEWS);
+			startActivityForResult(intent, 0);
 		}break;
 		
 		case R.id.img_layout:{
@@ -457,6 +458,11 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			if(comment.respCode == RespCode.SUCCESS) {
 				commentEt.setText("");
 				ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.comment_success);
+				
+				//刷新评论列表
+				commentPageInfo = new PageInfo(5, 1);
+				requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+						new CommentListListener(), NewsDetailActivity.this);
 			} else {
 				ToastHelper.showToastInBottom(NewsDetailActivity.this, R.string.comment_fail);
 			}
@@ -578,4 +584,15 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		}
 		
 	}	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(resultCode == ResultCode.REFRESH_COMMENT_LIST) {
+			//刷新评论列表
+			commentPageInfo = new PageInfo(5, 1);
+			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
+					new CommentListListener(), NewsDetailActivity.this);
+		}
+	}
 }

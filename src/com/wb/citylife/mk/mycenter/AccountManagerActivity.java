@@ -8,6 +8,7 @@ import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -166,10 +167,12 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 	    if (state.equals(Environment.MEDIA_MOUNTED)) {  
 	    	CarameHelper helper = new CarameHelper(this);
 	    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    	photoFile = helper.getOutputMediaFile(CarameHelper.MEDIA_TYPE_IMAGE);   
-	    	photoUri = Uri.fromFile(photoFile);
-	        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri); 
-			startActivityForResult(intent, ResultCode.REQUEST_CODE_CAPTURE_CAMEIA);
+	    	photoFile = helper.getOutputMediaFile(this, CarameHelper.MEDIA_TYPE_IMAGE);   
+	    	if(photoFile != null) {
+	    		photoUri = Uri.fromFile(photoFile);
+	    		intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri); 
+	    		startActivityForResult(intent, ResultCode.REQUEST_CODE_CAPTURE_CAMEIA);
+	    	}
 	    } else {
 	    	ToastHelper.showToastInBottom(this, R.string.sdcard_error);
 	    }
@@ -180,7 +183,9 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 	 */
 	private void getImageFromAlbum() {
 		CarameHelper helper = new CarameHelper(this);
-		photoFile = helper.getOutputMediaFile(CarameHelper.MEDIA_TYPE_IMAGE);   
+		photoFile = helper.getOutputMediaFile(this, CarameHelper.MEDIA_TYPE_IMAGE);   
+		if(photoFile == null) return;
+		
     	photoUri = Uri.fromFile(photoFile);
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
 		intent.setType("image/*");

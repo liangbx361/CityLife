@@ -30,6 +30,7 @@ public interface IntentExtraConfig {
 	
 	/***************************** 类型列表  **********************************************/
 	public static final String COMMENT_ID = "id";
+	public static final String COMMENT_TYPE = "type";
 	
 	/***************************** 视频  **********************************************/
 	public static final String VIDEO_PATH = "video_path";
