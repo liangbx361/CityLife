@@ -143,6 +143,15 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+
+
 	public class PhotoAdapter extends BaseAdapter {
 
 		private Context mContext;
@@ -552,7 +561,8 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 							} else {
 								dismissDialog();
 								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
-								finish();
+								setResult(ResultCode.REFRESH_MY_OLD_LIST);
+								finish();								
 							}
 						}
 
@@ -582,5 +592,5 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			e.printStackTrace();
 		}
 		
-	}
+	}	
 }

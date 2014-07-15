@@ -3,6 +3,7 @@ package com.wb.citylife.mk.main;
 import net.tsz.afinal.FinalDb;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -24,6 +25,7 @@ import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.dialog.PushDialog;
 import com.wb.citylife.dialog.ThemeDialog;
+import com.wb.citylife.mk.about.AboutActivity;
 import com.wb.citylife.mk.common.CommShare;
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceClickListener,
@@ -36,6 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 	private Preference sharePf;
 	private Preference updatePf;	
 	private Preference cleanPf;
+	private Preference aboutPf;
 	private View exitView;
 	
 	@Override
@@ -83,6 +86,9 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		
 		cleanPf = (Preference) findPreference(getResources().getString(R.string.pf_clean_cache));
 		cleanPf.setOnPreferenceClickListener(this);
+		
+		aboutPf = (Preference) findPreference(getResources().getString(R.string.pf_about));
+		aboutPf.setOnPreferenceClickListener(this);
 	}
 	
 	@Override
@@ -104,20 +110,25 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		    
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_apk_share))) {	
 			
-			String share = "永安城市生活，开启你的本地生活，赶紧来下载吧~\n应用下载:" + NetConfig.APK_DOWNLOAD_URL;
-			CommShare.share(mActivity, share, true);
+			String share = "永安城市生活，专注于提供最好的本地服务，赶紧来试一试吧~\n应用下载地址:" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(mActivity, share, false);
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_update))) {
 			
 			UmengUpdateAgent.setUpdateListener(this);
 			UmengUpdateAgent.update(mActivity);	
 			UmengUpdateAgent.forceUpdate(mActivity);
+			UmengUpdateAgent.setUpdateAutoPopup(true);
 			ToastHelper.showToastInBottom(mActivity, "版本检测中");
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_clean_cache))) {
 			
 			DataCleanManager.cleanExternalAllCache(getActivity());
 			ToastHelper.showToastInBottom(getActivity(), R.string.clean_success_toast);
+			
+		} else if(preference.getKey().equals(getResources().getString(R.string.pf_about))) {
+			Intent intent = new Intent(mActivity, AboutActivity.class);
+			startActivity(intent);
 		}
 		
 		return false;

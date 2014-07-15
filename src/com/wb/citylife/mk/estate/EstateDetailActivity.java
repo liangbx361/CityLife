@@ -44,6 +44,7 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
+import com.wb.citylife.mk.common.CommShare;
 import com.wb.citylife.mk.img.ImageBrowseActivity;
 import com.wb.citylife.mk.old.OldInfoDetailActivity;
 import com.wb.citylife.task.BaseRequest;
@@ -184,6 +185,10 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.share:
+			String content = "我在城市生活看到一条房产信息：" + mEstateDetail.title 
+				+ ", 均价：" + mEstateDetail.averagePrice + "元" 
+				+ "\n详情内容请下载城市生活应用：" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(this, content, false);
 			break;
 			
 		case R.id.collect:

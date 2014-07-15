@@ -47,6 +47,7 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
+import com.wb.citylife.mk.common.CommShare;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -223,6 +224,10 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.share:
+			String content = "我在城市生活看到一条二手信息：" + mOldInfoDetail.title 
+				+ ", 价格：" + mOldInfoDetail.price + "元" 
+				+ "\n详情内容请下载城市生活应用：" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(this, content, false);
 			break;
 			
 		case R.id.collect:
@@ -358,6 +363,14 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	public void onResponse(OldInfoDetail response) {		
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {			
+			
+			//判断是否已被用户删除掉
+			if(TextUtils.isEmpty(response.title) && TextUtils.isEmpty(response.content)) {
+				ToastHelper.showToastInBottom(this, "抱歉这条信息可能已经被用户删除了，你下拉更新一下列表吧~");
+				finish();
+				return;
+			}
+			
 			mOldInfoDetail = response;
 			mImgAdapter = new ImageAdapter(this, mOldInfoDetail.imagesUrl);
 			imgPager.setAdapter(mImgAdapter);

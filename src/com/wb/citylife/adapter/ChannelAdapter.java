@@ -29,9 +29,11 @@ public class ChannelAdapter extends BaseAdapter {
 		mChannelList = channelList;
 		mShowList = new LinkedList<DbChannel>();
 		
-		for(DbChannel channel : mChannelList) {
-			if(channel.isAdd) {
-				mShowList.add(channel);
+		if(mChannelList != null) {
+			for(DbChannel channel : mChannelList) {
+				if(channel.isAdd) {
+					mShowList.add(channel);
+				}
 			}
 		}
 		

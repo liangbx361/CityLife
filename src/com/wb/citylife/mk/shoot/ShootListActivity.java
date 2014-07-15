@@ -22,6 +22,7 @@ public class ShootListActivity extends BaseActivity {
 	
 	private TabPageIndicator tabIndicator;
 	private ViewPager oldViewPager;
+	private ShootPageAdapter mAdapter;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,8 @@ public class ShootListActivity extends BaseActivity {
 	public void initView() {
 		tabIndicator = (TabPageIndicator) findViewById(R.id.tab);
 		oldViewPager = (ViewPager) findViewById(R.id.pager);
-		oldViewPager.setAdapter(new ShootPageAdapter(getSupportFragmentManager()));
+		mAdapter = new ShootPageAdapter(getSupportFragmentManager());
+		oldViewPager.setAdapter(mAdapter);
 		tabIndicator.setViewPager(oldViewPager);
 	}
 	
@@ -73,7 +75,7 @@ public class ShootListActivity extends BaseActivity {
 			return true;
 		
 		case R.id.action_publish_shoot:{
-			startActivity(new Intent(this, ShootPublishActivity.class));
+			startActivityForResult(new Intent(this, ShootPublishActivity.class), 0);
 		}break;
 		}
 				
@@ -88,6 +90,7 @@ public class ShootListActivity extends BaseActivity {
 				R.drawable.my_shoot_icon_selector};
 		
 		int pageCount;
+		public Fragment mFragment;
 		
 		public ShootPageAdapter(FragmentManager fm) {
 			super(fm);
@@ -114,6 +117,7 @@ public class ShootListActivity extends BaseActivity {
 				bundle.putString(IntentExtraConfig.SHOOT_TYPE, ShootListFragment.SHOOT_TYPE_MY);
 			}
 			itemFragment.setArguments(bundle);
+			mFragment = itemFragment;
 			return itemFragment;
 		}
 
@@ -132,6 +136,14 @@ public class ShootListActivity extends BaseActivity {
 		public int getIconResId(int index) {
 			return icons[index];
 		}	
+		
+		public Fragment getCurrentFragment() {
+			return mFragment;
+		}
 	}
-
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+	}
 }

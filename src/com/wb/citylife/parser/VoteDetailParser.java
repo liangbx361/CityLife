@@ -14,7 +14,7 @@ public class VoteDetailParser {
 		VoteDetail data = gson.fromJson(resultStr, new TypeToken<VoteDetail>(){}.getType());
 		
 		for(QuestionItem qItem : data.datas) {
-			if(!qItem.hasVote) break;
+			if(!qItem.hasVote) continue;
 			
 			if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE ||
 					qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {

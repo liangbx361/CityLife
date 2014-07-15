@@ -17,6 +17,7 @@ public class CommShare {
 		
 		ShareHelper shareHelper = new ShareHelper();
 		shareHelper.addWXPlatform(activity, mController);
+		
 		// 设置分享内容
 		mController.setShareContent(share);
 		

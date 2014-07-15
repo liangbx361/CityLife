@@ -26,6 +26,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.BaseExtraLayoutFragment;
 import com.wb.citylife.activity.base.IBaseNetActivity;
 import com.wb.citylife.activity.base.ReloadListener;
@@ -46,7 +47,7 @@ import com.wb.citylife.widget.PullListViewHelper;
 public class SearchFragment extends BaseExtraLayoutFragment implements Listener<Search>, ErrorListener,
 	OnItemClickListener, ReloadListener, OnClickListener{
 	
-	private IBaseNetActivity mActivity;
+	private BaseActivity mActivity;
 	
 	private EditText searchEt;
 	private Button searchBtn;
@@ -67,7 +68,7 @@ public class SearchFragment extends BaseExtraLayoutFragment implements Listener<
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		mActivity =  (IBaseNetActivity) activity;
+		mActivity =  (BaseActivity) activity;
 		if(getArguments() != null) {
 			searchType = getArguments().getInt(IntentExtraConfig.SEARCH_TYPE, 0);
 		}

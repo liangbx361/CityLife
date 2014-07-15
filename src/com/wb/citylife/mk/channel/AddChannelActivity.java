@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.wb.citylife.R;
@@ -17,7 +21,7 @@ import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.config.ActionConfig;
 
-public class AddChannelActivity extends BaseActivity{
+public class AddChannelActivity extends BaseActivity implements OnItemClickListener{
 	
 	private ListView channelLv;
 	private List<DbChannel> mChannels;
@@ -42,6 +46,7 @@ public class AddChannelActivity extends BaseActivity{
 		channelLv = (ListView) findViewById(R.id.edit_channel_list);
 		mAdapter = new AddChannelAdapter(this, mChannels);
 		channelLv.setAdapter(mAdapter);
+		channelLv.setOnItemClickListener(this);
 	}
 	
 	@Override
@@ -88,5 +93,19 @@ public class AddChannelActivity extends BaseActivity{
 			finalDb.update(channel, "channelId='" + channel.channelId + "'" );
 		}
 		sendBroadcast(new Intent(ActionConfig.ACTION_UPDATE_CHANNEL));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		DbChannel channel = mChannels.get(position);
+		ImageView addIv = (ImageView) view.findViewById(R.id.edit);
+		if(channel.isAdd) {
+			addIv.setImageResource(R.drawable.channellist_noadd_icon);
+			channel.isAdd = false;
+		} else {
+			addIv.setImageResource(R.drawable.channellist_hasadd_icon);
+			channel.isAdd = true;
+		}
 	}
 }

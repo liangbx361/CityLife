@@ -201,7 +201,9 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.share:
-			CommShare.share(this, mNewsDetail.content, false);
+			String content = "我在城市生活看到一条新闻资讯：" + mNewsDetail.title 
+					+ "\n详情内容请下载城市生活应用：" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(this, content, false);
 			break;
 			
 		case R.id.collect:

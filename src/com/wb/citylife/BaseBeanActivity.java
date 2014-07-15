@@ -106,4 +106,13 @@ public class BaseBeanActivity extends BaseActivity implements Listener<BaseBean>
 		mBase = response;
 		setIndeterminateBarVisibility(false);
 	}
+	
+	class BaseListener implements Listener<BaseBean> {
+
+		@Override
+		public void onResponse(BaseBean response) {			
+			
+		}
+		
+	}
 }

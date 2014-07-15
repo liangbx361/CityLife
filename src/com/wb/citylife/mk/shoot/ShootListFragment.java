@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.android.volley.Request.Method;
@@ -31,6 +33,7 @@ import com.wb.citylife.activity.base.BaseNetActivity;
 import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.ShootListAdapter;
 import com.wb.citylife.app.CityLifeApp;
+import com.wb.citylife.bean.BaseBean;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.ShootList;
 import com.wb.citylife.bean.ShootList.ShootItem;
@@ -39,11 +42,14 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
+import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.dialog.ConfirmDialog;
+import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.ShootListRequest;
 import com.wb.citylife.widget.PullListViewHelper;
 
 public class ShootListFragment extends BaseExtraLayoutFragment implements Listener<ShootList>, ErrorListener,
-	OnItemClickListener, ReloadListener{
+	OnItemClickListener, OnItemLongClickListener, ReloadListener{
 	
 	public static final String SHOOT_TYPE_NEW = "1";
 	public static final String SHOOT_TYPE_HOT = "2";
@@ -63,6 +69,9 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		
 	private ShootListRequest mShootListRequest;
 	private ShootList mShootList;
+	
+	//删除已发布信息
+	private BaseRequest mBaseRequest;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -126,6 +135,9 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		
 		mShootLv = mPullListView.getRefreshableView();
 		mShootLv.setOnItemClickListener(this);
+		if(mType.equals(SHOOT_TYPE_MY)) {
+			mShootLv.setOnItemLongClickListener(this);
+		}
 		
 		//底部添加正在加载视图
 		pullHelper = new PullListViewHelper(mActivity, mShootLv);
@@ -253,5 +265,77 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		Intent intent = new Intent(mActivity, ShootDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, sItem.id);
 		startActivity(intent);
+	}
+	
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		final ShootItem sItem = mShootList.datas.get(position-1);
+		String title = mActivity.getResources().getString(R.string.toast);
+		String toast = mActivity.getResources().getString(R.string.del_shoot_info_toast, sItem.title);
+		new ConfirmDialog().getDialog(mActivity, title, toast, new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				requestBase(Method.POST, NetInterface.METHOD_DEL_PUSH_INFO, getBaseRequestParams(sItem.id),
+						new BaseListener(), ShootListFragment.this);
+			}
+			
+		}).show();
+		return true;
+	}	
+	
+	//删除发布的二手信息
+	/**
+	 * 获取请求参数
+	 * @return
+	 */
+	private Map<String, String> getBaseRequestParams(String id) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(RespParams.USER_ID, CityLifeApp.getInstance().getUser().userId);
+		params.put(RespParams.ID, id);
+		params.put(RespParams.TYPE, "2");
+		return params;
+	}
+	
+	/**
+	 * 执行任务请求
+	 * @param method
+	 * @param url
+	 * @param params
+	 * @param listenre
+	 * @param errorListener
+	 */	
+	private void requestBase(int method, String methodUrl, Map<String, String> params,	 
+			Listener<BaseBean> listenre, ErrorListener errorListener) {			
+		if(mBaseRequest != null) {
+			mBaseRequest.cancel();
+		}	
+		String url = NetConfig.getServerBaseUrl() + NetConfig.EXTEND_URL + methodUrl;
+		mBaseRequest = new BaseRequest(method, url, params, listenre, errorListener);
+		mActivity.startRequest(mBaseRequest);		
+	}
+	
+	class BaseListener implements Listener<BaseBean> {
+
+		@Override
+		public void onResponse(BaseBean response) {			
+			if(response.respCode == RespCode.SUCCESS) {
+				//删除成功，则重新加载
+				onReload();
+			} else {
+				ToastHelper.showToastInBottom(mActivity, response.respMsg);
+			}
+		}
+		
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == ResultCode.REFRESH_MY_SHOOT_LIST) {
+			onReload();
+		}
 	}	
 }

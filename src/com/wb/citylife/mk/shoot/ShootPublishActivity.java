@@ -402,6 +402,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 							} else {
 								dismissDialog();
 								ToastHelper.showToastInBottom(ShootPublishActivity.this, R.string.publish_shoot_success);
+								setResult(ResultCode.REFRESH_MY_SHOOT_LIST);
 								finish();
 							}
 						}

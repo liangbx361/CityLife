@@ -24,6 +24,8 @@
     <string name="ac_name_image_browse">图片浏览</string>
     <string name="ac_name_my_collect">我的收藏</string>        
     <string name="ac_name_my_msg">我的消息</string>
+    <string name="ac_name_about">关于我们</string>
+    <string name="ac_name_search">搜索</string>
     
     <!-- 欢迎页 -->
     <string name="tips_pull_door">向上滑动进入首页</string>
@@ -118,6 +120,7 @@
     <string name="shoot_list_empty_toast">还没有人发布随手拍信息</string>
     <string name="my_shoot_list_empty_toast">您还未发布随手拍信息</string>
     <string name="publish_shoot_success">发布成功,您可以在我的随手拍中查看</string>
+    <string name="del_shoot_info_toast">你是否要删除\"%s\"这条信息？</string>
     
     <!-- 二手市场  -->
     <string name="login_toast">发布前请先登录，如您还未注册赶紧去注册一个吧~</string>
@@ -131,7 +134,7 @@
     <string name="contacts_empty_toast">联系人不能为空</string>
     <string name="phone_empty_toast">手机号不能为空</string>
     <string name="publish_fail">发布失败,您可以选择重试</string>
-    <string name="publish_success">发布成功,您可以在我的二手货中查看</string>
+    <string name="publish_success">发布成功,您可以在我的二手货中查看,管理员审核后便可被其他人查看</string>
     <string name="old_info_empty_toast">暂无二手信息</string>
     <string name="my_old_info_empty_toast">您还未发布二手信息</string>
     
@@ -140,7 +143,7 @@
     
     <!-- 资讯  -->
     <string name="toast">温馨提示</string>
-    <string name="network_toast">您当前正处于2G/3G/4G状态下,观看视频会产生较多流量，是否继续观看？</string>
+    <string name="network_toast">您当前正处于2G/3G/4G状态下,观看视频会产生较多流量，是否继续观看？</string>    
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

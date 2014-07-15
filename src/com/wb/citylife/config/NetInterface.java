@@ -59,4 +59,10 @@ public interface NetInterface {
 	/***************************** 房地产  **********************************************/
 	public static final String METHOD_ESTATE_LIST = "estateList.do";
 	public static final String METHOD_ESTATE_DETAIL = "estateDetail.do";
+	
+	/***************************** 删除已发布的二手信息  **************************************/
+	public static final String METHOD_DEL_PUSH_INFO = "delPushInfo.do";
+	
+	/***************************** 关于  **************************************/
+	public static final String METHOD_ABOUT = "about.do";
 }

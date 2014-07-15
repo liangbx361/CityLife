@@ -22,6 +22,7 @@ public class OldInfoListActivity extends BaseActivity {
 	
 	private TabPageIndicator tabIndicator;
 	private ViewPager oldViewPager;
+	private OldPageAdapter mAdapter;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,8 @@ public class OldInfoListActivity extends BaseActivity {
 	public void initView() {
 		tabIndicator = (TabPageIndicator) findViewById(R.id.tab);
 		oldViewPager = (ViewPager) findViewById(R.id.pager);
-		oldViewPager.setAdapter(new OldPageAdapter(getSupportFragmentManager()));
+		mAdapter = new OldPageAdapter(getSupportFragmentManager());
+		oldViewPager.setAdapter(mAdapter);
 		tabIndicator.setViewPager(oldViewPager);
 	}
 	
@@ -67,7 +69,7 @@ public class OldInfoListActivity extends BaseActivity {
 		
 		switch(item.getItemId()) {
 		case R.id.action_publish_oldinfo:
-			startActivity(new Intent(this, PublishOldInfoActivity.class));
+			startActivityForResult(new Intent(this, PublishOldInfoActivity.class), 0);
 			return true;
 			
 		case R.id.action_search:
@@ -85,6 +87,7 @@ public class OldInfoListActivity extends BaseActivity {
 		int[] icons = {R.drawable.old_info_icon_selector, R.drawable.my_old_info_icon_selector};
 		
 		int pageCount;
+		public Fragment mFragment;
 		
 		public OldPageAdapter(FragmentManager fm) {
 			super(fm);
@@ -104,6 +107,7 @@ public class OldInfoListActivity extends BaseActivity {
 				bundle.putString(IntentExtraConfig.OLD_TYPE, OldListFragment.TAG_MY_OLD_INFO);
 			}
 			itemFragment.setArguments(bundle);
+			mFragment = itemFragment;
 			return itemFragment;
 		}
 
@@ -123,7 +127,13 @@ public class OldInfoListActivity extends BaseActivity {
 			return icons[index];
 		}		
 		
-		
+		public Fragment getCurrentFragment() {
+			return mFragment;
+		}
 	}
-		
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+	}
 }

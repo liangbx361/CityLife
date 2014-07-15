@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
+import com.wb.citylife.mk.common.CommShare;
 import com.wb.citylife.mk.news.NewsDetailActivity;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
@@ -221,6 +223,10 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.share:
+			String content = "我在城市生活看到一条随手拍信息：" + mShootDetail.title 
+				+ ", " + mShootDetail.content 
+				+ "\n详情内容请下载城市生活应用：" + NetConfig.APK_DOWNLOAD_URL;
+			CommShare.share(this, content, false);
 			break;
 			
 		case R.id.collect:
@@ -359,6 +365,14 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		mShootDetail = response;
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {
+			
+			//判断是否已被用户删除掉
+			if(TextUtils.isEmpty(response.title) && TextUtils.isEmpty(response.content)) {
+				ToastHelper.showToastInBottom(this, "抱歉这条信息可能已经被用户删除了，你下拉更新一下列表吧~");
+				finish();
+				return;
+			}
+			
 			if(response.imagesUrl == null || response.imagesUrl.length == 0) {
 				response.imagesUrl = new String[1];
 			}

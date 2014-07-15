@@ -1,5 +1,6 @@
 package com.wb.citylife.mk.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -338,6 +339,9 @@ public class HomeFragment extends Fragment implements HomeListener,
 		 public void onReceive(Context context, Intent intent) {
 		    if(intent.getAction().equals(ActionConfig.ACTION_UPDATE_CHANNEL)) {
 		    	mChannelList = CityLifeApp.getInstance().getChannels();
+		    	if(mChannelList == null) {
+		    		mChannelList = new ArrayList<DbChannel>();
+		    	}
 		    	mChannelAdapter = new ChannelAdapter(mActivity, mChannelList, true);
 				mTypeGrideView.setAdapter(mChannelAdapter);
 				CityLifeApp.getInstance().setChannels(null);
