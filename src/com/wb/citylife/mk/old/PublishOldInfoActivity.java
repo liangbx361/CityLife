@@ -26,8 +26,10 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -143,15 +145,34 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	
+	/**
+	 * 菜单点击处理
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		
+		switch(item.getItemId()) {
+		
+		case android.R.id.home:
+			checkFinish();
+			return true;
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+		    checkFinish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
-
-
-
+	
 	public class PhotoAdapter extends BaseAdapter {
 
 		private Context mContext;
@@ -593,4 +614,30 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 		}
 		
 	}	
+	
+	private void checkFinish() {
+		String title = titleEt.getText().toString();	
+		String desc = descEt.getText().toString();
+		String price = priceEt.getText().toString();
+		String address = addressEt.getText().toString();
+		String contacts = contactsEt.getText().toString();
+		String phone = phoneEt.getText().toString();
+		
+		if(fileList.size() > 1 || !TextUtils.isEmpty(title) || !TextUtils.isEmpty(desc) ||
+				!TextUtils.isEmpty(price) || !TextUtils.isEmpty(address) || 
+				!TextUtils.isEmpty(contacts) || !TextUtils.isEmpty(phone)) {
+			ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您正在编辑二手市场信息，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+		} else {
+			finish();
+		}
+	}
 }

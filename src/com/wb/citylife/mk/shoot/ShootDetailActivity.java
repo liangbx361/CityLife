@@ -3,12 +3,14 @@ package com.wb.citylife.mk.shoot;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +47,12 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.common.CommShare;
 import com.wb.citylife.mk.news.NewsDetailActivity;
+import com.wb.citylife.mk.old.OldInfoDetailActivity.CommentListener;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -203,6 +207,10 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 	public boolean onOptionsItemSelected(MenuItem item) {	
 		
 		switch(item.getItemId()) {
+		case android.R.id.home:
+			checkFinish();
+			return true;
+		
 		case R.id.action_favour:
 			if(CityLifeApp.getInstance().checkLogin()) {
 				if(mShootDetail.favourState == 0) {
@@ -217,6 +225,18 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+		    checkFinish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
@@ -258,7 +278,12 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				if(comment.length() > 140) {
+					ConfirmDialog dialog = new ConfirmDialog();
+		    		dialog.getConfirmDialog(this, "提示", "抱歉，您的评论字数超过140字限制，请重新编辑,谢谢~").show();
+		    	} else{
+		    		requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);	
+		    	}					
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -641,5 +666,23 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
 					new CommentListListener(), ShootDetailActivity.this);
 		}
+	}
+	
+	private void checkFinish() {
+		String comment = commentEt.getText().toString();
+		if(!TextUtils.isEmpty(comment)) {
+	    	ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您还有未发表的评论，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+	    } else {
+	    	finish();
+	    }
 	}
 }

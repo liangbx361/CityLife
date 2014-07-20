@@ -3,8 +3,11 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +42,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.task.CommentListRequest;
 import com.wb.citylife.task.CommentRequest;
 import com.wb.citylife.widget.PullListViewHelper;
@@ -151,8 +155,14 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 				
 				String comment = commentEt.getText().toString();
 				if(comment != null && !comment.equals("")) {
-					requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), 
-							new CommentListener(), CommentListActivity.this);						
+					if(comment.length() > 140) {
+						ConfirmDialog dialog = new ConfirmDialog();
+			    		dialog.getConfirmDialog(CommentListActivity.this, "提示", "抱歉，您的评论字数超过140字限制，请重新编辑,谢谢~").show();
+			    	} else{
+			    		requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), 
+								new CommentListener(), CommentListActivity.this);	
+			    	}
+										
 				} else {
 					ToastHelper.showToastInBottom(CommentListActivity.this, R.string.comment_empty_toast);
 				}	
@@ -181,8 +191,9 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		switch(item.getItemId()) {
 		case android.R.id.home:
 			Intent resultIntent = new Intent();
-		    setResult(ResultCode.REFRESH_COMMENT_LIST, resultIntent);
-			break;
+		    setResult(ResultCode.REFRESH_COMMENT_LIST, resultIntent);	
+		    checkFinish();
+			return true;
 		}
 		
 		return super.onOptionsItemSelected(item);
@@ -195,11 +206,29 @@ public class CommentListActivity extends BaseActivity implements Listener<Commen
 		case KeyEvent.KEYCODE_BACK:
 			Intent resultIntent = new Intent();
 		    setResult(ResultCode.REFRESH_COMMENT_LIST, resultIntent);
-		    finish();
+		    checkFinish();
 			return true;
 		}
 		
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	private void checkFinish() {
+		String comment = commentEt.getText().toString();
+		if(!TextUtils.isEmpty(comment)) {
+	    	ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您还有未发表的评论，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+	    } else {
+	    	finish();
+	    }
 	}
 	
 	/**

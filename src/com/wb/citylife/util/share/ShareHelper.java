@@ -3,9 +3,8 @@ package com.wb.citylife.util.share;
 import android.app.Activity;
 
 import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMVideo;
-import com.umeng.socialize.media.UMusic;
+import com.umeng.socialize.sso.QZoneSsoHandler;
+import com.umeng.socialize.sso.TencentWBSsoHandler;
 import com.umeng.socialize.sso.UMWXHandler;
 import com.wb.citylife.config.NetConfig;
 
@@ -15,6 +14,8 @@ public class ShareHelper {
 	 * 需要配置成我注册的APPID
 	 */
 	public static final String WX_APP_ID = "wx98ff40c9d02c04af";
+	
+	public static final String QQ_APP_ID = "1101770933";	
 	
 	/**
 	 * @功能描述 : 添加微信平台分享
@@ -37,5 +38,16 @@ public class ShareHelper {
 		
 		circleHandler.setCircleTitle("永安城市生活");
 
+	}
+	
+	/**
+	 * @功能描述：设置QQ平台分享
+	 * @param activity
+	 * @param controller
+	 */
+	public void setQQPlatform(Activity activity, UMSocialService controller) {
+		controller.getConfig().supportQQPlatform(activity, QQ_APP_ID, NetConfig.APK_DOWNLOAD_URL);
+		controller.getConfig().setSsoHandler(new QZoneSsoHandler(activity, QQ_APP_ID));
+		controller.getConfig().setSsoHandler(new TencentWBSsoHandler());			
 	}
 }

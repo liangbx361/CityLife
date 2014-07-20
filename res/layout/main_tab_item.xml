@@ -15,18 +15,20 @@
             android:id="@+id/tab_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:src="@drawable/tab_home"
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/tab_icon_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tab_icon"
-            android:layout_alignBaseline="@id/tab_icon"
+            android:layout_below="@id/tab_icon"
+            android:layout_centerHorizontal="true"
             android:lines="1"
             android:maxEms="2"
             android:textSize="12sp"
-            android:visibility="gone"/>
+            android:text="aaa"
+            android:textColor="@color/home_text_selector"/>
             
     </RelativeLayout>
 

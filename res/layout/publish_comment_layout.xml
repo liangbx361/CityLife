@@ -22,6 +22,6 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/comment_btn"
-        android:hint="我来说两句" />
+        android:hint="我来说两句, 140字以内" />
 
 </RelativeLayout>

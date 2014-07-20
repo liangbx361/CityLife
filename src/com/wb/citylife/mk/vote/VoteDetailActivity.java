@@ -33,6 +33,7 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.task.VoteDetailRequest;
+import com.wb.citylife.widget.TouchControllViewPager;
 
 public class VoteDetailActivity extends BaseActivity implements Listener<VoteDetail>, 
 	ErrorListener, ReloadListener, OnClickListener{
@@ -43,7 +44,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 	private TextView descTv;
 	private TextView timeTv;
 	private TextView numTv;
-	private ViewPager mVotePager;
+	private TouchControllViewPager mVotePager;
 	private Button mSubmitBtn;
 	private CirclePageIndicator mVoteIndicator;
 	
@@ -79,7 +80,7 @@ public class VoteDetailActivity extends BaseActivity implements Listener<VoteDet
 		descTv = (TextView) findViewById(R.id.desc);
 		timeTv = (TextView) findViewById(R.id.time);
 		numTv = (TextView) findViewById(R.id.num);
-		mVotePager = (ViewPager) findViewById(R.id.vote_pager);
+		mVotePager = (TouchControllViewPager) findViewById(R.id.vote_pager);
 		mVoteIndicator = (CirclePageIndicator) findViewById(R.id.vote_indicator);
 		mSubmitBtn = (Button) findViewById(R.id.submit);			
 	}

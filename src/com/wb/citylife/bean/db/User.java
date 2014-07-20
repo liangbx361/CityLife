@@ -21,6 +21,8 @@ public class User {
 	
 	public String userphone;
 	
+	public int gender = 1;
+	
 	/**
 	 * 登录状态 0：为登出 1：为登录
 	 */
@@ -81,8 +83,13 @@ public class User {
 	public void setUserphone(String userphone) {
 		this.userphone = userphone;
 	}
-	
-	
-	
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
 	
 }

@@ -22,16 +22,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.Request.Method;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.common.media.BitmapHelper;
 import com.common.media.CarameHelper;
 import com.common.net.volley.VolleyErrorHelper;
@@ -53,7 +55,6 @@ import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
 import com.wb.citylife.dialog.ConfirmDialog;
-import com.wb.citylife.mk.old.PublishOldInfoActivity;
 import com.wb.citylife.parser.BaseParser;
 import com.wb.citylife.task.PublishRequest;
 
@@ -103,7 +104,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 		listView = (HorizontalListView) findViewById(android.R.id.list);
 		fileList.add(null);
 		photoList.add(new SoftReference<Bitmap>(null));
-		photoAdapter = new PhotoAdapter(this, fileList);
+		photoAdapter = new PhotoAdapter(this, fileList, photoList);
 		listView.setAdapter(photoAdapter);		
 		listView.setOnItemClickListener(this);
 		
@@ -122,8 +123,34 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * 菜单点击处理
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {	
+		
+		switch(item.getItemId()) {
+		
+		case android.R.id.home:
+			checkFinish();
+			return true;
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
 	
-
+	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+		    checkFinish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onItemClick(HorizontalAdapterView<?> parent, View view,
 			int position, long id) {
@@ -432,5 +459,24 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private void checkFinish() {
+		String title = titleEt.getText().toString();
+		String content = contentEt.getText().toString();
+		if(fileList.size() > 1 || !TextUtils.isEmpty(title) || !TextUtils.isEmpty(content)) {
+			ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您正在编辑随手拍信息，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+		} else {
+			finish();
+		}
 	}
 }

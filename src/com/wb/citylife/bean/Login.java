@@ -7,5 +7,6 @@ public class Login extends BaseBean{
     public String avatarUrl;
     public String nickname;
     public String accessToken;
+    public int gender;
 	
 }

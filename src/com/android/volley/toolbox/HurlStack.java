@@ -171,7 +171,7 @@ public class HurlStack implements HttpStack {
         if ("https".equals(url.getProtocol()) && mSslSocketFactory != null) {
             ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);
         }
-
+        
         return connection;
     }
 

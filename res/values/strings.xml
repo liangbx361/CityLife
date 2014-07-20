@@ -4,7 +4,7 @@
     <string name="city_name">永安</string>
     
     <!-- 应用名称  -->
-    <string name="app_name">城市生活</string>
+    <string name="app_name">城市生活—小永安</string>
     <string name="ac_name_news">最新资讯</string>		
     <string name="ac_name_detail">详情</string>
     <string name="ac_name_comment">评论</string>
@@ -15,6 +15,7 @@
     <string name="ac_name_account_manager">账号管理</string>
     <string name="ac_name_modify_nickname">修改昵称</string>
     <string name="ac_name_modify_password">修改密码</string>
+    <string name="ac_name_modify_gender">修改性别</string>
     <string name="ac_name_vote">投票</string>    
     <string name="ac_name_oldinfo">二手市场</string>
     <string name="ac_name_publish_oldinfo">发布二手信息</string>
@@ -85,6 +86,7 @@
     <string name="nickname_empty_toast">昵称不能为空</string>
     <string name="nickname_modify_success">昵称修改成功</string>
     <string name="password_modify_success">密码修改成功</string>
+    <string name="gender_modify_success">性别修改成功</string>
     <string name="logout">退出当前账号</string>    
     
     <!-- 对话框  -->
@@ -113,6 +115,9 @@
     <!-- 投票  -->
     <string name="hint_feedback">请写下您的意见...</string>
     <string name="hint_has_voted">您已投过票啦</string>
+    <string name="submit_and_next">提交并进入下一题</string>
+    <string name="submit_result">提交并查看结果</string>
+    <string name="vote_login_toast">你需要先登录才能投票哦~</string>
     
     <!-- 随手拍  -->
     <string name="hint_shoot_title">请填写标题</string>
@@ -143,7 +148,12 @@
     
     <!-- 资讯  -->
     <string name="toast">温馨提示</string>
-    <string name="network_toast">您当前正处于2G/3G/4G状态下,观看视频会产生较多流量，是否继续观看？</string>    
+    <string name="network_toast">您当前正处于2G/3G/4G状态下,观看视频会产生较多流量，是否继续观看？</string>  
+    
+    <!-- 用户须知  -->
+    <string name="user_protocol_name">用户须知</string>
+    <string name="user_protocol_content">您需要接受永安城市生活-小永安的条款</string>
+    <string name="user_protocol_toast">你需要同意用户须知的内容才可以注册</string>
     
     <!-- Strings for possible PreferenceActivity Back/Next buttons -->
     <string name="back_button_label">返回</string>

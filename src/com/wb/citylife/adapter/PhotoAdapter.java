@@ -25,11 +25,12 @@ public class PhotoAdapter extends BaseAdapter {
 
 	private Activity mActivity;
 	private List<File> fileList;
-	private List<SoftReference<Bitmap>> photoList = new ArrayList<SoftReference<Bitmap>>();
+	private List<SoftReference<Bitmap>> photoList;
 
-	public PhotoAdapter(Activity activity, List<File> fileList) {
+	public PhotoAdapter(Activity activity, List<File> fileList, List<SoftReference<Bitmap>> photoList) {
 		mActivity = activity;
 		this.fileList = fileList;
+		this.photoList = photoList;
 		
 		DisplayMetrics dm = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);

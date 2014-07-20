@@ -14,7 +14,13 @@ import net.tsz.afinal.utils.Utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.PorterDuff.Mode;
 import android.media.ExifInterface;
 import android.os.Environment;
 
@@ -149,5 +155,24 @@ public class BitmapHelper {
        }
        
        return null;
+   }
+   
+   public static Bitmap toRoundCorner(Bitmap bitmap, float radius) {  
+       Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),  
+               bitmap.getHeight(), Bitmap.Config.ARGB_8888);  
+       Canvas canvas = new Canvas(output);  
+ 
+       final Paint paint = new Paint();  
+       final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());  
+       final RectF rectF = new RectF(rect);  
+ 
+       paint.setAntiAlias(true);  
+       canvas.drawARGB(0, 0, 0, 0);  
+       canvas.drawRoundRect(rectF, radius, radius, paint);  
+       paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN)); 
+       canvas.drawBitmap(bitmap, rect, rect, paint);   
+ 
+       return output;  
+ 
    }
 }

@@ -15,6 +15,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.mk.news.NewsDetailActivity;
@@ -35,7 +36,7 @@ public class ScrollNewsPagerAdapter extends PagerAdapter implements OnClickListe
 			DbScrollNews dbScrollNews = scrollNewsList.get(i);
 			View view = mActivity.getLayoutInflater().inflate(R.layout.adv_item, null);
 			ImageView videoIv = (ImageView) view.findViewById(R.id.vidoe_flag);
-			if(dbScrollNews.isVideo) {
+			if(dbScrollNews.isVideo && type == ChannelType.CHANNEL_TYPE_NEWS) {
 				videoIv.setVisibility(View.VISIBLE);
 			} else {
 				videoIv.setVisibility(View.GONE);

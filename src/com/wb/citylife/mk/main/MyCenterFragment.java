@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
+import com.common.media.BitmapHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.User;
@@ -135,29 +136,10 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 		public TextView nameTv;
 	}
 	
-	public static Bitmap toRoundCorner(Bitmap bitmap, float radius) {  
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),  
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);  
-        Canvas canvas = new Canvas(output);  
-  
-        final Paint paint = new Paint();  
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());  
-        final RectF rectF = new RectF(rect);  
-  
-        paint.setAntiAlias(true);  
-        canvas.drawARGB(0, 0, 0, 0);  
-        canvas.drawRoundRect(rectF, radius, radius, paint);  
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN)); 
-        canvas.drawBitmap(bitmap, rect, rect, paint);   
-  
-        return output;  
-  
-    }
-
 	@Override
 	public void onGetBitmapListener(ImageView imageView, Bitmap bitmap) {
 		if(bitmap != null) {
-			imageView.setImageBitmap(toRoundCorner(bitmap, bitmap.getHeight()/2));
+			imageView.setImageBitmap(BitmapHelper.toRoundCorner(bitmap, bitmap.getHeight()/2));
 		}
 	}  
 }

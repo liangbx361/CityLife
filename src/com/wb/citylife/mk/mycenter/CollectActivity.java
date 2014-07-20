@@ -205,8 +205,10 @@ public class CollectActivity extends BaseActivity implements Listener<MyCollect>
 	 */
 	@Override
 	public void onResponse(MyCollect response) {
+		mPullListView.onRefreshComplete();
 		
 		if(response.respCode == RespCode.SUCCESS) {
+			
 			if(response.totalNum == 0) {
 				setEmptyToastText(R.string.collect_empty_toast);
 				showEmpty();

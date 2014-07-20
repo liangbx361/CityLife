@@ -115,6 +115,43 @@
             android:focusable="false"
             android:src="@drawable/submenu_arrow" />
     </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/modify_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/preference_single_item"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="6dip"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+android:id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true"
+                android:text="@string/pf_modify_gender"
+                android:textColor="@color/common_text_selector"
+                android:textSize="@dimen/common_menu_text_size" />
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginRight="20.0dip"
+            android:clickable="false"
+            android:focusable="false"
+            android:src="@drawable/submenu_arrow" />
+    </LinearLayout>
 	
     <Button 
         android:id="@+id/logout"

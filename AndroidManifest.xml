@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wb.citylife"
-    android:versionCode="9"
-    android:versionName="0.0.9" >
+    android:versionCode="12"
+    android:versionName="0.0.12" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -247,6 +247,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" >
         </activity>
+        
+        <!-- 修改性别  -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.ModifyGenderActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/ac_name_modify_gender"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
+        </activity>
 
         <!-- 登录 -->
         <activity
@@ -344,7 +353,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- 100424468，如果你使用的公用账号，则不需要修改；否则修改成你在QQ开放平台申请的 APP ID -->
+                <!--  
                 <data android:scheme="tencent100424468" />
+                --> 
+                <data android:scheme="1101770933" />
             </intent-filter>
         </activity>
         <activity android:name="com.tencent.plus.ImageActivity" />

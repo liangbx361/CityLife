@@ -54,7 +54,7 @@ public class OldInfoListActivity extends BaseActivity {
 		setDisplayShowHomeEnabled(false);
 		
 		setActionBarItem(menu, R.id.action_publish_oldinfo, R.string.action_publish_oldinfo, 
-				R.drawable.actionbar_publish_oldinfo_icon);
+				R.drawable.actionbar_publish_icon);
 		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
 				R.drawable.actionbar_search_icon);
 			
@@ -87,7 +87,7 @@ public class OldInfoListActivity extends BaseActivity {
 		int[] icons = {R.drawable.old_info_icon_selector, R.drawable.my_old_info_icon_selector};
 		
 		int pageCount;
-		public Fragment mFragment;
+		Fragment mFragment;
 		
 		public OldPageAdapter(FragmentManager fm) {
 			super(fm);
@@ -134,6 +134,8 @@ public class OldInfoListActivity extends BaseActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+		if(mAdapter != null && mAdapter.getCurrentFragment() != null) {
+			mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+		}
 	}
 }

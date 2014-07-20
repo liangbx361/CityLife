@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class VideoActivity extends Activity{
+public class VideoActivity2 extends Activity{
 	
 
 //	private String path = "http://192.168.10.109:8081/CityLife/videos/love.flv";
@@ -25,10 +25,8 @@ public class VideoActivity extends Activity{
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		
 		if (!LibsChecker.checkVitamioLibs(this))
 			return;
-		
 		setContentView(R.layout.activity_video);
 		
 		getIntentData();
@@ -36,7 +34,7 @@ public class VideoActivity extends Activity{
 		
 		if (TextUtils.isEmpty(path)) {
 			// Tell the user to provide a media file URL/path.
-			Toast.makeText(VideoActivity.this, "Please edit VideoViewDemo Activity, and set path" + " variable to your media file URL/path", Toast.LENGTH_LONG).show();
+			Toast.makeText(VideoActivity2.this, "Please edit VideoViewDemo Activity, and set path" + " variable to your media file URL/path", Toast.LENGTH_LONG).show();
 			return;
 		} else {
 			/*

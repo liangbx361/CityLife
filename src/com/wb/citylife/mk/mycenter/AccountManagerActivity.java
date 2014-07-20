@@ -8,7 +8,6 @@ import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -16,23 +15,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.common.media.CarameHelper;
 import com.common.widget.ToastHelper;
-import com.tencent.mm.sdk.openapi.GetMessageFromWX.Resp;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Avatar;
 import com.wb.citylife.bean.db.User;
-import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -51,6 +46,7 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 	private LinearLayout modifyAvatarLayout;
 	private LinearLayout modifyNicknameLayout;
 	private LinearLayout modifyPasswordLayout;
+	private LinearLayout modifyGenderLayout;
 	private Button logoutBtn;
 	
 	private ModifyAvatarDialog dialog;
@@ -74,11 +70,13 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 		modifyAvatarLayout = (LinearLayout) findViewById(R.id.modify_avatar);
 		modifyNicknameLayout = (LinearLayout) findViewById(R.id.modify_nickname);
 		modifyPasswordLayout = (LinearLayout) findViewById(R.id.modify_password);
+		modifyGenderLayout = (LinearLayout) findViewById(R.id.modify_gender);
 		logoutBtn = (Button) findViewById(R.id.logout);
 		
 		modifyAvatarLayout.setOnClickListener(this);
 		modifyNicknameLayout.setOnClickListener(this);
-		modifyPasswordLayout.setOnClickListener(this);	
+		modifyPasswordLayout.setOnClickListener(this);
+		modifyGenderLayout.setOnClickListener(this);
 		logoutBtn.setOnClickListener(this);
 	}
 	
@@ -116,6 +114,10 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			startActivity(new Intent(this, ModifyPasswordActivity.class));
 			break;
 			
+		case R.id.modify_gender:
+			startActivity(new Intent(this, ModifyGenderActivity.class));
+			break;
+			
 		case R.id.logout:
 			//登出处理
 			User user = CityLifeApp.getInstance().getUser();
@@ -130,7 +132,7 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
+						
 		if (requestCode == ResultCode.REQUEST_CODE_CAPTURE_CAMEIA ) {
 			
 			 Intent intent = new Intent("com.android.camera.action.CROP");
@@ -154,7 +156,11 @@ public class AccountManagerActivity extends BaseActivity implements OnClickListe
 			
 		} else if(requestCode == ResultCode.REQUEST_CODE_IMAGE_CROP) {
 			//上传头像
-			upLoadAvatar(photoFile);
+			if(resultCode == 0 && data == null) {
+				ToastHelper.showToastInBottom(this, "您取消了上传头像操作");
+			} else {
+				upLoadAvatar(photoFile);
+			}
 			dialog.dismiss();
 		}
 	}

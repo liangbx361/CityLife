@@ -21,6 +21,7 @@ public interface NetInterface {
 	public static final String METHOD_MODIFY_AVATAR = "modifyAvatar.do";
 	public static final String METHOD_MODIFY_NICKNAME = "modifyNickname.do";	
 	public static final String METHOD_MODIFY_PASSWORD = "modifyPwd.do";
+	public static final String METHOD_MODIFY_GENDER = "modifyGender.do";
 	
 	/***************************** 栏目  **********************************************/
 	public static final String METHOD_CHANNEL = "channel.do";

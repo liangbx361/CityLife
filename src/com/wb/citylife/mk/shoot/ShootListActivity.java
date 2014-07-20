@@ -54,7 +54,7 @@ public class ShootListActivity extends BaseActivity {
 		setDisplayShowHomeEnabled(false);
 		
 		setActionBarItem(menu, R.id.action_publish_shoot, R.string.action_publish_shoot, 
-				R.drawable.actionbar_publish_oldinfo_icon);
+				R.drawable.actionbar_publish_icon);
 		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
 				R.drawable.actionbar_search_icon);
 			
@@ -144,6 +144,8 @@ public class ShootListActivity extends BaseActivity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+		if(mAdapter != null && mAdapter.getCurrentFragment() != null) {
+			mAdapter.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+		}
 	}
 }

@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/common_bg_color"
+    android:orientation="vertical"
     android:paddingLeft="17.78dp"
-    android:paddingRight="17.78dp"
-    android:orientation="vertical" 
-    android:background="@color/common_bg_color">
+    android:paddingRight="17.78dp" >
 
     <EditText
         android:id="@+id/userPhone"
@@ -50,6 +50,73 @@
         android:textColorHint="#ffd5d5d5"
         android:textSize="13.33sp" >
     </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48.89dp"
+        android:layout_marginTop="9.33dp"
+        android:background="@drawable/edit_selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:text="性 别"
+                android:textColor="#000"
+                android:textSize="@dimen/old_market_publish_text_size" />
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16.89dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/check_box_selector"
+                android:checked="true"
+                android:text="男性" />
+
+            <RadioButton
+                android:id="@+id/female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:button="@drawable/check_box_selector"
+                android:text="女性" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/user_protocol_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9.33dp" 
+        android:gravity="right">
+
+        <CheckBox
+            android:id="@+id/protocol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/check_box_selector" />
+
+        <TextView
+            android:id="@+id/user_protocol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_protocol_name" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/register"

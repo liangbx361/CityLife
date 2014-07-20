@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import com.android.volley.VolleyError;
 import com.android.volley.Request.Method;
@@ -28,19 +29,19 @@ import com.wb.citylife.config.RespCode;
 import com.wb.citylife.db.DbHelper;
 import com.wb.citylife.task.BaseRequest;
 
-public class ModifyNickNameActivity extends BaseActivity implements OnClickListener,
+public class ModifyGenderActivity extends BaseActivity implements OnClickListener,
 	Listener<BaseBean>, ErrorListener{
 	
-	private EditText nicknameEt;
 	private Button submitBtn;
-	private String nickName;
+	private RadioGroup genderRg;
+	private int gender;
 	
 	private BaseRequest mBaseRequest;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_modify_nickname);
+		setContentView(R.layout.activity_modify_gender);
 		
 		getIntentData();
 		initView();
@@ -53,9 +54,15 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	
 	@Override
 	public void initView() {
-		nicknameEt = (EditText) findViewById(R.id.nickName);
+		genderRg = (RadioGroup) findViewById(R.id.gender);
 		submitBtn = (Button) findViewById(R.id.submit);
 		submitBtn.setOnClickListener(this);
+		
+		if(CityLifeApp.getInstance().getUser().gender == 1) {
+			genderRg.check(R.id.male);
+		} else {
+			genderRg.check(R.id.female);
+		}
 	}
 	
 	@Override
@@ -68,34 +75,29 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	}
 	
 	@Override
-	public void onClick(View v) {
-		nickName = nicknameEt.getText().toString();		
-		Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
-		
-		if(nickName.equals("")) {
-			nicknameEt.startAnimation(shake);
-			ToastHelper.showToastInBottom(this, R.string.nickname_empty_toast);
-			return;
+	public void onClick(View v) {			
+		gender = 1;
+		if(genderRg.getCheckedRadioButtonId() == R.id.female) {
+			gender = 2;
 		}
 		
-		if(nickName.equals(CityLifeApp.getInstance().getUser().nickname)) {
-			nicknameEt.startAnimation(shake);
-			ToastHelper.showToastInBottom(this, "昵称不能相同");
+		if(gender == CityLifeApp.getInstance().getUser().gender) {
+			ToastHelper.showToastInBottom(this, "不能修改为相同的性别");
 			return;
 		}
 		
 		setIndeterminateBarVisibility(true);
-		requestBase(Method.POST, NetInterface.METHOD_MODIFY_NICKNAME, getBaseRequestParams(nickName), this, this);
+		requestBase(Method.POST, NetInterface.METHOD_MODIFY_GENDER, getBaseRequestParams(gender), this, this);
 	}	
 	
 	/**
 	 * 获取请求参数
 	 * @return
 	 */
-	private Map<String, String> getBaseRequestParams(String nickName) {
+	private Map<String, String> getBaseRequestParams(int gender) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userId", CityLifeApp.getInstance().getUser().getUserId());
-		params.put("nickName", nickName);		
+		params.put("gender", gender + "");		
 		return params;
 	}
 	
@@ -134,9 +136,9 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 	public void onResponse(BaseBean response) {
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {
-			CityLifeApp.getInstance().getUser().nickname = nickName;
+			CityLifeApp.getInstance().getUser().gender = gender;
 			DbHelper.saveUser(CityLifeApp.getInstance().getUser());
-			ToastHelper.showToastInBottom(this, R.string.nickname_modify_success);
+			ToastHelper.showToastInBottom(this, R.string.gender_modify_success);
 			finish();
 		}
 	}

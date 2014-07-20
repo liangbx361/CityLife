@@ -15,7 +15,9 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
+import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.mk.news.NewsDetailActivity;
 
 public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
@@ -32,7 +34,7 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 			DbScrollNews dbScrollNews = scrollNewsList.get(i);
 			View view = mActivity.getLayoutInflater().inflate(R.layout.adv_item, null);
 			ImageView videoIv = (ImageView) view.findViewById(R.id.vidoe_flag);
-			if(dbScrollNews.isVideo) {
+			if(dbScrollNews.isVideo && dbScrollNews.type == ChannelType.CHANNEL_TYPE_NEWS) {
 				videoIv.setVisibility(View.VISIBLE);
 			} else {
 				videoIv.setVisibility(View.GONE);
@@ -83,11 +85,9 @@ public class AdvPagerAdapter extends PagerAdapter implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		int index = Integer.parseInt(v.getTag().toString());
-		DbScrollNews item = scrollNewsList.get(index);
+		DbScrollNews item = scrollNewsList.get(index);		
 		//点击跳转新闻详情页
-		Intent intent = new Intent(mActivity, NewsDetailActivity.class);
-		intent.putExtra(IntentExtraConfig.DETAIL_ID, item.newsId);
-		mActivity.startActivity(intent);
+		CommIntent.startDetailPage(mActivity, item.newsId, item.type);
 	}
 		 
 }

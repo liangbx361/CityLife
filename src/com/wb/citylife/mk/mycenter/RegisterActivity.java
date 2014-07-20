@@ -6,8 +6,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +19,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -29,6 +34,7 @@ import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.security.MD5;
 import com.common.widget.ToastHelper;
@@ -50,6 +56,10 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 	
 	private RegisterRequest mRegisterRequest;
 	private Register mRegister;
+	private RadioGroup genderRg;
+	
+	private CheckBox proCb;
+	private TextView userProTv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,19 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 		password2Et = (EditText) findViewById(R.id.password2);
 		registerBtn = (Button) findViewById(R.id.register);
 		registerBtn.setOnClickListener(this);
+		genderRg = (RadioGroup) findViewById(R.id.gender);
+		
+		proCb = (CheckBox) findViewById(R.id.protocol);
+		userProTv = (TextView) findViewById(R.id.user_protocol);
+		userProTv.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+		userProTv.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				new ConfirmDialog().getConfirmDialog(RegisterActivity.this, 
+						R.string.user_protocol_name, R.string.user_protocol_content).show();;
+			}
+		});
 	}
 	
 	@Override
@@ -135,12 +158,19 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 			return;
 		}
 		
+		int gender = 1;
+		if(genderRg.getCheckedRadioButtonId() == R.id.female) {
+			gender = 2;
+		}
+		
+		if(!proCb.isChecked()) {
+			ToastHelper.showToastInBottom(this, R.string.user_protocol_toast);
+			return;
+		}
+		
 		setIndeterminateBarVisibility(true);
 		requestRegister(Method.POST, NetInterface.METHOD_REGISTER, 
-				getRegisterRequestParams(userPhone, password), this, this);
-		
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);	
+				getRegisterRequestParams(userPhone, password, gender), this, this);		
 	}
 	
 	/**
@@ -155,7 +185,7 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 	 * 获取注册请求参数
 	 * @return
 	 */
-	private Map<String, String> getRegisterRequestParams(String phone, String pwd) {
+	private Map<String, String> getRegisterRequestParams(String phone, String pwd, int gender) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userPhone", phone);
 		try {
@@ -163,6 +193,7 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
+		params.put("gender", gender + "");
 		return params;
 	}
 	
@@ -210,7 +241,7 @@ public class RegisterActivity extends BaseActivity implements Listener<Register>
 			finish();
 			
 		} else {
-			ToastHelper.showToastInBottom(this, R.string.register_fail);
+			ToastHelper.showToastInBottom(this, response.respMsg);
 		}
 	}	
 	

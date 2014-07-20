@@ -3,12 +3,14 @@ package com.wb.citylife.mk.old;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,9 +47,11 @@ import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.config.ResultCode;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.common.CommShare;
+import com.wb.citylife.mk.news.NewsDetailActivity.CommentListener;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -204,6 +208,10 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	public boolean onOptionsItemSelected(MenuItem item) {	
 		
 		switch(item.getItemId()) {
+		case android.R.id.home:
+			checkFinish();
+			return true;
+			
 		case R.id.action_favour:
 			if(CityLifeApp.getInstance().checkLogin()) {
 				if(mOldInfoDetail.favourState == 0) {
@@ -221,8 +229,20 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	}
 	
 	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+		    checkFinish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
 	public boolean onMenuItemClick(MenuItem item) {
-		switch(item.getItemId()) {
+		switch(item.getItemId()) {			
 		case R.id.share:
 			String content = "我在城市生活看到一条二手信息：" + mOldInfoDetail.title 
 				+ ", 价格：" + mOldInfoDetail.price + "元" 
@@ -259,7 +279,12 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				if(comment.length() > 140) {
+					ConfirmDialog dialog = new ConfirmDialog();
+		    		dialog.getConfirmDialog(this, "提示", "抱歉，您的评论字数超过140字限制，请重新编辑,谢谢~").show();
+		    	} else{
+		    		requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);	
+		    	}					
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -506,7 +531,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 	 * @author liangbx
 	 *
 	 */
-	class CommentListener implements Listener<Comment> {
+	public class CommentListener implements Listener<Comment> {
 
 		@Override
 		public void onResponse(Comment comment) {
@@ -649,5 +674,23 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
 					new CommentListListener(), OldInfoDetailActivity.this);
 		}
+	}
+	
+	private void checkFinish() {
+		String comment = commentEt.getText().toString();
+		if(!TextUtils.isEmpty(comment)) {
+	    	ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您还有未发表的评论，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+	    } else {
+	    	finish();
+	    }
 	}
 }

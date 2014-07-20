@@ -200,6 +200,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			user.nickname = mLogin.nickname;
 			user.accessToken = mLogin.accessToken;
 			user.userphone = userphone;
+			user.gender = mLogin.gender;
 			user.isLogin = 1;
 			DbHelper.saveUser(user);
 			CityLifeApp.getInstance().setUser(user);

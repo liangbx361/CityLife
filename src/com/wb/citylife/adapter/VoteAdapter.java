@@ -21,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -29,11 +28,13 @@ import com.android.volley.Response.Listener;
 import com.common.widget.ToastHelper;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wb.citylife.R;
+import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.adapter.VoteAdapter.QuestionAdapter.ViewHolder;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.VoteDetail;
-import com.wb.citylife.bean.VoteSatistics;
 import com.wb.citylife.bean.VoteDetail.QuestionItem;
+import com.wb.citylife.bean.VoteSatistics;
+import com.wb.citylife.config.DebugConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -41,12 +42,13 @@ import com.wb.citylife.config.VoteType;
 import com.wb.citylife.mk.vote.VoteDetailActivity;
 import com.wb.citylife.task.voteSatisticsRequest;
 import com.wb.citylife.widget.StatisticsBar;
+import com.wb.citylife.widget.TouchControllViewPager;
 
 public class VoteAdapter extends PagerAdapter implements OnItemClickListener, OnClickListener{
 	
 	private Context mContext;
 	private VoteDetail mVoteDetail;
-	private ViewPager mViewPager;
+	private TouchControllViewPager mViewPager;
 	private Button mSubmitBtn;
 	private VoteDetailActivity voteDetailActivity;
 		
@@ -62,9 +64,12 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 	private QuestionItem submitQItem;
 	private int submitIndex;
 	private boolean submited = false;
+	private boolean stopMove = false;
 	private String detailId;
 	
-	public VoteAdapter(Context context, ViewPager viewPager, CirclePageIndicator voteIndicator, 
+	private List<SubmitAnswer> answerList = new ArrayList<VoteAdapter.SubmitAnswer>();
+	
+	public VoteAdapter(Context context, TouchControllViewPager viewPager, CirclePageIndicator voteIndicator, 
 			Button submitBtn, VoteDetail voteDetail, String detailId) {
 		mContext = context;
 		mViewPager = viewPager;
@@ -79,20 +84,13 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			
 			List<Int> cbList = new ArrayList<Int>();
 			mCheckList.add(cbList);
-			if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE && !qItem.hasVote) {
+			if((qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE || 
+					qItem.questionType == VoteType.VOTE_TYPE_SINGLE) && !qItem.hasVote) {
 				for(int j=0; j<qItem.questionOptions.length; j++) {
 					cbList.add(new Int(0));
 				}
 			}
 			animList.add(new Bool(false));
-			
-			if(i == 0) {
-				if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
-					mSubmitBtn.setVisibility(View.GONE);
-				} else {					
-					mSubmitBtn.setVisibility(View.VISIBLE);
-				}
-			}
 		}
 		
 		//判断首次进入时，第一条问题是否已经投过票
@@ -100,6 +98,11 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			QuestionItem qItem = mVoteDetail.datas.get(0);
 			if(qItem.hasVote) {
 				mSubmitBtn.setVisibility(View.GONE);
+			} else {
+				if(mVoteDetail.datas.size() == 1) {
+					mSubmitBtn.setText(R.string.submit_result);
+				}
+				mViewPager.setMove(false);
 			}
 		}
 		mSubmitBtn.setOnClickListener(this);
@@ -108,7 +111,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			@Override
 			public void onPageSelected(int position) {
 				QuestionItem qItem = mVoteDetail.datas.get(position);
-				if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE || qItem.hasVote) {
+				if(qItem.hasVote) {
 					mSubmitBtn.setVisibility(View.GONE);
 				} else {					
 					mSubmitBtn.setVisibility(View.VISIBLE);
@@ -120,12 +123,14 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			
 			}
 			
 			@Override
-			public void onPageScrollStateChanged(int arg0) {
-				
+			public void onPageScrollStateChanged(int state) {
+				if(state == 0 && stopMove) {
+					stopMove = false;
+					mViewPager.setMove(false);
+				}
 			}
 		});
 	}
@@ -154,7 +159,11 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 			TextView titleTv = (TextView) view.findViewById(R.id.title);
 			titleTv.setText(qItem.questionTitle);
 			TextView indexTv = (TextView) view.findViewById(R.id.index);
-			indexTv.setText("Q" + index + " / Q" + mVoteDetail.datas.size());
+			if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
+				indexTv.setText("(单选题:" + qItem.questionOptions.length + "选项)Q" + index + " / Q" + mVoteDetail.datas.size());
+			} else {
+				indexTv.setText("(多选题:" + qItem.questionOptions.length + "选项)Q" + index + " / Q" + mVoteDetail.datas.size());
+			}
 			ListView voteLv = (ListView) view.findViewById(R.id.vote_list);
 			QuestionAdapter adapter = new QuestionAdapter(mContext, qItem);
 			voteLv.setAdapter(adapter);
@@ -233,11 +242,11 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				
 				holder.optionGroup = (ViewGroup) view.findViewById(R.id.option_layout);
 				holder.voteCb = (CheckBox) view.findViewById(R.id.check);				
-				if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
-					holder.voteCb.setVisibility(View.VISIBLE);
-				} else {
-					holder.voteCb.setVisibility(View.INVISIBLE);
-				}
+//				if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
+//					holder.voteCb.setVisibility(View.VISIBLE);
+//				} else {
+//					holder.voteCb.setVisibility(View.INVISIBLE);
+//				}
 				TextView optionTv = (TextView) view.findViewById(R.id.option);
 				holder.optionTv = optionTv;
 				
@@ -256,7 +265,15 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				holder.optionGroup.setVisibility(View.VISIBLE);
 				holder.resultGroup.setVisibility(View.GONE);					
 				String option = (position + 1) + ". " +  qItem.questionOptions[position];
-				holder.optionTv.setText(option);				
+				holder.optionTv.setText(option);	
+				
+				int page = mVoteDetail.datas.indexOf(qItem);
+				List<Int> checkList = mCheckList.get(page);
+				if(checkList.get(position).value == 1) {
+					holder.voteCb.setChecked(true);
+				} else {
+					holder.voteCb.setChecked(false);
+				}
 			} else {
 				//显示投票结果
 				holder.optionGroup.setVisibility(View.GONE);
@@ -303,7 +320,14 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		
 		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			//单选类型直接提交答案
-			startSatistics(position);
+			ViewHolder holder = (ViewHolder) view.getTag();
+			List<Int> checkList = mCheckList.get(page);
+			for(Int checkValue : checkList) {
+				checkValue.value = 0;
+			}
+			checkList.get(position).value = 1;
+			holder.voteCb.setChecked(true);
+			mAdapterList.get(page).notifyDataSetChanged();
 		} else {
 			//设置选项的状态
 			ViewHolder holder = (ViewHolder) view.getTag();
@@ -332,7 +356,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 	 */
 	private void startSatistics(int position) {
 		if(!CityLifeApp.getInstance().checkLogin()) {
-			ToastHelper.showToastInBottom(mContext, "你需要先登录才能投票哦~");
+			ToastHelper.showToastInBottom(mContext, R.string.vote_login_toast);
 			return;
 		}
 		
@@ -345,11 +369,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		
 		if(submited) return;
 		
-		if(qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
-			answer = position + "";
-			answerId = qItem.questionOptionIds[position];
-			answer = answerId;
-		} else if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
+		if(qItem.questionType == VoteType.VOTE_TYPE_MULTIPLE || qItem.questionType == VoteType.VOTE_TYPE_SINGLE) {
 			List<Int> checkList = mCheckList.get(page);
 			for(int i=0; i<checkList.size(); i++) {
 				if(checkList.get(i).value == 1) {
@@ -376,13 +396,38 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 				return;
 			} 						
 		}
-				
-		submitQItem = qItem;
-		submitIndex = mViewPager.getCurrentItem();
-		submited = true;
-		voteDetailActivity.setIndeterminateBarVisibility(true);
-		requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
-				getVoteSatisticsRequestParams(qItem, answer, answerId), new StatisticsListener(), voteDetailActivity);
+		
+		//保存答案
+		SubmitAnswer submitAnswer = new SubmitAnswer();
+		submitAnswer.qItem = qItem;
+		submitAnswer.answer = answer;
+		submitAnswer.answerId = answerId;
+		answerList.add(submitAnswer);
+		
+		if(mViewPager.getCurrentItem()+1 >= mVoteDetail.datas.size()) {			
+			submitIndex = 0;
+			submitAnswer = answerList.get(submitIndex);
+			submited = true;
+			submitQItem = answerList.get(submitIndex).qItem;
+			requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
+					getVoteSatisticsRequestParams(submitAnswer.qItem, submitAnswer.answer, 
+							submitAnswer.answerId), new StatisticsListener(), voteDetailActivity);
+			voteDetailActivity.showDialog("正在统计投票结果中...");
+		} else {
+			int nextIndex = mViewPager.getCurrentItem() + 1;
+			if(nextIndex >= mVoteDetail.datas.size()-1) {
+				mSubmitBtn.setText(R.string.submit_result);
+			}
+			mViewPager.setMove(true);
+			stopMove = true;
+			mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+		}
+	}
+	
+	class SubmitAnswer {
+		QuestionItem qItem;
+		String answer;
+		String answerId;
 	}
 	
 	/**
@@ -433,6 +478,7 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 		public void onResponse(VoteSatistics response) {
 			
 			if(response.respCode == RespCode.SUCCESS) {
+				submitQItem = answerList.get(submitIndex).qItem;
 				submitQItem.hasVote = true;
 				if(submitQItem.questionType == VoteType.VOTE_TYPE_SINGLE ||
 						submitQItem.questionType == VoteType.VOTE_TYPE_MULTIPLE) {
@@ -463,11 +509,23 @@ public class VoteAdapter extends PagerAdapter implements OnItemClickListener, On
 					viewHolder.answerTv.setVisibility(View.VISIBLE);
 					viewHolder.answerTv.setText(response.result[0]);
 				}
-			}
-			
-			voteDetailActivity.setIndeterminateBarVisibility(false);
-			mvoteSatistics = response;
-			submited = false;
+				
+				submitIndex++;
+				if(submitIndex < mVoteDetail.datas.size()) {
+					SubmitAnswer submitAnswer = answerList.get(submitIndex);
+					requestvoteSatistics(Method.POST, NetInterface.METHOD_VOTE_SATISTICS, 
+							getVoteSatisticsRequestParams(submitAnswer.qItem, submitAnswer.answer, 
+									submitAnswer.answerId), new StatisticsListener(), voteDetailActivity);
+				} else {					
+					voteDetailActivity.dismissDialog();
+					submited = false;
+					mViewPager.setCurrentItem(0);
+					mViewPager.setMove(true);
+				}
+			} else {
+				ToastHelper.showToastInBottom(mContext, response.respMsg);
+				voteDetailActivity.finish();
+			}						
 		}
 	}
 	

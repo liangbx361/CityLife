@@ -56,4 +56,23 @@ public class ConfirmDialog {
         })
         .create();
 	}
+	
+	public Dialog getConfirmDialog(Context context, int titleId, int messageId) {
+		return getConfirmDialog(context, context.getResources().getString(titleId), context.getResources().getString(messageId));
+	}
+	
+	public Dialog getConfirmDialog(Context context, String title, String message) {
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+		if(title != null) {
+			dialogBuilder.setTitle(title);
+		}
+		
+		return dialogBuilder.setMessage(message)
+        .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	dialog.dismiss();                
+            }
+        })
+        .create();
+	}
 }

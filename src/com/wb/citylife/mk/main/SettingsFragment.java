@@ -1,8 +1,10 @@
 package com.wb.citylife.mk.main;
 
 import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.utils.Utils;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.common.file.DataCleanManager;
+import com.common.file.FileSizeUtil;
 import com.common.widget.ToastHelper;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -23,6 +26,7 @@ import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.NetConfig;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.dialog.PushDialog;
 import com.wb.citylife.dialog.ThemeDialog;
 import com.wb.citylife.mk.about.AboutActivity;
@@ -40,6 +44,8 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 	private Preference cleanPf;
 	private Preference aboutPf;
 	private View exitView;
+	
+	private String fileSize;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -89,6 +95,11 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 		
 		aboutPf = (Preference) findPreference(getResources().getString(R.string.pf_about));
 		aboutPf.setOnPreferenceClickListener(this);
+		
+		String cachePath = Utils.getDiskCacheDir(mActivity, "").getAbsolutePath();
+		fileSize = FileSizeUtil.getAutoFileOrFilesSize(cachePath);
+		
+		cleanPf.setTitle(getResources().getString(R.string.pf_clean_cache) + "    (" + fileSize + ")");
 	}
 	
 	@Override
@@ -122,9 +133,18 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 			ToastHelper.showToastInBottom(mActivity, "版本检测中");
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_clean_cache))) {
-			
-			DataCleanManager.cleanExternalAllCache(getActivity());
-			ToastHelper.showToastInBottom(getActivity(), R.string.clean_success_toast);
+			ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(mActivity, "提示", "您是否要清除缓存？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					DataCleanManager.cleanExternalAllCache(getActivity());
+					ToastHelper.showToastInBottom(getActivity(), R.string.clean_success_toast);
+					cleanPf.setTitle(getResources().getString(R.string.pf_clean_cache) + "    (0.0M)");
+					dialog.dismiss();
+				}
+    			
+    		}).show();			
 			
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_about))) {
 			Intent intent = new Intent(mActivity, AboutActivity.class);

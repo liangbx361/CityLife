@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -181,6 +183,10 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	public boolean onOptionsItemSelected(MenuItem item) {	
 		
 		switch(item.getItemId()) {
+		case android.R.id.home:
+			checkFinish();
+			return true;
+		
 		case R.id.action_favour:
 			if(CityLifeApp.getInstance().checkLogin()) {
 				if(mNewsDetail.favourState == 0) {
@@ -195,6 +201,18 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+		    checkFinish();
+			return true;
+		}
+		
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
@@ -235,7 +253,12 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			
 			String comment = commentEt.getText().toString();
 			if(comment != null && !comment.equals("")) {
-				requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);						
+				if(comment.length() > 140) {
+					ConfirmDialog dialog = new ConfirmDialog();
+		    		dialog.getConfirmDialog(this, "提示", "抱歉，您的评论字数超过140字限制，请重新编辑,谢谢~").show();
+		    	} else{
+		    		requestComment(Method.POST, NetInterface.METHOD_COMMENT, getCommentRequestParams(comment), new CommentListener(), this);	
+		    	}					
 			} else {
 				ToastHelper.showToastInBottom(this, R.string.comment_empty_toast);
 			}	
@@ -453,7 +476,7 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	 * @author liangbx
 	 *
 	 */
-	class CommentListener implements Listener<Comment> {
+	public class CommentListener implements Listener<Comment> {
 
 		@Override
 		public void onResponse(Comment comment) {
@@ -596,5 +619,23 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 			requestCommentList(Method.POST, NetInterface.METHOD_COMMENT_LIST, getCommentListRequestParams(), 
 					new CommentListListener(), NewsDetailActivity.this);
 		}
+	}
+	
+	private void checkFinish() {
+		String comment = commentEt.getText().toString();
+		if(!TextUtils.isEmpty(comment)) {
+	    	ConfirmDialog dialog = new ConfirmDialog();	    	
+	    	dialog.getDialog(this, "提示", "您还有未发表的评论，确认要退出吗？", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					finish();
+				}
+    			
+    		}).show();
+	    } else {
+	    	finish();
+	    }
 	}
 }

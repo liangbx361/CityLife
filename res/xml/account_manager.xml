@@ -15,5 +15,9 @@
         android:key="@string/pf_modify_password"
         android:layout="@layout/preference_last_layout"
         android:title="@string/pf_modify_password" />
+    <Preference 
+        android:key="@string/pf_modify_gender"
+        android:layout="@layout/preference_last_layout"
+        android:title="@string/pf_modify_gender"/>
 
 </PreferenceScreen>

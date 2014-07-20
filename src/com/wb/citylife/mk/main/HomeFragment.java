@@ -1,6 +1,7 @@
 package com.wb.citylife.mk.main;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,24 +10,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
+import com.common.media.BitmapHelper;
 import com.common.widget.ToastHelper;
 import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
@@ -36,6 +42,7 @@ import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Advertisement;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.DbScrollNews;
+import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.NetConfig;
@@ -50,13 +57,17 @@ import com.wb.citylife.mk.vote.VoteListActivity;
 import com.wb.citylife.widget.GrideViewForScrollView;
 
 public class HomeFragment extends Fragment implements HomeListener,
-	OnItemClickListener, OnItemLongClickListener, OnClickListener{
+	OnItemClickListener, OnItemLongClickListener, OnClickListener, NetworkImageListener{
 	
 	//广告自动播放的时间间隔
 	public static final int ADV_AUTO_MOVE_TIME = 1 * 3 * 1000;
 	
 	private Activity mActivity;
 	private MainListener mainListener;
+	
+	//头像、姓名
+	private NetworkImageView mAvatarIv;
+	private TextView mUserTv;
 	
 	//广告
 	private ViewPager mAdvViewPager;
@@ -108,6 +119,22 @@ public class HomeFragment extends Fragment implements HomeListener,
 	}
 	
 	private void initView(View view) {
+		mAvatarIv = (NetworkImageView) view.findViewById(R.id.avatar);
+		mUserTv = (TextView) view.findViewById(R.id.username);
+		mAvatarIv.setDefaultImageResId(R.drawable.default_avatar);
+		mAvatarIv.setNetworkImageListener(this);
+		if(CityLifeApp.getInstance().checkLogin()) {
+			mAvatarIv.setImageUrl(CityLifeApp.getInstance().getUser().avatarUrl, CityLifeApp.getInstance().getImageLoader());
+			User user = CityLifeApp.getInstance().getUser();
+			if(TextUtils.isEmpty(user.nickname)) {
+				mUserTv.setText(getDateSx() + ", " + user.userphone);
+			} else {
+				mUserTv.setText(getDateSx() + ", " + user.nickname);
+			}
+		} else {
+			mUserTv.setText("请先登录、注册");
+		}
+		
 		mAdvViewPager = (ViewPager) view.findViewById(R.id.adv_pager);
 		mAdvIndicator = (LinePageIndicator) view.findViewById(R.id.adv_indicator);
 		advTitleTv = (TextView) view.findViewById(R.id.title);
@@ -421,6 +448,32 @@ public class HomeFragment extends Fragment implements HomeListener,
 			}
 		});     
     }
+	
+	@Override
+	public void onGetBitmapListener(ImageView imageView, Bitmap bitmap) {
+		if(bitmap != null) {
+			imageView.setImageBitmap(BitmapHelper.toRoundCorner(bitmap, bitmap.getHeight()/2));
+		}
+	}  
+	
+	public String getDateSx() {
+		String sx = "";
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		if (hour >= 6 && hour < 8) {
+			sx = "早上好";
+		} else if (hour >= 8 && hour < 11) {
+			sx = "上午好";
+		} else if (hour >= 11 && hour < 13) {
+			sx = "中午好";
+		} else if (hour >= 13 && hour < 19) {
+			sx = "下午好";
+		} else {
+			sx = "晚上好";
+		}
+		
+		return sx;
+	}
 	
 	/************************************************ 测试数据 **********************************************/
 //	private void advTest() {

@@ -59,10 +59,10 @@ import com.wb.citylife.widget.PullDoorView.PullDoorViewListener;
 public class MainActivity extends IBaseNetActivity implements MainListener,
 	Listener<Channel>, ErrorListener, PullDoorViewListener{
 	
-	private static final String TAG_HOME = "home";
-	private static final String TAG_SEARCH = "search";
-	private static final String TAG_ACCOUNT = "account";
-	private static final String TAG_SETTINGS = "settings";
+	private static final String TAG_HOME = "主页";
+	private static final String TAG_SEARCH = "搜索";
+	private static final String TAG_ACCOUNT = "个人";
+	private static final String TAG_SETTINGS = "设置";
 	
 	private String tabTags[] = {TAG_HOME, TAG_SEARCH, TAG_ACCOUNT, TAG_SETTINGS};
 	private Class fragments[] = {HomeFragment.class, SearchMainFragment.class, MyCenterFragment.class, SettingsFragment.class};
@@ -110,7 +110,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 		
 		//检测更新
 		UmengUpdateAgent.update(this);	
-		UmengUpdateAgent.forceUpdate(this);
+//		UmengUpdateAgent.forceUpdate(this);
 		UmengUpdateAgent.setUpdateAutoPopup(true);
                 
         requestChannel(Method.POST, NetInterface.METHOD_CHANNEL, getChannelRequestParams(), this, this);
@@ -299,7 +299,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 	 */
 	private Map<String, String> getScrollNewsRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("type", "1");		
+		params.put("type", "0");		
 		return params;
 	}
 	
