@@ -1,10 +1,12 @@
 package com.wb.citylife.mk.video;
 
+import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.config.IntentExtraConfig;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import android.app.Activity;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class VideoActivity extends Activity{
@@ -21,6 +24,7 @@ public class VideoActivity extends Activity{
 //	private String path = "http://192.168.10.109:8081/CityLife/videos/love.flv";
 	private String path = "rtsp://218.204.223.237:554/live/1/67A7572844E51A64/wkr226mcctpkzwxh.sdp";
 	private VideoView mVideoView;
+	private LinearLayout mLoadLayout;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -46,12 +50,22 @@ public class VideoActivity extends Activity{
 			mVideoView.setVideoPath(path);
 			mVideoView.setMediaController(new MediaController(this));
 			mVideoView.requestFocus();
+			
+			//播放结束/播放失败处理
+			mVideoView.setOnCompletionListener(new OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					finish();
+				}
+			});
 
 			mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 				@Override
 				public void onPrepared(MediaPlayer mediaPlayer) {
 					// optional need Vitamio 4.0
 					mediaPlayer.setPlaybackSpeed(1.0f);
+					mLoadLayout.setVisibility(View.GONE);
 				}
 			});
 		}
@@ -64,6 +78,7 @@ public class VideoActivity extends Activity{
 	
 	private void initView() {
 		mVideoView = (VideoView) findViewById(R.id.surface_view);
+		mLoadLayout = (LinearLayout) findViewById(R.id.loading_layout);
 	}
 	
 	public void openVideo(View View) {

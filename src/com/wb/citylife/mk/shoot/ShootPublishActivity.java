@@ -55,6 +55,7 @@ import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.ResultCode;
 import com.wb.citylife.dialog.AddPhotoDialog;
 import com.wb.citylife.dialog.ConfirmDialog;
+import com.wb.citylife.mk.old.PublishOldInfoActivity;
 import com.wb.citylife.parser.BaseParser;
 import com.wb.citylife.task.PublishRequest;
 
@@ -387,6 +388,11 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 					currentFileIndex = 1;
 					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
 				}
+			} else {
+				dismissDialog();
+				ToastHelper.showToastInBottom(ShootPublishActivity.this, R.string.publish_success);
+				setResult(ResultCode.REFRESH_MY_OLD_LIST);
+				finish();
 			}
 		} else {
 			dismissDialog();

@@ -1,1 +1,1218 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><Project><PackageName>com.wb.citylife</PackageName><Page><Data name="NewsList"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>NewsItem</className><item1 type="String">id</item1><item1 type="int">type</item1><item1 type="String">title</item1><item1 type="String">summary</item1><item1 type="String">thumbnailurl</item1><item1 type="String">time</item1><item1 type="int">commentNum</item1><item1 type="int">clickNum</item1></item></Data><Parser name="NewsListParser"/><Task name="NewsListRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="NewsListActivity"><templete name="带PullListView控件的ActionBar样式模板">AcBarPullListActivity.xml</templete></Activity></Page><Page><Data name="NewsDetail"><item type="int">favourNum</item><item type="int">type</item><item type="String">title</item><item type="String">content</item><item type="String">time</item><item type="String">imagesUrl</item><item type="float">videoSize</item></Data><Parser name="NewsDetailParser"/><Task name="NewsDetailRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="NewsDetailActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="CommentList"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>CommentItem</className><item1 type="String">userId</item1><item1 type="String">username</item1><item1 type="String">time</item1><item1 type="String">comment</item1></item></Data><Parser name="CommentListParser"/><Task name="CommentListRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="CommentListActivity"><templete name="带PullListView控件的ActionBar样式模板">AcBarPullListActivity.xml</templete></Activity></Page><Page><Data name="Comment"><item type="String">aaa</item></Data><Parser name="CommentParser"/><Task name="CommentRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="CommentActiviy"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Login"><item type="String">userId</item><item type="String">avatarUrl</item><item type="String">nickname</item><item type="String">accessToken</item></Data><Parser name="LoginParser"/><Task name="LoginRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="LoginActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Channel"><item type="int">totalNum</item><item type="Array"><name>datas</name><className>ChannelItem</className><item1 type="String">id</item1><item1 type="int">type</item1><item1 type="String">name</item1><item1 type="String">imageUrl</item1><item1 type="int">updateNum</item1><item1 type="boolean">isAdd</item1></item></Data><Parser name="ChannelParser"/><Task name="ChannelRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="ChannelActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="ScrollNews"><item type="int">totalNum</item><item type="Array"><name>datas</name><className>NewsItem</className><item1 type="String">id</item1><item1 type="int">type</item1><item1 type="String">title</item1><item1 type="String">imageUrl</item1></item></Data><Parser name="ScrollNewsParser"/><Task name="ScrollNewsRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="ScrollNewsActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Collect"><item type="String">aa</item></Data><Parser name="CollectParser"/><Task name="CollectRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="CollectActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Register"><item type="String">aaa</item></Data><Parser name="RegisterParser"/><Task name="RegisterRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="RegisterActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Avatar"><item type="String">avatarUrl</item></Data><Parser name="AvatarParser"/><Task name="AvatarRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="AvatarActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Base"><item type="String">aaa</item></Data><Parser name="BaseParser"/><Task name="BaseRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="BaseActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="VoteList"><item type="String">aaa</item></Data><Parser name="VoteListParser"/><Task name="VoteListRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="VoteListActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="VoteDetail"><item type="String">id</item><item type="String">title</item><item type="String">summary</item><item type="String">thumbnailUrl</item><item type="String">time</item><item type="int">participantNum</item><item type="int">questionNum</item><item type="Array"><name>datas</name><className>QuestionList</className><item1 type="String">questionId</item1><item1 type="String">questionTitle</item1><item1 type="int">questionType</item1><item1 type="String">questionOptions</item1><item1 type="boolean">hasVote</item1></item></Data><Parser name="VoteDetailParser"/><Task name="VoteDetailRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="VoteDetailActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="voteSatistics"><item type="int">result</item></Data><Parser name="voteSatisticsParser"/><Task name="voteSatisticsRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="voteSatisticsActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="OldInfoList"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>OldInfoItem</className><item1 type="String">id</item1><item1 type="String">title</item1><item1 type="String">time</item1><item1 type="int">price</item1><item1 type="String">thumbnailUrl</item1></item></Data><Parser name="OldInfoListParser"/><Task name="OldInfoListRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="OldInfoListActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="ShootList"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>ShootItem</className><item1 type="String">id</item1><item1 type="String">title</item1><item1 type="String">time</item1><item1 type="String">name</item1><item1 type="String">avatarUrl</item1><item1 type="int">commentNum</item1><item1 type="int">clickNum</item1></item></Data><Parser name="ShootListParser"/><Task name="ShootListRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="ShootListActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="OldInfoDetail"><item type="int">favourNum</item><item type="String">imagesUrl</item><item type="String">title</item><item type="String">userName</item><item type="String">time</item><item type="String">avatarUrl</item><item type="int">price</item><item type="int">commentNum</item><item type="int">clickNum</item><item type="String">content</item><item type="String">contactInfo</item></Data><Parser name="OldInfoDetailParser"/><Task name="OldInfoDetailRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="OldInfoDetailActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="EstateList"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>EstateItem</className><item1 type="String">id</item1><item1 type="String">name</item1><item1 type="String">address</item1><item1 type="int">averagePrice</item1><item1 type="String">thumbnailUrl</item1></item></Data><Parser name="EstateListParser"/><Task name="EstateListRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="EstateListActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="ShootDetail"><item type="int">favourNum</item><item type="String">imagesUrl</item><item type="String">title</item><item type="String">userName</item><item type="String">time</item><item type="String">avatarUrl</item><item type="String">commentNum</item><item type="String">clickNum</item><item type="String">content</item></Data><Parser name="ShootDetailParser"/><Task name="ShootDetailRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="ShootDetailActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="PublishOldInfo"><item type="String">id</item></Data><Parser name="PublishOldInfoParser"/><Task name="PublishOldInfoRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="PublishOldInfoActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="MyCollect"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>CollectItem</className><item1 type="String">id</item1><item1 type="int">type</item1><item1 type="String">time</item1><item1 type="String">title</item1><item1 type="String">thumbnailUrl</item1><item1 type="boolean">isVideo</item1></item></Data><Parser name="MyCollectParser"/><Task name="MyCollectRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="MyCollectActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="WelcomeAdv"><item type="String">imageUrl</item></Data><Parser name="WelcomeAdvParser"/><Task name="WelcomeAdvRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="WelcomeActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="Search"><item type="boolean">hasNextPage</item><item type="int">totalNum</item><item type="Array"><name>datas</name><className>SearchItem</className><item1 type="String">id</item1><item1 type="int">type</item1><item1 type="String">time</item1><item1 type="String">title</item1><item1 type="String">desc</item1></item></Data><Parser name="SearchParser"/><Task name="SearchRequest"><reqType>POST</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="SearchActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page><Page><Data name="About"><item type="String">content</item></Data><Parser name="AboutParser"/><Task name="AboutRequest"><reqType>GET</reqType><httpFrameType>Volley</httpFrameType></Task><Activity name="AboutActivity"><templete name="ActionBar样式的基础模板">ActionBarActivity.xml</templete></Activity></Page></Project>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Project>
+
+    <PackageName>
+com.wb.citylife
+    </PackageName>
+
+    <Page>
+
+        <Data name="NewsList" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+NewsItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="int" >
+type
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+summary
+                </item1>
+
+                <item1 type="String" >
+thumbnailurl
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="int" >
+commentNum
+                </item1>
+
+                <item1 type="int" >
+clickNum
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="NewsListParser" />
+
+        <Task name="NewsListRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="NewsListActivity" >
+
+            <templete name="带PullListView控件的ActionBar样式模板" >
+AcBarPullListActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="NewsDetail" >
+
+            <item type="int">
+favourNum
+            </item>
+
+            <item type="int">
+type
+            </item>
+
+            <item type="String">
+title
+            </item>
+
+            <item type="String">
+content
+            </item>
+
+            <item type="String">
+time
+            </item>
+
+            <item type="String">
+imagesUrl
+            </item>
+
+            <item type="float">
+videoSize
+            </item>
+        </Data>
+
+        <Parser name="NewsDetailParser" />
+
+        <Task name="NewsDetailRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="NewsDetailActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="CommentList" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+CommentItem
+                </className>
+
+                <item1 type="String" >
+userId
+                </item1>
+
+                <item1 type="String" >
+username
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="String" >
+comment
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="CommentListParser" />
+
+        <Task name="CommentListRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="CommentListActivity" >
+
+            <templete name="带PullListView控件的ActionBar样式模板" >
+AcBarPullListActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Comment" >
+
+            <item type="String">
+aaa
+            </item>
+        </Data>
+
+        <Parser name="CommentParser" />
+
+        <Task name="CommentRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="CommentActiviy" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Login" >
+
+            <item type="String">
+userId
+            </item>
+
+            <item type="String">
+avatarUrl
+            </item>
+
+            <item type="String">
+nickname
+            </item>
+
+            <item type="String">
+accessToken
+            </item>
+        </Data>
+
+        <Parser name="LoginParser" />
+
+        <Task name="LoginRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="LoginActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Channel" >
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+ChannelItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="int" >
+type
+                </item1>
+
+                <item1 type="String" >
+name
+                </item1>
+
+                <item1 type="String" >
+imageUrl
+                </item1>
+
+                <item1 type="int" >
+updateNum
+                </item1>
+
+                <item1 type="boolean" >
+isAdd
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="ChannelParser" />
+
+        <Task name="ChannelRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="ChannelActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="ScrollNews" >
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+NewsItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="int" >
+type
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+imageUrl
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="ScrollNewsParser" />
+
+        <Task name="ScrollNewsRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="ScrollNewsActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Collect" >
+
+            <item type="String">
+aa
+            </item>
+        </Data>
+
+        <Parser name="CollectParser" />
+
+        <Task name="CollectRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="CollectActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Register" >
+
+            <item type="String">
+aaa
+            </item>
+        </Data>
+
+        <Parser name="RegisterParser" />
+
+        <Task name="RegisterRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="RegisterActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Avatar" >
+
+            <item type="String">
+avatarUrl
+            </item>
+        </Data>
+
+        <Parser name="AvatarParser" />
+
+        <Task name="AvatarRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="AvatarActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Base" >
+
+            <item type="String">
+aaa
+            </item>
+        </Data>
+
+        <Parser name="BaseParser" />
+
+        <Task name="BaseRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="BaseActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="VoteList" >
+
+            <item type="String">
+aaa
+            </item>
+        </Data>
+
+        <Parser name="VoteListParser" />
+
+        <Task name="VoteListRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="VoteListActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="VoteDetail" >
+
+            <item type="String">
+id
+            </item>
+
+            <item type="String">
+title
+            </item>
+
+            <item type="String">
+summary
+            </item>
+
+            <item type="String">
+thumbnailUrl
+            </item>
+
+            <item type="String">
+time
+            </item>
+
+            <item type="int">
+participantNum
+            </item>
+
+            <item type="int">
+questionNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+QuestionList
+                </className>
+
+                <item1 type="String" >
+questionId
+                </item1>
+
+                <item1 type="String" >
+questionTitle
+                </item1>
+
+                <item1 type="int" >
+questionType
+                </item1>
+
+                <item1 type="String" >
+questionOptions
+                </item1>
+
+                <item1 type="boolean" >
+hasVote
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="VoteDetailParser" />
+
+        <Task name="VoteDetailRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="VoteDetailActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="voteSatistics" >
+
+            <item type="int">
+result
+            </item>
+        </Data>
+
+        <Parser name="voteSatisticsParser" />
+
+        <Task name="voteSatisticsRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="voteSatisticsActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="OldInfoList" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+OldInfoItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="int" >
+price
+                </item1>
+
+                <item1 type="String" >
+thumbnailUrl
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="OldInfoListParser" />
+
+        <Task name="OldInfoListRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="OldInfoListActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="ShootList" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+ShootItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="String" >
+name
+                </item1>
+
+                <item1 type="String" >
+avatarUrl
+                </item1>
+
+                <item1 type="int" >
+commentNum
+                </item1>
+
+                <item1 type="int" >
+clickNum
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="ShootListParser" />
+
+        <Task name="ShootListRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="ShootListActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="OldInfoDetail" >
+
+            <item type="int">
+favourNum
+            </item>
+
+            <item type="String">
+imagesUrl
+            </item>
+
+            <item type="String">
+title
+            </item>
+
+            <item type="String">
+userName
+            </item>
+
+            <item type="String">
+time
+            </item>
+
+            <item type="String">
+avatarUrl
+            </item>
+
+            <item type="int">
+price
+            </item>
+
+            <item type="int">
+commentNum
+            </item>
+
+            <item type="int">
+clickNum
+            </item>
+
+            <item type="String">
+content
+            </item>
+
+            <item type="String">
+contactInfo
+            </item>
+        </Data>
+
+        <Parser name="OldInfoDetailParser" />
+
+        <Task name="OldInfoDetailRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="OldInfoDetailActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="EstateList" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+EstateItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="String" >
+name
+                </item1>
+
+                <item1 type="String" >
+address
+                </item1>
+
+                <item1 type="int" >
+averagePrice
+                </item1>
+
+                <item1 type="String" >
+thumbnailUrl
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="EstateListParser" />
+
+        <Task name="EstateListRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="EstateListActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="ShootDetail" >
+
+            <item type="int">
+favourNum
+            </item>
+
+            <item type="String">
+imagesUrl
+            </item>
+
+            <item type="String">
+title
+            </item>
+
+            <item type="String">
+userName
+            </item>
+
+            <item type="String">
+time
+            </item>
+
+            <item type="String">
+avatarUrl
+            </item>
+
+            <item type="String">
+commentNum
+            </item>
+
+            <item type="String">
+clickNum
+            </item>
+
+            <item type="String">
+content
+            </item>
+        </Data>
+
+        <Parser name="ShootDetailParser" />
+
+        <Task name="ShootDetailRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="ShootDetailActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="PublishOldInfo" >
+
+            <item type="String">
+id
+            </item>
+        </Data>
+
+        <Parser name="PublishOldInfoParser" />
+
+        <Task name="PublishOldInfoRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="PublishOldInfoActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="MyCollect" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+CollectItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="int" >
+type
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+thumbnailUrl
+                </item1>
+
+                <item1 type="boolean" >
+isVideo
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="MyCollectParser" />
+
+        <Task name="MyCollectRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="MyCollectActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="WelcomeAdv" >
+
+            <item type="String">
+imageUrl
+            </item>
+        </Data>
+
+        <Parser name="WelcomeAdvParser" />
+
+        <Task name="WelcomeAdvRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="WelcomeActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="Search" >
+
+            <item type="boolean">
+hasNextPage
+            </item>
+
+            <item type="int">
+totalNum
+            </item>
+
+            <item type="Array">
+
+                <name>
+datas
+                </name>
+
+                <className>
+SearchItem
+                </className>
+
+                <item1 type="String" >
+id
+                </item1>
+
+                <item1 type="int" >
+type
+                </item1>
+
+                <item1 type="String" >
+time
+                </item1>
+
+                <item1 type="String" >
+title
+                </item1>
+
+                <item1 type="String" >
+desc
+                </item1>
+            </item>
+        </Data>
+
+        <Parser name="SearchParser" />
+
+        <Task name="SearchRequest" >
+
+            <reqType>
+POST
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="SearchActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+    <Page>
+
+        <Data name="About" >
+
+            <item type="String">
+content
+            </item>
+        </Data>
+
+        <Parser name="AboutParser" />
+
+        <Task name="AboutRequest" >
+
+            <reqType>
+GET
+            </reqType>
+
+            <httpFrameType>
+Volley
+            </httpFrameType>
+        </Task>
+
+        <Activity name="AboutActivity" >
+
+            <templete name="ActionBar样式的基础模板" >
+ActionBarActivity.xml
+            </templete>
+        </Activity>
+    </Page>
+
+</Project>

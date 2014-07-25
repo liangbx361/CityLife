@@ -542,6 +542,11 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 					currentFileIndex = 1;
 					upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
 				}
+			} else {
+				dismissDialog();
+				ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
+				setResult(ResultCode.REFRESH_MY_OLD_LIST);
+				finish();
 			}
 		} else {
 			dismissDialog();

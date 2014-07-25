@@ -27,6 +27,7 @@ public class ImageBrowseFragment extends Fragment {
 	private UrlPagerAdapter mAdapter;
 	private ImagesItem imagesItem;
 	private ImageBrowseListener imgListener;
+	private int imgPos; 
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -34,6 +35,7 @@ public class ImageBrowseFragment extends Fragment {
 		mActivity = activity;
 		imgListener = (ImageBrowseListener) mActivity;
 		imagesItem = getArguments().getParcelable(IntentExtraConfig.ESTATE_IMAGE_DATA);
+		imgPos = getArguments().getInt(IntentExtraConfig.ESTATE_IMG_POS);
 		DebugConfig.showLog("image_browse", "onAttach");
 	}
 	
@@ -83,5 +85,7 @@ public class ImageBrowseFragment extends Fragment {
 				
 			}
 		});
+		
+		gViewPager.setCurrentItem(imgPos);
 	}
 }

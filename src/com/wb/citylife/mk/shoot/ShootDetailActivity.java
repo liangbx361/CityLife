@@ -51,8 +51,6 @@ import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.comment.CommentListActivity;
 import com.wb.citylife.mk.common.CommDrawable;
 import com.wb.citylife.mk.common.CommShare;
-import com.wb.citylife.mk.news.NewsDetailActivity;
-import com.wb.citylife.mk.old.OldInfoDetailActivity.CommentListener;
 import com.wb.citylife.task.BaseRequest;
 import com.wb.citylife.task.CollectRequest;
 import com.wb.citylife.task.CommentListRequest;
@@ -403,7 +401,7 @@ public class ShootDetailActivity extends BaseActivity implements OnClickListener
 			}
 			
 			mShootDetail = response;			
-			mImgAdapter = new ImageAdapter(this, mShootDetail.imagesUrl);
+			mImgAdapter = new ImageAdapter(this, imgPager, mShootDetail.imagesUrl);
 			imgPager.setAdapter(mImgAdapter);
 			imgNumTv.setText("1/" + mShootDetail.imagesUrl.length);
 			if(mShootDetail.imagesUrl.length == 1) {

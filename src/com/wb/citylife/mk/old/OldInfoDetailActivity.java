@@ -397,7 +397,7 @@ public class OldInfoDetailActivity extends BaseActivity implements OnClickListen
 			}
 			
 			mOldInfoDetail = response;
-			mImgAdapter = new ImageAdapter(this, mOldInfoDetail.imagesUrl);
+			mImgAdapter = new ImageAdapter(this, imgPager, mOldInfoDetail.imagesUrl);
 			imgPager.setAdapter(mImgAdapter);
 			imgNumTv.setText("1/" + mOldInfoDetail.imagesUrl.length);
 			

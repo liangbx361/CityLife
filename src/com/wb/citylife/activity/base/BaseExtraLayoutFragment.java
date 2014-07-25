@@ -1,18 +1,17 @@
 package com.wb.citylife.activity.base;
 
-import com.wb.citylife.R;
-
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.wb.citylife.R;
 
 public class BaseExtraLayoutFragment extends Fragment implements OnClickListener{
 	private FrameLayout rootLayout;

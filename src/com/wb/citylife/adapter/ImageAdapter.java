@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -23,9 +24,11 @@ public class ImageAdapter extends PagerAdapter implements OnClickListener{
 	private String[] mImages;
 	private List<View> mViewList = new ArrayList<View>();
 	private Activity mActivity;
+	private ViewPager mViewPager;
 	
-	public ImageAdapter(Activity activity, String[] images) {		
+	public ImageAdapter(Activity activity, ViewPager viewPager, String[] images) {		
 		mActivity = activity;
+		mViewPager = viewPager;
 		mImages = images;
 		mCount = mImages.length;
 		for(int i=0; i<mCount; i++) {
@@ -84,6 +87,7 @@ public class ImageAdapter extends PagerAdapter implements OnClickListener{
 		imgList.add(imgItem);
 		intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, imgList);
 		intent.putExtra(IntentExtraConfig.ESTATE_DIS_TAB, false);		
+		intent.putExtra(IntentExtraConfig.ESTATE_IMG_POS, mViewPager.getCurrentItem());
 		mActivity.startActivity(intent);
 	}
 			 

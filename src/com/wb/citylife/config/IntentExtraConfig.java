@@ -27,6 +27,7 @@ public interface IntentExtraConfig {
 	public static final String ESTATE_TYPE = "type";
 	public static final String ESTATE_IMAGE_DATA = "image";	
 	public static final String ESTATE_DIS_TAB = "dis_tab";
+	public static final String ESTATE_IMG_POS = "img_pos";	
 	
 	/***************************** 类型列表  **********************************************/
 	public static final String COMMENT_ID = "id";

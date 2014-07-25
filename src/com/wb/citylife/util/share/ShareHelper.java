@@ -2,7 +2,14 @@ package com.wb.citylife.util.share;
 
 import android.app.Activity;
 
+import com.common.widget.ToastHelper;
+import com.umeng.socialize.bean.CustomPlatform;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeEntity;
+import com.umeng.socialize.bean.StatusCode;
 import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners.OnCustomPlatformClickListener;
+import com.umeng.socialize.controller.listener.SocializeListeners.SnsPostListener;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.TencentWBSsoHandler;
 import com.umeng.socialize.sso.UMWXHandler;
@@ -21,7 +28,7 @@ public class ShareHelper {
 	 * @功能描述 : 添加微信平台分享
 	 * @return
 	 */
-	public void addWXPlatform(Activity activity, UMSocialService controller) {
+	public void addWXPlatform(final Activity activity, UMSocialService controller) {
 		
 		// 微信 提供下载地址
 		String contentUrl = NetConfig.APK_DOWNLOAD_URL;
@@ -37,7 +44,22 @@ public class ShareHelper {
 				.supportWXCirclePlatform(activity, WX_APP_ID, contentUrl);
 		
 		circleHandler.setCircleTitle("永安城市生活");
-
+		
+//		controller.postShare(activity, SHARE_MEDIA.WEIXIN_CIRCLE, new SnsPostListener() {
+//			
+//			@Override
+//			public void onStart() {
+//				
+//			}
+//			
+//			@Override
+//			public void onComplete(SHARE_MEDIA platform,int eCode, SocializeEntity entity) {
+//				ToastHelper.showToastInBottom(activity, eCode+"");
+//				 if(eCode == StatusCode.ST_CODE_SUCCESSED){
+//					 ToastHelper.showToastInBottom(activity, "分享成功");
+//				 }
+//			}
+//		});
 	}
 	
 	/**

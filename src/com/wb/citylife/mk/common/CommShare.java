@@ -3,6 +3,7 @@ package com.wb.citylife.mk.common;
 import android.app.Activity;
 
 import com.tencent.connect.share.QzoneShare;
+import com.umeng.socialize.bean.CallbackConfig.ICallbackListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.ShareType;
 import com.umeng.socialize.controller.RequestType;
@@ -29,6 +30,7 @@ public class CommShare {
 		mController.setShareContent(share);
 		mController.setShareType(ShareType.NORMAL);
 		
+		//移除人人网、豆瓣网
 		mController.getConfig().removePlatform( SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN);
 		
 		if(disIcon) {
@@ -55,7 +57,6 @@ public class CommShare {
 		qzContent.setShareMedia(new UMImage(activity, R.drawable.ic_launcher));
 		qzContent.setTargetUrl(NetConfig.APK_DOWNLOAD_URL);
 		mController.setShareMedia(qzContent);
-		
 	}
 	
 }

@@ -23,6 +23,7 @@ public class ImageBrowseActivity extends BaseActivity implements ImageBrowseList
 	private ArrayList<ImagesItem> imageList;
 	private boolean disTab;
 	private MenuItem numItem;
+	private int imgPos;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class ImageBrowseActivity extends BaseActivity implements ImageBrowseList
 	public void getIntentData() {
 		imageList = getIntent().getParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA);
 		disTab = getIntent().getBooleanExtra(IntentExtraConfig.ESTATE_DIS_TAB, true);
+		imgPos = getIntent().getIntExtra(IntentExtraConfig.ESTATE_IMG_POS, 0);
 	}
 
 	@Override
@@ -51,6 +53,7 @@ public class ImageBrowseActivity extends BaseActivity implements ImageBrowseList
 			tabSpec.setIndicator(getTabItemView(imagesItem));
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(IntentExtraConfig.ESTATE_IMAGE_DATA, imagesItem);
+			bundle.putInt(IntentExtraConfig.ESTATE_IMG_POS, imgPos);
 			fTabHost.addTab(tabSpec, ImageBrowseFragment.class, bundle);
 		}
 		
@@ -85,13 +88,15 @@ public class ImageBrowseActivity extends BaseActivity implements ImageBrowseList
 		setDisplayShowHomeEnabled(false);
 		
 		numItem = setActionBarItem(menu, R.id.action_bar_title, R.string.action_null);
-		numItem.setTitle("1/" + imageList.get(0).imageNum);
+		numItem.setTitle((imgPos+1) + "/" + imageList.get(0).imageNum);
 		
 		return super.onCreateOptionsMenu(menu);		
 	}
 
 	@Override
 	public void setMenuItem(String content) {
-		numItem.setTitle(content);
+		if(numItem != null) {
+			numItem.setTitle(content);
+		}
 	}
 }
