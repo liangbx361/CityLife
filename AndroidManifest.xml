@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wb.citylife"
-    android:versionCode="14"
-    android:versionName="0.0.14" >
+    android:versionCode="17"
+    android:versionName="0.0.17" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -110,7 +110,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_detail"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" 
+            android:hardwareAccelerated="true"/>
 
         <!-- 评论 -->
         <activity
@@ -271,6 +272,20 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/ac_name_register"
             android:screenOrientation="portrait" />
+        
+        <!-- 输入手机号 -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.InputPhoneActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_input_phone"
+            android:screenOrientation="portrait" />
+        
+        <!-- 重置密码 -->
+        <activity
+            android:name="com.wb.citylife.mk.mycenter.RestPasswordActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_pwd_reset"
+            android:screenOrientation="portrait" />
 
         <!-- 视频 -->
         <activity
@@ -286,6 +301,7 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- 我的收藏 -->
@@ -314,7 +330,25 @@
             android:name="com.wb.citylife.mk.about.AboutActivity"
             android:label="@string/ac_name_about"
             android:screenOrientation="portrait" />
-
+        
+        <!-- 商家列表  -->
+        <activity 
+            android:name="com.wb.citylife.mk.merchant.MerchantListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_merchant_list"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>            
+        </activity>
+        
+        <!-- 商家详情  -->
+        <activity 
+            android:name="com.wb.citylife.mk.merchant.MerchantDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/ac_name_merchant_detail"
+            android:screenOrientation="portrait"/>
+         
         <!-- ###################注册友盟SDK使用的Activity###################### -->
         <activity
             android:name="com.umeng.socialize.view.CommentActivity"

@@ -129,7 +129,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {	
-		
+				
 		switch(item.getItemId()) {
 		
 		case android.R.id.home:
@@ -390,7 +390,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 				}
 			} else {
 				dismissDialog();
-				ToastHelper.showToastInBottom(ShootPublishActivity.this, R.string.publish_success);
+				ToastHelper.showToastInBottom(ShootPublishActivity.this, R.string.publish_shoot_success);
 				setResult(ResultCode.REFRESH_MY_OLD_LIST);
 				finish();
 			}

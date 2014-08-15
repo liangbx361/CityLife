@@ -1,5 +1,6 @@
 package com.wb.citylife.mk.channel;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.tsz.afinal.FinalDb;
@@ -87,6 +88,7 @@ public class AddChannelActivity extends BaseActivity implements OnItemClickListe
 	}
 	
 	private void saveChannel() {
+		Collections.sort(mChannels, new ChannelComparator());
 		FinalDb finalDb = CityLifeApp.getInstance().getDb();
 		for(int i=0; i<mChannels.size(); i++) {
 			DbChannel channel = mChannels.get(i);

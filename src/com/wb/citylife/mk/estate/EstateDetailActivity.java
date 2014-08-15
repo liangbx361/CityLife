@@ -236,7 +236,7 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			startActivity(intent);
 		}break;
 		
-		case R.id.image:{
+		case R.id.img:{
 			Intent intent = new Intent(this, ImageBrowseActivity.class);
 			intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
 			startActivity(intent);

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
 import com.common.media.BitmapHelper;
+import com.common.widget.ToastHelper;
 import com.wb.citylife.R;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.User;
@@ -99,11 +100,19 @@ public class MyCenterFragment extends PreferenceFragment implements OnPreference
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if(preference.getKey().equals(getResources().getString(R.string.pf_collect))) {
-			Intent intent = new Intent(mActivity, CollectActivity.class);
-			startActivity(intent);
+			if(CityLifeApp.getInstance().checkLogin()) {
+				Intent intent = new Intent(mActivity, CollectActivity.class);
+				startActivity(intent);
+			} else {
+				ToastHelper.showToastInBottom(mActivity, R.string.please_login);
+			}
 		} else if(preference.getKey().equals(getResources().getString(R.string.pf_msg))) {
-			Intent intent = new Intent(mActivity, MsgHistroyActivity.class);
-			startActivity(intent);
+			if(CityLifeApp.getInstance().checkLogin()) {
+				Intent intent = new Intent(mActivity, MsgHistroyActivity.class);
+				startActivity(intent);
+			} else {
+				ToastHelper.showToastInBottom(mActivity, R.string.please_login);
+			}
 		}
 		return false;
 	}

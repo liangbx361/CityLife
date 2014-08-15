@@ -2,10 +2,13 @@ package com.wb.citylife.adapter;
 
 import java.util.List;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.wb.citylife.R;
+import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.db.DbChannel;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,6 +51,7 @@ public class AddChannelAdapter extends BaseAdapter implements OnClickListener{
 			LayoutInflater inflater = LayoutInflater.from(mContext);
 			view = inflater.inflate(R.layout.channel_add_layout, null);
 			holder = new ViewHolder();
+			holder.typeIconIv = (NetworkImageView) view.findViewById(R.id.type_icon);
 			holder.nameTv = (TextView) view.findViewById(R.id.name);
 			holder.addIv = (ImageView) view.findViewById(R.id.edit);
 			holder.editVg = (ViewGroup) view.findViewById(R.id.edit_layout);
@@ -58,6 +62,11 @@ public class AddChannelAdapter extends BaseAdapter implements OnClickListener{
 		}
 		
 		DbChannel channel = mChannelList.get(position);
+		if(!TextUtils.isEmpty(channel.imageUrl)) {
+			holder.typeIconIv.setImageUrl(channel.imageUrl, CityLifeApp.getInstance().getImageLoader());
+		} else {
+			holder.typeIconIv.setImageDrawable(mContext.getResources().getDrawable(R.drawable.trans));
+		}
 		holder.nameTv.setText(channel.name);
 		if(channel.isAdd) {
 			holder.addIv.setImageResource(R.drawable.channellist_hasadd_icon);
@@ -72,6 +81,7 @@ public class AddChannelAdapter extends BaseAdapter implements OnClickListener{
 	}
 	
 	class ViewHolder {
+		NetworkImageView typeIconIv;
 		TextView nameTv;
 		ImageView addIv;
 		ViewGroup editVg;

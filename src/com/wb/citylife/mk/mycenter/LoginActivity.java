@@ -4,7 +4,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +30,8 @@ import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Login;
 import com.wb.citylife.bean.db.User;
+import com.wb.citylife.config.ActionConfig;
+import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
 import com.wb.citylife.config.RespCode;
@@ -53,7 +59,11 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		setContentView(R.layout.activity_login);
 		
 		getIntentData();
-		initView();				
+		initView();		
+		
+		IntentFilter intentFilter = new IntentFilter();
+	    intentFilter.addAction(ActionConfig.ACTION_AUTO_LOGIN);
+	    registerReceiver(mReceiver, intentFilter); 
 	}
 			
 	@Override
@@ -68,6 +78,7 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 		loginBtn = (Button) findViewById(R.id.login);
 		registerBtn = (Button) findViewById(R.id.register);
 		forgetPasswordTv = (TextView) findViewById(R.id.forget_password);
+		forgetPasswordTv.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 		
 		loginBtn.setOnClickListener(this);
 		registerBtn.setOnClickListener(this);
@@ -98,13 +109,18 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			login();
 			break;
 			
-		case R.id.register:
-			startActivityForResult(new Intent(this, RegisterActivity.class), 0);
-			break;
+		case R.id.register:{
+//			startActivityForResult(new Intent(this, RegisterActivity.class), 0);
+			Intent intent = new Intent(this, InputPhoneActivity.class);
+			intent.putExtra(IntentExtraConfig.INPUT_PHONE_TYPE, IntentExtraConfig.INPUT_TYPE_REGISTER);
+			startActivityForResult(intent, 0);
+		}break;
 			
-		case R.id.forget_password:
-			
-			break;
+		case R.id.forget_password:{
+			Intent intent = new Intent(this, InputPhoneActivity.class);
+			intent.putExtra(IntentExtraConfig.INPUT_PHONE_TYPE, IntentExtraConfig.INTPU_TYPE_RESET);
+			startActivity(intent);
+		}break;
 		}
 	}
 	
@@ -139,6 +155,21 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			requestLogin(Method.POST, NetInterface.METHOD_LOGIN, getLoginRequestParams(this.userphone, password), this, this);		
 		}
 	}
+	
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		
+        @Override
+        public void onReceive(Context context, Intent data) {
+        	if(data.getAction().equals(ActionConfig.ACTION_AUTO_LOGIN)) {
+        		ToastHelper.showToastInBottom(LoginActivity.this, R.string.auto_login);
+    			LoginActivity.this.userphone = data.getStringExtra("userPhone");
+    			String password = data.getStringExtra("password");
+    			
+    			requestLogin(Method.POST, NetInterface.METHOD_LOGIN, 
+    					getLoginRequestParams(LoginActivity.this.userphone, password), LoginActivity.this, LoginActivity.this);
+        	} 
+        }
+    };
 	
 	/**
 	 * 获取请求参数
@@ -210,4 +241,10 @@ public class LoginActivity extends BaseActivity implements Listener<Login>, Erro
 			ToastHelper.showToastInBottom(this, mLogin.respMsg);
 		}
 	}	
+	
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(mReceiver);
+		super.onDestroy();
+	}
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.mk.estate.EstateDetailActivity;
+import com.wb.citylife.mk.merchant.MerchantDetailActivity;
 import com.wb.citylife.mk.news.NewsDetailActivity;
 import com.wb.citylife.mk.old.OldInfoDetailActivity;
 import com.wb.citylife.mk.shoot.ShootDetailActivity;
@@ -35,6 +36,10 @@ public class CommIntent {
 			
 		case ChannelType.CHANNEL_TYPE_ESTATE:
 			intent.setClass(context, EstateDetailActivity.class);
+			break;
+			
+		case ChannelType.CHANNEL_TYPE_MERCHANT:
+			intent.setClass(context, MerchantDetailActivity.class);
 			break;
 		}
 		context.startActivity(intent);

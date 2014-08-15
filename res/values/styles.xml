@@ -17,7 +17,7 @@
     </style>
     
     <!-- 无标题样式 -->
-    <style name="CLTheme.NoTitleBar" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="CLTheme.NoTitleBar" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
         <item name="android:windowAnimationStyle">@style/CLAnimation.Activity</item>
         <item name="android:windowAnimationStyle">@style/CLAnimation.Activity</item>
         <item name="android:buttonStyle">@style/CLButton</item>

@@ -5,18 +5,20 @@ import java.util.List;
 
 import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.db.sqlite.DbModel;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.adapter.MsgListAdapter;
@@ -24,6 +26,7 @@ import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.PageInfo;
 import com.wb.citylife.bean.db.DBMsg;
 import com.wb.citylife.config.DbConfig;
+import com.wb.citylife.dialog.ConfirmDialog;
 import com.wb.citylife.mk.common.CommIntent;
 import com.wb.citylife.widget.PullListViewHelper;
 
@@ -32,7 +35,8 @@ import com.wb.citylife.widget.PullListViewHelper;
  * @author liangbx
  *
  */
-public class MsgHistroyActivity extends BaseActivity implements OnItemClickListener{
+public class MsgHistroyActivity extends BaseActivity implements OnItemClickListener, 
+	OnItemLongClickListener{
 	
 	private PullToRefreshListView mPullListView;
 	private PullListViewHelper pullHelper;
@@ -85,6 +89,9 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 		
 		mMsgLv = mPullListView.getRefreshableView();
 		mMsgLv.setOnItemClickListener(this);
+		mMsgLv.setOnItemLongClickListener(this);
+		mMsgLv.setSelector(getResources().getDrawable(R.drawable.base_list_selector));
+		mMsgLv.setDrawSelectorOnTop(true);
 		
 		pullHelper = new PullListViewHelper(this, mMsgLv);
 		pullHelper.setBottomClick(new OnClickListener() {
@@ -152,6 +159,29 @@ public class MsgHistroyActivity extends BaseActivity implements OnItemClickListe
 			long id) {
 		DBMsg msg = msgList.get(position-1);
 		CommIntent.startDetailPage(this, msg.msgId, msg.type);
+	}
+	
+	/**
+	 * 长按删除消息
+	 */
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		final DBMsg msg = msgList.get(position-1);
+		String title = getResources().getString(R.string.toast);
+		String toast = getResources().getString(R.string.del_shoot_info_toast, msg.title);
+		new ConfirmDialog().getDialog(this, title, toast, new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				FinalDb finalDb = CityLifeApp.getInstance().getDb();
+				finalDb.deleteByWhere(DBMsg.class, "msgId='" + msg.msgId + "'");
+				msgList.remove(msg);
+				msgAdapter.notifyDataSetChanged();
+			}
+			
+		}).show();
+		return true;
 	}
 
 }

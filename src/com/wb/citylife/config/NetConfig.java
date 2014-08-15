@@ -15,7 +15,7 @@ public class NetConfig implements NetInterface {
 		
 	/*************************************正式环境配置************************************/
 	//接口地址
-	public static final String RELEASE_BASE_URL = "";
+	public static final String RELEASE_BASE_URL = "http://175.44.129.194:8080/";
 	public static final String RELEASE_INTRANET_BASE_URL = "";
 	
 	/*************************************项目扩展地址************************************/

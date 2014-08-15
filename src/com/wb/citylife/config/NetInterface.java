@@ -22,6 +22,8 @@ public interface NetInterface {
 	public static final String METHOD_MODIFY_NICKNAME = "modifyNickname.do";	
 	public static final String METHOD_MODIFY_PASSWORD = "modifyPwd.do";
 	public static final String METHOD_MODIFY_GENDER = "modifyGender.do";
+	public static final String METHOD_RESET_PASSWORD = "resetPwd.do";
+	public static final String METHOD_GET_VERIFY_CODE= "getVerifyCode.do";
 	
 	/***************************** 栏目  **********************************************/
 	public static final String METHOD_CHANNEL = "channel.do";
@@ -66,4 +68,8 @@ public interface NetInterface {
 	
 	/***************************** 关于  **************************************/
 	public static final String METHOD_ABOUT = "about.do";
+	
+	/***************************** 商家  **************************************/
+	public static final String METHOD_MERCHANT_LIST = "merchantList.do";
+	public static final String METHOD_MERCHANT_DETAIL = "merchantDetail.do";
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import android.animation.LayoutTransition;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,11 +13,14 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
@@ -45,11 +51,15 @@ import com.wb.citylife.bean.db.DbScrollNews;
 import com.wb.citylife.bean.db.User;
 import com.wb.citylife.config.ActionConfig;
 import com.wb.citylife.config.ChannelType;
+import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.dialog.ChannelDialog;
 import com.wb.citylife.mk.channel.AddChannelActivity;
 import com.wb.citylife.mk.channel.OrderChannelActivity;
 import com.wb.citylife.mk.estate.EstateListActivity;
+import com.wb.citylife.mk.merchant.MerchantListActivity;
+import com.wb.citylife.mk.mycenter.AccountManagerActivity;
+import com.wb.citylife.mk.mycenter.LoginActivity;
 import com.wb.citylife.mk.news.NewsListActivity;
 import com.wb.citylife.mk.old.OldInfoListActivity;
 import com.wb.citylife.mk.shoot.ShootListActivity;
@@ -64,8 +74,11 @@ public class HomeFragment extends Fragment implements HomeListener,
 	
 	private Activity mActivity;
 	private MainListener mainListener;
+		
+	private ScrollView mScrollView;
 	
 	//头像、姓名
+	private ViewGroup userVg;
 	private NetworkImageView mAvatarIv;
 	private TextView mUserTv;
 	
@@ -87,6 +100,8 @@ public class HomeFragment extends Fragment implements HomeListener,
 	private int channelPosition;
 	
 	private ChannelDialog optionDialog;
+	
+	Handler mHandler = new Handler();
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -118,22 +133,27 @@ public class HomeFragment extends Fragment implements HomeListener,
 //		advTest();
 	}
 	
+	@SuppressLint("NewApi") 
 	private void initView(View view) {
+		mScrollView = (ScrollView) view.findViewById(R.id.scroll);
+		userVg = (ViewGroup) view.findViewById(R.id.user_layout);
 		mAvatarIv = (NetworkImageView) view.findViewById(R.id.avatar);
 		mUserTv = (TextView) view.findViewById(R.id.username);
 		mAvatarIv.setDefaultImageResId(R.drawable.default_avatar);
-		mAvatarIv.setNetworkImageListener(this);
-		if(CityLifeApp.getInstance().checkLogin()) {
-			mAvatarIv.setImageUrl(CityLifeApp.getInstance().getUser().avatarUrl, CityLifeApp.getInstance().getImageLoader());
-			User user = CityLifeApp.getInstance().getUser();
-			if(TextUtils.isEmpty(user.nickname)) {
-				mUserTv.setText(getDateSx() + ", " + user.userphone);
-			} else {
-				mUserTv.setText(getDateSx() + ", " + user.nickname);
+		mAvatarIv.setNetworkImageListener(this);		
+		userVg.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(CityLifeApp.getInstance().checkLogin()) {
+					Intent intent = new Intent(mActivity, AccountManagerActivity.class);
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(mActivity, LoginActivity.class);
+					startActivity(intent);
+				}
 			}
-		} else {
-			mUserTv.setText("请先登录、注册");
-		}
+		});
 		
 		mAdvViewPager = (ViewPager) view.findViewById(R.id.adv_pager);
 		mAdvIndicator = (LinePageIndicator) view.findViewById(R.id.adv_indicator);
@@ -141,6 +161,11 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mTypeGrideView = (GrideViewForScrollView) view.findViewById(R.id.type_grid);	
 		mTypeGrideView.setOnItemClickListener(this);
 		mTypeGrideView.setOnItemLongClickListener(this);
+//		if(VERSION.SDK_INT >= 11) {
+//			LayoutTransition transition = new LayoutTransition();
+//			transition.disableTransitionType(LayoutTransition.APPEARING);
+//			mTypeGrideView.setLayoutTransition(transition);
+//		}
 		
 		optionDialog = new ChannelDialog(mActivity, R.style.popupStyle);
 		optionDialog.setListener(this);
@@ -169,6 +194,26 @@ public class HomeFragment extends Fragment implements HomeListener,
 	}
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		initUser();
+	}
+	
+	private void initUser() {
+		if(CityLifeApp.getInstance().checkLogin()) {
+			mAvatarIv.setImageUrl(CityLifeApp.getInstance().getUser().avatarUrl, CityLifeApp.getInstance().getImageLoader());
+			User user = CityLifeApp.getInstance().getUser();
+			if(TextUtils.isEmpty(user.nickname)) {
+				mUserTv.setText(getDateSx() + ", " + user.userphone);
+			} else {
+				mUserTv.setText(getDateSx() + ", " + user.nickname);
+			}
+		} else {
+			mUserTv.setText("请先登录、注册");
+		}
+	}
+	
+	@Override
 	public void onLoadLocalChannel(List<DbChannel> channelList) {
 		mChannelList = channelList;
 		mChannelAdapter = new ChannelAdapter(mActivity, channelList, true);
@@ -182,6 +227,13 @@ public class HomeFragment extends Fragment implements HomeListener,
 		mAdvViewPager.setAdapter(mAdvAdapter);
 		mAdvIndicator.setViewPager(mAdvViewPager);
 		advTitleTv.setText(scrollNewsList.get(0).title);
+		mHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {	
+				mScrollView.scrollTo(0, 0);
+			}
+		}, 500);
 	}
 	
 	@Override
@@ -190,7 +242,8 @@ public class HomeFragment extends Fragment implements HomeListener,
 			mChannelList = channelList;
 			mChannelAdapter = new ChannelAdapter(mActivity, channelList, true);
 			mTypeGrideView.setAdapter(mChannelAdapter);
-		} else {
+			mScrollView.fullScroll(ScrollView.FOCUS_UP);
+		} else {			
 			mChannelAdapter.notifyDataSetChanged();
 		}
 	}
@@ -219,8 +272,12 @@ public class HomeFragment extends Fragment implements HomeListener,
 		DbChannel channel = (DbChannel) mChannelAdapter.getItem(position);
 		switch(channel.type) {
 		case ChannelType.CHANNEL_TYPE_NEWS:
-			startActivity(new Intent(getActivity(), NewsListActivity.class));
+			Intent newsIntent = new Intent(getActivity(), NewsListActivity.class);
+			newsIntent.putExtra(IntentExtraConfig.CHANNEL_ID, channel.channelId);
+			newsIntent.putExtra(IntentExtraConfig.CHANNEL_NAME, channel.name);
+			startActivity(newsIntent);
 			break;
+			
 		case ChannelType.CHANNEL_TYPE_VOTE:
 			startActivity(new Intent(getActivity(), VoteListActivity.class));
 			break;
@@ -235,6 +292,10 @@ public class HomeFragment extends Fragment implements HomeListener,
 			
 		case ChannelType.CHANNEL_TYPE_ESTATE:
 			startActivity(new Intent(getActivity(), EstateListActivity.class));
+			break;
+			
+		case ChannelType.CHANNEL_TYPE_MERCHANT:
+			startActivity(new Intent(getActivity(), MerchantListActivity.class));
 			break;
 			
 		case ChannelType.CHANNEL_TYPE_ADD:
@@ -428,10 +489,16 @@ public class HomeFragment extends Fragment implements HomeListener,
 		        case ChannelType.CHANNEL_TYPE_ESTATE:
 		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.estate.EstateListActivity");
 		        	break;
+		        	
+		        case ChannelType.CHANNEL_TYPE_MERCHANT:
+		        	shortcutIntent.setClassName("com.wb.citylife", "com.wb.citylife.mk.merchant.MerchantListActivity");
+		        	break;
 		        }
 		        
+		        shortcutIntent.putExtra(IntentExtraConfig.CHANNEL_ID, channel.channelId);
+		        shortcutIntent.putExtra(IntentExtraConfig.CHANNEL_NAME, channel.name);
 		        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+		        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);		     
 
 		        // 快捷图标  
 		        if(container.getBitmap() == null) {

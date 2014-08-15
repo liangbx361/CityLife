@@ -67,7 +67,9 @@ public class UrlTouchImageView extends RelativeLayout {
         this.addView(mImageView);
         mImageView.setVisibility(GONE);
 
-        mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
+        mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);        
+//        mProgressBar.setProgressDrawable(mContext.getResources().getDrawable(R.anim.base_loading_large_anim));
+//        mProgressBar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable.default_avatar));
         params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         mProgressBar.setLayoutParams(params);

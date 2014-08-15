@@ -17,7 +17,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebSettings.PluginState;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -143,6 +146,11 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	}
 	
 	private void initWebView() {
+		WebSettings webSettings = contentWv.getSettings();
+		// 设置WebView属性，能够执行JavaScript脚本
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setAllowFileAccess(true);
+		webSettings.setPluginState(PluginState.ON);
 		
 		contentWv.setWebChromeClient(new WebChromeClient() {
 
@@ -637,5 +645,11 @@ public class NewsDetailActivity extends BaseActivity implements Listener<NewsDet
 	    } else {
 	    	finish();
 	    }
+	}
+	
+	@Override
+	protected void onDestroy() {
+		contentWv.destroy();
+		super.onDestroy();
 	}
 }

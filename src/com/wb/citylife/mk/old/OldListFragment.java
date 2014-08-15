@@ -274,7 +274,7 @@ public class OldListFragment extends BaseExtraLayoutFragment implements Listener
 			}
 			
 		}).show();
-		return false;
+		return true;
 	}	
 	
 	//删除发布的二手信息

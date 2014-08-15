@@ -138,6 +138,8 @@ public class ModifyNickNameActivity extends BaseActivity implements OnClickListe
 			DbHelper.saveUser(CityLifeApp.getInstance().getUser());
 			ToastHelper.showToastInBottom(this, R.string.nickname_modify_success);
 			finish();
+		} else {
+			ToastHelper.showToastInBottom(this, response.respMsg);
 		}
 	}
 }

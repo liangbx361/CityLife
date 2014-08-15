@@ -15,6 +15,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.umeng.update.UmengUpdateAgent;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.IBaseNetActivity;
 import com.wb.citylife.app.CityLifeApp;
@@ -22,6 +23,7 @@ import com.wb.citylife.bean.WelcomeAdv;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.task.WelcomeAdvRequest;
 
 public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAdv>, ErrorListener, 
@@ -41,6 +43,11 @@ public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAd
 		
 		requestWelcomeAdv(Method.POST, NetInterface.METHOD_WELCOME_ADV, getWelcomeAdvRequestParams(), this, this);
 		new TimeCount().start();
+		
+		//检测更新
+//		UmengUpdateAgent.update(this);	
+//		UmengUpdateAgent.forceUpdate(this);
+//		UmengUpdateAgent.setUpdateAutoPopup(true);
 	}
 	
 	
@@ -87,7 +94,15 @@ public class LogoActivity extends IBaseNetActivity implements Listener<WelcomeAd
 	@Override
 	public void onResponse(WelcomeAdv response) {
 		mWelcomeAdv = response;
-		CityLifeApp.getInstance().getImageLoader().get(response.imageUrl, this);
+		if(response.respCode == RespCode.SUCCESS) {
+			if(!TextUtils.isEmpty(response.imageUrl) && !response.imageUrl.equals("null")) {
+				CityLifeApp.getInstance().getImageLoader().get(response.imageUrl, this);
+			} else {
+				isLoad = true;
+			}
+		} else {
+			isLoad = true;
+		}
 	}
 
 	@Override

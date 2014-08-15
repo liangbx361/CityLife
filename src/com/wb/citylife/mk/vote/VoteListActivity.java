@@ -30,6 +30,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.tencent.mm.sdk.openapi.GetMessageFromWX.Resp;
 import com.viewpagerindicator.LinePageIndicator;
 import com.wb.citylife.R;
 import com.wb.citylife.activity.base.BaseActivity;
@@ -45,6 +46,7 @@ import com.wb.citylife.config.ChannelType;
 import com.wb.citylife.config.IntentExtraConfig;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.wb.citylife.mk.main.HomeFragment;
 import com.wb.citylife.task.ScrollNewsRequest;
@@ -257,22 +259,26 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	public void onResponse(VoteList response) {
 		mPullListView.onRefreshComplete();
 		setIndeterminateBarVisibility(false);
-		if(votePageInfo.pageNo == 1) {
-			mVoteList = response;
-			mVoteAdapter = new VoteListAdapter(VoteListActivity.this, mVoteList);
-			mVoteListView.setAdapter(mVoteAdapter);
-			showContent();
-		} else {
-			mVoteList.hasNextPage = response.hasNextPage;
-			mVoteList.datas.addAll(response.datas);
-			mVoteAdapter.notifyDataSetChanged();
-		}
+		if(response.respCode == RespCode.SUCCESS) {
+			if(votePageInfo.pageNo == 1) {
+				mVoteList = response;
+				mVoteAdapter = new VoteListAdapter(VoteListActivity.this, mVoteList);
+				mVoteListView.setAdapter(mVoteAdapter);
+				showContent();
+			} else {
+				mVoteList.hasNextPage = response.hasNextPage;
+				mVoteList.datas.addAll(response.datas);
+				mVoteAdapter.notifyDataSetChanged();
+			}
 		
-		loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
-		if(mVoteList.hasNextPage) {
-			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, votePageInfo.pageSize);
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
+			if(mVoteList.hasNextPage) {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, votePageInfo.pageSize);
+			} else {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, votePageInfo.pageSize);
+			}
 		} else {
-			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, votePageInfo.pageSize);
+			ToastHelper.showToastInBottom(this, response.respMsg);
 		}
 	}
 	
@@ -361,25 +367,28 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 
 		@Override
 		public void onResponse(ScrollNews scrollNews) {
-
-			mScrollNews = scrollNews;
-			mScrollNewsList = new ArrayList<DbScrollNews>();
-			for(int i=0; i<mScrollNews.datas.size(); i++) {
-				ScrollNews.NewsItem newsItem = mScrollNews.datas.get(i);
-				DbScrollNews dbScrollNews = new DbScrollNews();
-				dbScrollNews.newsId = newsItem.id;
-				dbScrollNews.imageUrl = newsItem.imageUrl;
-				dbScrollNews.title = newsItem.title;
-				dbScrollNews.type = newsItem.type;
-				mScrollNewsList.add(dbScrollNews);
-			}
-			mAdvAdapter = new ScrollNewsPagerAdapter(VoteListActivity.this, mScrollNewsList, ChannelType.CHANNEL_TYPE_VOTE);
-			mAdvViewPager.setAdapter(mAdvAdapter);
-			mAdvIndicator.setViewPager(mAdvViewPager);
-			if(mScrollNewsList.size() > 0) {
-				advTitleTv.setText(mScrollNewsList.get(0).title);
-				advAdvTimeCount.cancel();
-				advAdvTimeCount.start();
+			if(scrollNews.respCode == RespCode.SUCCESS) {
+				mScrollNews = scrollNews;
+				mScrollNewsList = new ArrayList<DbScrollNews>();
+				for(int i=0; i<mScrollNews.datas.size(); i++) {
+					ScrollNews.NewsItem newsItem = mScrollNews.datas.get(i);
+					DbScrollNews dbScrollNews = new DbScrollNews();
+					dbScrollNews.newsId = newsItem.id;
+					dbScrollNews.imageUrl = newsItem.imageUrl;
+					dbScrollNews.title = newsItem.title;
+					dbScrollNews.type = newsItem.type;
+					mScrollNewsList.add(dbScrollNews);
+				}
+				mAdvAdapter = new ScrollNewsPagerAdapter(VoteListActivity.this, mScrollNewsList, ChannelType.CHANNEL_TYPE_VOTE);
+				mAdvViewPager.setAdapter(mAdvAdapter);
+				mAdvIndicator.setViewPager(mAdvViewPager);
+				if(mScrollNewsList.size() > 0) {
+					advTitleTv.setText(mScrollNewsList.get(0).title);
+					advAdvTimeCount.cancel();
+					advAdvTimeCount.start();
+				}
+			} else {
+				ToastHelper.showToastInBottom(VoteListActivity.this, scrollNews.respMsg);
 			}
 		}
 

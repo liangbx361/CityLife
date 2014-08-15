@@ -109,7 +109,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 		}
 		
 		//检测更新
-		UmengUpdateAgent.update(this);	
+		UmengUpdateAgent.update(this);
 //		UmengUpdateAgent.forceUpdate(this);
 		UmengUpdateAgent.setUpdateAutoPopup(true);
                 
@@ -282,6 +282,20 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 							channel.imageUrl = channelItem.imageUrl;
 							CityLifeApp.getInstance().getDb().update(channel, "channelId='" + channel.channelId + "'");
 							break;
+						} else {
+							if(j == mChannelList.size()-1) {
+								//新增栏目
+								DbChannel newChannel = new DbChannel();
+								newChannel.channelId = channelItem.id;
+								newChannel.imageUrl = channelItem.imageUrl;
+								newChannel.type = channelItem.type;
+								newChannel.name = channelItem.name;
+								newChannel.isAdd = false;
+								newChannel.updateNum = 0;
+								newChannel.weight = mChannelList.get(mChannelList.size()-1).weight + 1;
+								mChannelList.add(newChannel);
+								CityLifeApp.getInstance().getDb().save(newChannel);
+							}
 						}
 					}
 				}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="21dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:orientation="horizontal" >
+    
+	<LinearLayout 
+	    android:id="@+id/item1"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    android:orientation="vertical"
+	    android:gravity="center_horizontal">
+	    <!--  
+	    <com.android.volley.toolbox.NetworkImageView -->
+	    <com.android.volley.toolbox.NetworkImageView
+	        android:id="@+id/item1_logo"
+	        android:layout_width="140dp"
+	        android:layout_height="87.5dp"
+	        android:src="@drawable/merchant_default_icon"
+	        android:scaleType="fitXY"/>
+	    
+	    <TextView 
+	        android:id="@+id/item1_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="7.5dp"
+	        android:textSize="14sp"
+	        android:textColor="#6c6c6c"
+	        android:text="商家名片"/>
+	    
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:id="@+id/item2"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    android:orientation="vertical"
+	    android:gravity="center_horizontal">
+	    
+	     <com.android.volley.toolbox.NetworkImageView
+	        android:id="@+id/item2_logo"
+	        android:layout_width="140dp"
+	        android:layout_height="87.5dp"
+	        android:src="@drawable/merchant_default_icon"
+	        android:scaleType="fitXY"/>
+	    
+	    <TextView 
+	        android:id="@+id/item2_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="7.5dp"
+	        android:textSize="14sp"
+	        android:textColor="#6c6c6c"
+	        android:text="商家名片"/>
+	    
+	</LinearLayout>
+    
+</LinearLayout>

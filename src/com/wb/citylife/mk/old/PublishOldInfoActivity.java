@@ -12,7 +12,6 @@ import java.util.UUID;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -322,20 +321,20 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 			ToastHelper.showToastInBottom(this, R.string.title_empty_toast);
 			return;
 		}		
-		if(title.length() < 6) {
-			ToastHelper.showToastInBottom(this, R.string.title_no_length);
-			return;
-		}
+//		if(title.length() < 6) {
+//			ToastHelper.showToastInBottom(this, R.string.title_no_length);
+//			return;
+//		}
 		
 		String desc = descEt.getText().toString();
 		if(TextUtils.isEmpty(desc)) {
 			ToastHelper.showToastInBottom(this, R.string.desc_empty_toast);
 			return;
 		}
-		if(desc.length() < 10) {
-			ToastHelper.showToastInBottom(this, R.string.desc_no_length);
-			return;
-		}
+//		if(desc.length() < 10) {
+//			ToastHelper.showToastInBottom(this, R.string.desc_no_length);
+//			return;
+//		}
 		
 		String price = priceEt.getText().toString();
 		if(TextUtils.isEmpty(price)) {
@@ -544,7 +543,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 				}
 			} else {
 				dismissDialog();
-				ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
+				ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_old_info_success);
 				setResult(ResultCode.REFRESH_MY_OLD_LIST);
 				finish();
 			}
@@ -586,7 +585,7 @@ public class PublishOldInfoActivity extends BaseActivity implements OnItemClickL
 								upLoadPhoto(fileList.get(currentFileIndex), mPublishOldInfo.id);
 							} else {
 								dismissDialog();
-								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_success);
+								ToastHelper.showToastInBottom(PublishOldInfoActivity.this, R.string.publish_old_info_success);
 								setResult(ResultCode.REFRESH_MY_OLD_LIST);
 								finish();								
 							}

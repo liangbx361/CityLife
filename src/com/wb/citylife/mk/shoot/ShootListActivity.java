@@ -53,10 +53,13 @@ public class ShootListActivity extends BaseActivity {
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
-		setActionBarItem(menu, R.id.action_publish_shoot, R.string.action_publish_shoot, 
-				R.drawable.actionbar_publish_icon);
-		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
-				R.drawable.actionbar_search_icon);
+//		setActionBarItem(menu, R.id.action_publish_shoot, R.string.action_publish_shoot, 
+//				R.drawable.actionbar_publish_icon);
+//		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
+//				R.drawable.actionbar_search_icon);
+		
+		setActionBarItem(menu, R.id.action_publish_shoot, R.string.action_publish);
+		setActionBarItem(menu, R.id.action_search, R.string.action_search);
 			
 		return super.onCreateOptionsMenu(menu);
 	}

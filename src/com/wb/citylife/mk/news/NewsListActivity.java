@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +90,9 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private ScrollNews mScrollNews;
 	private List<DbScrollNews> mScrollNewsList;
 	private ScrollNewsListener scrollNewsListener = new ScrollNewsListener();
+	
+	private String channelId;
+	private String channelName;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +108,8 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	
 	@Override
 	public void getIntentData() {
-		
+		channelId = getIntent().getStringExtra(IntentExtraConfig.CHANNEL_ID);
+		channelName = getIntent().getStringExtra(IntentExtraConfig.CHANNEL_NAME);
 	}
 	
 	@Override
@@ -201,6 +206,10 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		setDisplayHomeAsUpEnabled(true);
 		setDisplayShowHomeEnabled(false);
 		
+		if(!TextUtils.isEmpty(channelName)) {
+			setTitle(channelName);
+		}
+		
 		setActionBarItem(menu, R.id.action_search, R.string.action_search, 
 				R.drawable.actionbar_search_icon);
 		
@@ -233,6 +242,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private Map<String, String> getNewsListRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
 		
+		params.put("channelId", channelId);
 		params.put(RespParams.PAGE_SIZE, newsPageInfo.pageSize+"");
 		params.put(RespParams.PAGE_NO, newsPageInfo.pageNo+"");
 		
@@ -383,6 +393,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	 */
 	private Map<String, String> getScrollNewsRequestParams() {
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("channelId", channelId);
 		params.put("type", "1");		
 		return params;
 	}

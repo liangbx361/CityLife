@@ -31,4 +31,9 @@ public interface ChannelType {
 	 * 投票
 	 */
 	public static final int CHANNEL_TYPE_VOTE = 5;
+	
+	/**
+	 * 商家名片
+	 */
+	public static final int CHANNEL_TYPE_MERCHANT = 6;
 }

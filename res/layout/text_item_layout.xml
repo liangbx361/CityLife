@@ -6,7 +6,8 @@
     android:paddingBottom="5dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="5dp" >
+    android:paddingTop="5dp" 
+    android:background="@drawable/base_list_selector">
 
     <TextView
         android:id="@+id/title"

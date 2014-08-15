@@ -93,7 +93,8 @@
                 android:id="@+id/comment_list_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
                 
             	<TextView
                 	android:layout_width="wrap_content"

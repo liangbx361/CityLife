@@ -14,7 +14,7 @@ public class DebugConfig {
 	 * 测试版本：0
 	 * 正式版本：1
 	 */
-	public static final int VERSION_CONFIG = 0;
+	public static final int VERSION_CONFIG = 1;
 	
 	/**
 	 * 网络配置

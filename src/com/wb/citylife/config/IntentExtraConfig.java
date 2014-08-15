@@ -16,6 +16,8 @@ public interface IntentExtraConfig {
 	
 	/***************************** 栏目排序  **********************************************/
 	public static final String OC_CHANNEL = "channel";
+	public static final String CHANNEL_ID = "channel_id";
+	public static final String CHANNEL_NAME = "channel_name";
 	
 	/***************************** 二手市场  **********************************************/
 	public static final String OLD_TYPE = "type";
@@ -41,4 +43,11 @@ public interface IntentExtraConfig {
 	
 	/***************************** 搜索  **********************************************/
 	public static final String SEARCH_TYPE = "search_type";
+	
+	public static final String USER_PHONE = "user_phone";
+	
+	/***************************** 输入用途 ***************************************/
+	public static final String INPUT_PHONE_TYPE = "input_type";
+	public static final int INPUT_TYPE_REGISTER = 0;
+	public static final int INTPU_TYPE_RESET = 1;
 }

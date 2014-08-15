@@ -316,7 +316,7 @@ public class ShootListFragment extends BaseExtraLayoutFragment implements Listen
 		mActivity.startRequest(mBaseRequest);		
 	}
 	
-	class BaseListener implements Listener<BaseBean> {
+	public class BaseListener implements Listener<BaseBean> {
 
 		@Override
 		public void onResponse(BaseBean response) {			
