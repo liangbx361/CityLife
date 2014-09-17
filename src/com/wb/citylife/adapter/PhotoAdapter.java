@@ -2,7 +2,6 @@ package com.wb.citylife.adapter;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;

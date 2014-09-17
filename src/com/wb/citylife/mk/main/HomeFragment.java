@@ -249,7 +249,9 @@ public class HomeFragment extends Fragment implements HomeListener,
 	}
 	
 	@Override
-	public void onScrollNewsCommplete(List<DbScrollNews> scrollNews) {
+	public void onScrollNewsCommplete(List<DbScrollNews> scrollNews) {	
+		if(scrollNews == null || scrollNews.size() == 0) 
+			return;
 		if(scrollNewsList == null) {
 			scrollNewsList = scrollNews;
 			mAdvAdapter = new AdvPagerAdapter(mActivity, scrollNewsList);

@@ -5,12 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.common.widget.ToastHelper;
-
 import net.tsz.afinal.utils.Utils;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
+
+import com.common.widget.ToastHelper;
 
 public class CarameHelper {
 	

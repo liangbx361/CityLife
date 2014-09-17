@@ -1,22 +1,27 @@
 package com.wb.citylife.mk.video;
 
-import com.common.widget.ToastHelper;
-import com.wb.citylife.R;
-import com.wb.citylife.config.IntentExtraConfig;
-
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
+import io.vov.vitamio.MediaPlayer.OnInfoListener;
+import io.vov.vitamio.utils.Log;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.common.widget.ToastHelper;
+import com.wb.citylife.R;
+import com.wb.citylife.config.DebugConfig;
+import com.wb.citylife.config.IntentExtraConfig;
 
 public class VideoActivity extends Activity{
 	
@@ -65,11 +70,32 @@ public class VideoActivity extends Activity{
 				public void onPrepared(MediaPlayer mediaPlayer) {
 					// optional need Vitamio 4.0
 					mediaPlayer.setPlaybackSpeed(1.0f);
+					mVideoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
 					mLoadLayout.setVisibility(View.GONE);
+				}
+			});			
+			mVideoView.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
+				
+				@Override
+				public void onBufferingUpdate(MediaPlayer mp, int percent) {
+					DebugConfig.showLog("videoActivity", "percent=" + percent);
+					if(percent > 50) {
+						mLoadLayout.setVisibility(View.GONE);
+						mVideoView.setVisibility(View.VISIBLE);
+//						if(!mVideoView.isPlaying()) {
+//							mVideoView.start();							
+//						}
+					} else {
+//						mLoadLayout.setVisibility(View.VISIBLE);
+//						mVideoView.setVisibility(View.INVISIBLE);
+						if(mVideoView.isPlaying()) {
+							mVideoView.pause();
+						}
+					}
+					
 				}
 			});
 		}
-
 	}
 	
 	private void getIntentData() {

@@ -231,15 +231,19 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 		
 		switch(v.getId()) {
 		case R.id.images:{
-			Intent intent = new Intent(this, ImageBrowseActivity.class);
-			intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
-			startActivity(intent);
+			if(mEstateDetail.imagesUrl != null && mEstateDetail.imagesUrl.size() > 0) {
+				Intent intent = new Intent(this, ImageBrowseActivity.class);
+				intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
+				startActivity(intent);
+			}
 		}break;
 		
 		case R.id.img:{
-			Intent intent = new Intent(this, ImageBrowseActivity.class);
-			intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
-			startActivity(intent);
+			if(mEstateDetail.imagesUrl != null && mEstateDetail.imagesUrl.size() > 0) {
+				Intent intent = new Intent(this, ImageBrowseActivity.class);
+				intent.putParcelableArrayListExtra(IntentExtraConfig.ESTATE_IMAGE_DATA, mEstateDetail.imagesUrl);
+				startActivity(intent);
+			}
 		}break;
 		
 		case R.id.video:{
@@ -337,8 +341,8 @@ public class EstateDetailActivity extends BaseActivity implements Listener<Estat
 			setText(titleTv, mEstateDetail.title);
 			setText(priceTv, mEstateDetail.averagePrice);
 			setText(phoneTv, mEstateDetail.phone);
-			setText(addressTv, mEstateDetail.address);
-			setText(saleAddressTv, mEstateDetail.saleAddress);
+			setText(addressTv, mEstateDetail.saleAddress);
+			setText(saleAddressTv, mEstateDetail.address);
 			setText(detailTv, mEstateDetail.detail);
 			
 			if(response.imagesUrl == null || response.imagesUrl.size() == 0) {

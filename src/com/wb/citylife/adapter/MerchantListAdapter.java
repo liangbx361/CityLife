@@ -117,6 +117,7 @@ public class MerchantListAdapter extends BaseAdapter implements OnClickListener 
 		MerchantItem mItem = mMerchantList.datas.get(index);
 		Intent intent = new Intent(mContext, MerchantDetailActivity.class);
 		intent.putExtra(IntentExtraConfig.DETAIL_ID, mItem.id);
+		intent.putExtra(IntentExtraConfig.DETAIL_NAME, mItem.name);
 		mContext.startActivity(intent);
 	}
 }

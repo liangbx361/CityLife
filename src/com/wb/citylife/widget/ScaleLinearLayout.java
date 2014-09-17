@@ -2,10 +2,8 @@ package com.wb.citylife.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
@@ -54,7 +52,8 @@ public class ScaleLinearLayout extends LinearLayout implements AnimationListener
 	 */
 	public AnimationSet zoomIn() {
 		ScaleAnimation animation = new ScaleAnimation(ZOOM_OUT_VALUE, ZOOM_INT_VALUE, 
-				ZOOM_OUT_VALUE, ZOOM_INT_VALUE, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+				ZOOM_OUT_VALUE, ZOOM_INT_VALUE, Animation.RELATIVE_TO_SELF, 
+				0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		animation.setInterpolator(new LinearInterpolator());
 		AnimationSet animSet = new AnimationSet(true);
 		animSet.addAnimation(animation);
@@ -71,7 +70,8 @@ public class ScaleLinearLayout extends LinearLayout implements AnimationListener
 	 */
 	public AnimationSet zoomOut() {
 		ScaleAnimation animation = new ScaleAnimation(ZOOM_INT_VALUE, ZOOM_OUT_VALUE, 
-				ZOOM_INT_VALUE, ZOOM_OUT_VALUE, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+				ZOOM_INT_VALUE, ZOOM_OUT_VALUE, Animation.RELATIVE_TO_SELF, 
+				0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		animation.setInterpolator(new LinearInterpolator());
 		AnimationSet animSet = new AnimationSet(true);
 		animSet.addAnimation(animation);

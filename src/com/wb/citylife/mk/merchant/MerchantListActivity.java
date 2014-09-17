@@ -23,6 +23,7 @@ import com.wb.citylife.activity.base.ReloadListener;
 import com.wb.citylife.adapter.MerchantListAdapter;
 import com.wb.citylife.config.NetConfig;
 import com.wb.citylife.config.NetInterface;
+import com.wb.citylife.config.RespCode;
 import com.wb.citylife.config.RespParams;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
@@ -201,22 +202,32 @@ public class MerchantListActivity extends BaseActivity implements Listener<Merch
 		mPullListView.onRefreshComplete();
 		mMerchantList = response;
 		setIndeterminateBarVisibility(false);
-		if(merchantPInfo.pageNo == 1) {
-			mMerchantList = response;
-			mMerchantAdapter = new MerchantListAdapter(this, mMerchantList);
-			mMerchantLv.setAdapter(mMerchantAdapter);
-			showContent();
-		} else {
-			mMerchantList.hasNextPage = response.hasNextPage;
-			mMerchantList.datas.addAll(response.datas);
-			mMerchantAdapter.notifyDataSetChanged();			
-		}
+		if(response.respCode == RespCode.SUCCESS) {
+			if(response.datas.size() <= 0) {
+				setEmptyToastText(R.string.merchant_empty_toast);
+				showEmpty();
+				return;
+			}
+			if(merchantPInfo.pageNo == 1) {
+				mMerchantList = response;
+				mMerchantAdapter = new MerchantListAdapter(this, mMerchantList);
+				mMerchantLv.setAdapter(mMerchantAdapter);
+				showContent();
+			} else {
+				mMerchantList.hasNextPage = response.hasNextPage;
+				mMerchantList.datas.addAll(response.datas);
+				mMerchantAdapter.notifyDataSetChanged();			
+			}
 		
-		loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
-		if(mMerchantList.hasNextPage) {
-			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, merchantPInfo.pageSize);
+			loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
+			if(mMerchantList.hasNextPage) {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_LOADING, merchantPInfo.pageSize);
+			} else {
+				pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, merchantPInfo.pageSize);
+			}
 		} else {
-			pullHelper.setBottomState(PullListViewHelper.BOTTOM_STATE_NO_MORE_DATE, merchantPInfo.pageSize);
+			ToastHelper.showToastInBottom(this, response.respMsg);
+			showLoadError(this);
 		}
 	}	
 }

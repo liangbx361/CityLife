@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wb.citylife"
-    android:versionCode="17"
-    android:versionName="0.0.17" >
+    android:versionCode="23"
+    android:versionName="0.1.3" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -430,7 +430,7 @@
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5356596356240b2f9301fcbd" >
+            android:value="53ee0b3efd98c599ea0087f2" >
         </meta-data>
         <meta-data
             android:name="UMENG_CHANNEL"

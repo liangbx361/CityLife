@@ -223,7 +223,7 @@ public class ShootPublishActivity extends BaseActivity implements OnItemClickLis
 						
 		String desc = contentEt.getText().toString();
 		if(TextUtils.isEmpty(desc)) {
-			ToastHelper.showToastInBottom(this, R.string.title_empty_toast);
+			ToastHelper.showToastInBottom(this, R.string.desc_empty_toast);
 			return;
 		}
 		

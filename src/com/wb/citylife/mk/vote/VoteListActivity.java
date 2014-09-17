@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
@@ -64,6 +65,7 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 	private VoteListAdapter mVoteAdapter;	
 	private VoteListRequest mVoteListRequest;
 	private VoteList mVoteList;		
+	private View advView;
 	private PageInfo votePageInfo;
 	private int loadState = PullListViewHelper.BOTTOM_STATE_LOAD_IDLE;
 	
@@ -136,7 +138,7 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		mVoteListView.setOnItemClickListener(this);
 		
 		//广告视图添加到List头部
-		View advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
+		advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
 		mAdvViewPager = (ViewPager) advView.findViewById(R.id.adv_pager);
 		mAdvIndicator = (LinePageIndicator) advView.findViewById(R.id.adv_indicator);
 		advTitleTv = (TextView) advView.findViewById(R.id.title);
@@ -260,6 +262,11 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		mPullListView.onRefreshComplete();
 		setIndeterminateBarVisibility(false);
 		if(response.respCode == RespCode.SUCCESS) {
+			if(response.datas.size() <= 0) {
+				setEmptyToastText(R.string.vote_empty_toast);
+				showEmpty();
+				return;
+			}
 			if(votePageInfo.pageNo == 1) {
 				mVoteList = response;
 				mVoteAdapter = new VoteListAdapter(VoteListActivity.this, mVoteList);
@@ -368,6 +375,10 @@ public class VoteListActivity extends BaseActivity implements Listener<VoteList>
 		@Override
 		public void onResponse(ScrollNews scrollNews) {
 			if(scrollNews.respCode == RespCode.SUCCESS) {
+				if(scrollNews.datas.size() <= 0) {
+					mVoteListView.removeHeaderView(advView);
+					return;
+				}
 				mScrollNews = scrollNews;
 				mScrollNewsList = new ArrayList<DbScrollNews>();
 				for(int i=0; i<mScrollNews.datas.size(); i++) {

@@ -7,16 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.tsz.afinal.FinalDb;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -24,24 +20,20 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.android.volley.Request.Method;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.NetworkImageView.NetworkImageListener;
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.common.date.FormatDateTime;
 import com.common.net.volley.VolleyErrorHelper;
 import com.common.widget.ToastHelper;
 import com.umeng.update.UmengUpdateAgent;
 import com.wb.citylife.R;
-import com.wb.citylife.activity.base.BaseActivity;
 import com.wb.citylife.activity.base.IBaseNetActivity;
 import com.wb.citylife.app.CityLifeApp;
 import com.wb.citylife.bean.Channel;
-import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.Channel.ChannelItem;
+import com.wb.citylife.bean.ScrollNews;
 import com.wb.citylife.bean.ScrollNews.NewsItem;
 import com.wb.citylife.bean.db.DbChannel;
 import com.wb.citylife.bean.db.DbScrollNews;
@@ -271,16 +263,38 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 					mChannelList.add(channel);
 					CityLifeApp.getInstance().getDb().save(channel);
 				}				
-			} else {			
+			} else {
+				//比对栏目数据，删除不存在的栏目		
+				for(int i=0; i<mChannelList.size(); i++) {
+					boolean isFind = false;
+					for(int j=0; j<mChannel.datas.size(); j++) {							
+						DbChannel dbChannel = mChannelList.get(i);
+						ChannelItem channelItem = mChannel.datas.get(j);
+						if(channelItem.id.equals(dbChannel.channelId)) {
+							isFind = true;
+							break;
+						}
+					}
+					if(!isFind) {
+						//删除栏目
+						DbChannel dbChannel = mChannelList.get(i);
+						CityLifeApp.getInstance().getDb().deleteById(DbChannel.class, dbChannel.id);
+						mChannelList.remove(i);
+						i--;
+					}
+				}
+				
+				//比对栏目数据，新增和更新栏目数据
 				for(int i=0; i<mChannel.datas.size(); i++) {
 					for(int j=0; j<mChannelList.size(); j++) {
 						ChannelItem channelItem = mChannel.datas.get(i);
-						DbChannel channel = mChannelList.get(j);
-						if(channelItem.id.equals(channel.channelId)) {
-							channel.updateNum = channelItem.updateNum;
-							channel.name = channelItem.name;
-							channel.imageUrl = channelItem.imageUrl;
-							CityLifeApp.getInstance().getDb().update(channel, "channelId='" + channel.channelId + "'");
+						DbChannel dbChannel = mChannelList.get(j);
+						if(channelItem.id.equals(dbChannel.channelId)) {
+							//更新栏目
+							dbChannel.updateNum = channelItem.updateNum;
+							dbChannel.name = channelItem.name;
+							dbChannel.imageUrl = channelItem.imageUrl;
+							CityLifeApp.getInstance().getDb().update(dbChannel, "channelId='" + dbChannel.channelId + "'");
 							break;
 						} else {
 							if(j == mChannelList.size()-1) {
@@ -298,6 +312,7 @@ public class MainActivity extends IBaseNetActivity implements MainListener,
 							}
 						}
 					}
+					
 				}
 			}
 			

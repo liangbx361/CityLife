@@ -13,6 +13,7 @@ public interface IntentExtraConfig {
 	/***************************** 详情页  **********************************************/
 	public static final String DETAIL_ID = "id";
 	public static final String DETAIL_TYPE = "type";
+	public static final String DETAIL_NAME = "name";
 	
 	/***************************** 栏目排序  **********************************************/
 	public static final String OC_CHANNEL = "channel";

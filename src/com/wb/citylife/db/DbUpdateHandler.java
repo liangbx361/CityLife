@@ -24,6 +24,33 @@ public class DbUpdateHandler implements DbUpdateListener {
 			db.execSQL("DROP TABLE " + DbConfig.TN_USER);
 			return;
 		}
+		
+		if(newVersion == 4) {
+			try {
+				db.execSQL("DROP TABLE " + DbConfig.TN_SCROLL_NEWS);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				db.execSQL("DROP TABLE " + DbConfig.TN_CHANNEL);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				db.execSQL("DROP TABLE " + DbConfig.TN_MSG);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				db.execSQL("DROP TABLE " + DbConfig.TN_USER);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 	}
 
 }

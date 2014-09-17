@@ -71,6 +71,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 	private ListView mNewsListView;	
 	private NewsAdapter mNewsAdapter;
 	private View bottomView;
+	private View advView;
 	
 	//新闻列表
 	private NewsListRequest mNewsListRequest;	
@@ -151,7 +152,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		mNewsListView.setOnItemClickListener(this);
 		
 		//广告视图添加到List头部
-		View advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
+		advView = LayoutInflater.from(this).inflate(R.layout.scroll_news_layout, null);
 		mAdvViewPager = (ViewPager) advView.findViewById(R.id.adv_pager);
 		mAdvIndicator = (LinePageIndicator) advView.findViewById(R.id.adv_indicator);
 		advTitleTv = (TextView) advView.findViewById(R.id.title);
@@ -427,6 +428,11 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 		public void onResponse(ScrollNews scrollNews) {
 			setIndeterminateBarVisibility(false);
 			if(scrollNews.respCode == RespCode.SUCCESS) {
+				if(scrollNews.datas.size() <= 0) {
+					mNewsListView.removeHeaderView(advView);
+					return;
+				}
+				
 				mScrollNews = scrollNews;
 				mScrollNewsList = new ArrayList<DbScrollNews>();
 				for(int i=0; i<mScrollNews.datas.size(); i++) {
@@ -447,7 +453,7 @@ public class NewsListActivity extends BaseActivity implements Listener<NewsList>
 					advAdvTimeCount.cancel();
 					advAdvTimeCount.start();
 				}
-			}
+			} 
 		}
 
 		@Override
